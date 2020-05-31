@@ -6,19 +6,61 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #pragma once
-#include <labo/server/Base.h>
+#include <labo/util/stream.h>
+#include <map>
+#include <string>
 
-namespace labo {
-class HttpServer : public Server
+namespace labo::http {
+using namespace std;
+
+/// Represents a HTTP request
+struct Request
 {
-    /// Alias for convenience.
-    using Base = Server;
+    /// Request method.
+    enum class Method
+    {
+        GET,
+        POST,
+    };
 
-  public:
-    /// Use Server's constructor.
-    using Base::Base;
+    /// Method of the request
+    Method method;
+    /// Path of the request
+    string path;
+    /// All header data
+    map<string, string> headers;
+    /// body
+    string body;
+
+    /// Set this from stream.
+    /// @param is
+    void deserialize(istream& is);
+};
+
+/// Represents a HTTP Response
+struct Response
+{
+    /// Status codes
+    enum class Status
+    {
+        OK = 200,
+        NOT_FOUND = 404,
+    };
+
+    /// Status code
+    Status status;
+    /// All header data
+    map<string, string> headers;
+    /// body
+    string body;
+
+    /// Print this Response to a stream.
+    /// @param os
+    void print(ostream& os) const;
 
   private:
-    static void action(int socket_fd) override;
+    /// Helper funciton.
+    string to_string(Response::Status status);
 };
+
 };

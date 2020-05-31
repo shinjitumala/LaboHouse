@@ -9,7 +9,10 @@
 #include <iostream>
 #include <labo/debug/Log.h>
 #include <labo/server/Base.h>
+#include <labo/server/http.h>
+#include <labo/server/socket_stream.h>
 #include <llvm/Support/CommandLine.h>
+#include <regex>
 #include <signal.h>
 
 namespace labo::cl {
@@ -26,24 +29,23 @@ struct Action
     {
         using namespace labo;
         logs << "Start hoge: " << socket_fd << endl;
-        char buffer[256];
-        ::bzero(buffer, 256);
-        {
-            auto size{ ::read(socket_fd, buffer, 255) };
-            if (size < 0) {
-                errs << "Input error" << endl;
-            }
-            logs << "Received: " << buffer << endl;
-        }
-        {
-            stringstream ss;
-            ss << "echo: " << buffer;
-            string reply{ ss.str() };
-            auto size{ ::write(socket_fd, reply.c_str(), reply.size()) };
-            if (size < 0) {
-                errs << "Output error" << endl;
-            }
-        }
+
+        socket::fdstreambuf stream{ socket_fd };
+        istream in{ &stream };
+        ostream out{ &stream };
+
+        // for (string line; getline(in, line);) {
+        //     out << line << endl;
+        // }
+
+        http::Request req;
+        in >> req;
+
+        const string s{ "hello wolrd" };
+        out << "HTTP/1.1 200 OK" << endl;
+        out << "Content-Length: " << s.size() << endl;
+        out << endl;
+        out << s << endl << endl;
 
         logs << "Finish hoge" << endl;
     }
@@ -52,7 +54,7 @@ struct Action
 labo::Server<Action>* server{ nullptr };
 
 void
-terminate_server(int sig)
+signal_handler(int sig)
 {
     using namespace labo;
     errs << "Signal received: " << strsignal(sig) << endl;
@@ -64,7 +66,9 @@ terminate_server(int sig)
         errs << "Server was not running." << endl;
     }
     logs << "Goodbye." << endl;
-    ::exit(0);
+
+    ::signal(sig, SIG_DFL);
+    ::kill(::getpid(), sig);
 };
 
 template<class T, typename labo::is_action<T>::value = true>
@@ -72,8 +76,8 @@ void
 foo()
 {}
 
-    struct Hoge{
-    };
+struct Hoge
+{};
 int
 main(int argc, char* argv[])
 {
@@ -81,11 +85,11 @@ main(int argc, char* argv[])
     llvm::cl::HideUnrelatedOptions(labo::cl::related_categories);
     llvm::cl::ParseCommandLineOptions(argc, argv);
 
-    signal(SIGQUIT, terminate_server);
-    signal(SIGTERM, terminate_server);
-    signal(SIGSTOP, terminate_server);
-    signal(SIGINT, terminate_server);
-
+    signal(SIGQUIT, signal_handler);
+    signal(SIGTERM, signal_handler);
+    signal(SIGSTOP, signal_handler);
+    signal(SIGINT, signal_handler);
+    signal(SIGABRT, signal_handler);
 
     server = new labo::Server<Action>{ 12345 };
     server->start();

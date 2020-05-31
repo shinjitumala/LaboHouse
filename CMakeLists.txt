@@ -18,6 +18,7 @@ add_compile_options(
 add_executable(LaboHouse
     src/main.cpp
     src/debug/Log.cpp
+    src/server/http.cpp
     src/server/socket_stream.cpp
 )
 
