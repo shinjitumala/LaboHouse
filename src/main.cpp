@@ -7,8 +7,8 @@
 /// See the licenses directory for details.
 
 #include <iostream>
-#include <labo/server/Base.h>
 #include <labo/debug/Log.h>
+#include <labo/server/Base.h>
 #include <llvm/Support/CommandLine.h>
 #include <signal.h>
 
@@ -20,7 +20,36 @@ using namespace llvm::cl;
 const vector<const OptionCategory*> related_categories{};
 };
 
-labo::Server* server{ nullptr };
+struct Action
+{
+    Action(int socket_fd)
+    {
+        using namespace labo;
+        logs << "Start hoge: " << socket_fd << endl;
+        char buffer[256];
+        ::bzero(buffer, 256);
+        {
+            auto size{ ::read(socket_fd, buffer, 255) };
+            if (size < 0) {
+                errs << "Input error" << endl;
+            }
+            logs << "Received: " << buffer << endl;
+        }
+        {
+            stringstream ss;
+            ss << "echo: " << buffer;
+            string reply{ ss.str() };
+            auto size{ ::write(socket_fd, reply.c_str(), reply.size()) };
+            if (size < 0) {
+                errs << "Output error" << endl;
+            }
+        }
+
+        logs << "Finish hoge" << endl;
+    }
+};
+
+labo::Server<Action>* server{ nullptr };
 
 void
 terminate_server(int sig)
@@ -50,7 +79,7 @@ main(int argc, char* argv[])
     signal(SIGSTOP, terminate_server);
     signal(SIGINT, terminate_server);
 
-    server = new labo::Server{ 12345 };
+    server = new labo::Server<Action>{ 12345 };
     server->start();
     return 0;
 }
