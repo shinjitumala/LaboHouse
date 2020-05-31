@@ -7,7 +7,7 @@
 /// See the licenses directory for details.
 
 #include <iostream>
-#include <labo/Server.h>
+#include <labo/server/Base.h>
 #include <labo/debug/Log.h>
 #include <llvm/Support/CommandLine.h>
 #include <signal.h>

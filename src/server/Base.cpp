@@ -6,7 +6,7 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #include <algorithm>
-#include <labo/Server.h>
+#include <labo/server/Base.h>
 #include <labo/debug/Log.h>
 #include <netinet/in.h>
 #include <sstream>
