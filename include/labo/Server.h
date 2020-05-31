@@ -30,6 +30,8 @@ class Server
     Server(int port);
 
     /// Start the server.
+    /// WARNING: This function will not return until the server is killed. Call
+    /// kill() to return from it.
     void start();
 
     /// Server's constructor will return as soon as possible after callling
