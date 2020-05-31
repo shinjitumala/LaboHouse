@@ -14,17 +14,35 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <thread>
+#include <type_traits>
 #include <unistd.h>
 #include <unordered_set>
 
 namespace labo {
 using namespace std;
 
+/// Checks if T is an appropriate class to use for Server
+/// @tparam T
+template<class T>
+class is_action
+{
+    template<class U>
+    static constexpr auto test(int i) -> decltype(U{ i }, true_type());
+    template<class>
+    static constexpr auto test(...) -> false_type;
+
+  public:
+    static constexpr bool value{ is_same_v<decltype(test<T>(0)), true_type> &&
+                                 !is_fundamental_v<T> };
+};
+
 /// @tparam Action Action to take when a connection is made. The socket file
 /// discriptor is passed to the constructor. ex) Action{socket_fc}.
 template<class Action>
 class Server
 {
+    static_assert(is_action<Action>::value, "Invalid 'Action' type.");
+
   public:
     /// Port number of the server.
     const int port;

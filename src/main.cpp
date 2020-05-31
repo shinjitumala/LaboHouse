@@ -67,6 +67,13 @@ terminate_server(int sig)
     ::exit(0);
 };
 
+template<class T, typename labo::is_action<T>::value = true>
+void
+foo()
+{}
+
+    struct Hoge{
+    };
 int
 main(int argc, char* argv[])
 {
@@ -78,6 +85,7 @@ main(int argc, char* argv[])
     signal(SIGTERM, terminate_server);
     signal(SIGSTOP, terminate_server);
     signal(SIGINT, terminate_server);
+
 
     server = new labo::Server<Action>{ 12345 };
     server->start();

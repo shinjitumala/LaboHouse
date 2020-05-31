@@ -17,7 +17,6 @@ add_compile_options(
 # List all sources here.
 add_executable(LaboHouse
     src/main.cpp
-    src/server/Base.cpp
     src/debug/Log.cpp
 )
 
