@@ -6,7 +6,6 @@
 /// Part of the SWORD tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #pragma once
-#include <iostream>
 #include <istream>
 #include <ostream>
 
