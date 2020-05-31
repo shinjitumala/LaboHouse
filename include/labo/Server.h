@@ -51,5 +51,8 @@ class Server
     /// Called when connection is accepted.
     /// @param socket_fd
     static void run_action(int socket_fd);
+
+    /// Disallow copy because we own resources.
+    Server(const Server&) = delete;
 };
 };
