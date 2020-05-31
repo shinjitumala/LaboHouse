@@ -26,14 +26,15 @@ void
 signal_handler(int sig)
 {
     using namespace labo;
-    errs << "Signal received: " << sig << endl;
-    logs << "Server: " << server << endl;
+    errs << "Signal received: " << strsignal(sig) << endl;
     if (server) {
         errs << "Terminating..." << endl;
         server->kill();
         delete server;
-        errs << "Goodbye." << endl;
+    } else {
+        errs << "Server was not running." << endl;
     }
+    logs << "Goodbye." << endl;
     ::exit(0);
 };
 
