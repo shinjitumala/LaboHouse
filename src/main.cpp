@@ -23,7 +23,7 @@ const vector<const OptionCategory*> related_categories{};
 labo::Server* server{ nullptr };
 
 void
-signal_handler(int sig)
+terminate_server(int sig)
 {
     using namespace labo;
     errs << "Signal received: " << strsignal(sig) << endl;
@@ -45,10 +45,10 @@ main(int argc, char* argv[])
     llvm::cl::HideUnrelatedOptions(labo::cl::related_categories);
     llvm::cl::ParseCommandLineOptions(argc, argv);
 
-    signal(SIGQUIT, signal_handler);
-    signal(SIGTERM, signal_handler);
-    signal(SIGSTOP, signal_handler);
-    signal(SIGINT, signal_handler);
+    signal(SIGQUIT, terminate_server);
+    signal(SIGTERM, terminate_server);
+    signal(SIGSTOP, terminate_server);
+    signal(SIGINT, terminate_server);
 
     server = new labo::Server{ 12345 };
     server->start();
