@@ -17,7 +17,7 @@
 
 namespace labo {
 void
-hoge(int socket_fd)
+Server::action(int socket_fd)
 {
     logs << "Start hoge: " << socket_fd << endl;
     char buffer[256];
@@ -40,6 +40,12 @@ hoge(int socket_fd)
     }
 
     logs << "Finish hoge" << endl;
+}
+
+void
+Server::run_action(int socket_fd)
+{
+    action(socket_fd);
     ::close(socket_fd);
 }
 
@@ -89,7 +95,7 @@ Server::start()
 
         logs << "Accepted connection from: " << client_address.sin_addr.s_addr
              << ":" << client_address.sin_port << endl;
-        threads.insert(new thread{ hoge, personal_socket_fd });
+        threads.insert(new thread{ Server::run_action, personal_socket_fd });
     }
     ::close(socket_fd);
 }

@@ -40,5 +40,16 @@ class Server
 
     /// Tried to join all created threads before returning.
     ~Server();
+
+  protected:
+    /// Action of the server. Called by run_action.
+    /// Echoes the input by default. Override this with your own server action.
+    /// @param socket_fd
+    static void action(int socket_fd);
+
+  private:
+    /// Called when connection is accepted.
+    /// @param socket_fd
+    static void run_action(int socket_fd);
 };
 };
