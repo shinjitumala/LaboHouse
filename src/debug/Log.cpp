@@ -31,8 +31,9 @@ warning(experimental::source_location loc)
 
 namespace log {
 TimeCallback tcb;
+TimeCallback tcb_err;
 LineCallbackBuf<TimeCallback> stream_hook{ cout, tcb };
-LineCallbackBuf<TimeCallback> stream_hook_errs{ cerr, tcb };
+LineCallbackBuf<TimeCallback> stream_hook_errs{ cerr, tcb_err };
 
 int
 TimeCallback::call(streambuf& buf) const

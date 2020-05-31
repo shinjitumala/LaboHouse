@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 # Global flags
 add_compile_options(
     -Wall # enable all warnings, because why not?
+    -g3
 )
 
 # List all sources here.
@@ -38,4 +39,5 @@ target_include_directories(LaboHouse
 target_link_libraries(LaboHouse
     LLVM
     libfpr
+    pthread
 )

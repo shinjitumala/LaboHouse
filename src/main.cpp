@@ -7,8 +7,10 @@
 /// See the licenses directory for details.
 
 #include <iostream>
-#include <llvm/Support/CommandLine.h>
+#include <labo/Server.h>
 #include <labo/debug/Log.h>
+#include <llvm/Support/CommandLine.h>
+#include <signal.h>
 
 namespace labo::cl {
 using namespace std;
@@ -18,6 +20,23 @@ using namespace llvm::cl;
 const vector<const OptionCategory*> related_categories{};
 };
 
+labo::Server* server{ nullptr };
+
+void
+signal_handler(int sig)
+{
+    using namespace labo;
+    errs << "Signal received: " << sig << endl;
+    logs << "Server: " << server << endl;
+    if (server) {
+        errs << "Terminating..." << endl;
+        server->kill();
+        delete server;
+        errs << "Goodbye." << endl;
+    }
+    ::exit(0);
+};
+
 int
 main(int argc, char* argv[])
 {
@@ -25,8 +44,12 @@ main(int argc, char* argv[])
     llvm::cl::HideUnrelatedOptions(labo::cl::related_categories);
     llvm::cl::ParseCommandLineOptions(argc, argv);
 
-    std::cout << "Hello world!" << std::endl;
-    labo::logs << "Hi" << std::endl;
-    labo::failure();
+    signal(SIGQUIT, signal_handler);
+    signal(SIGTERM, signal_handler);
+    signal(SIGSTOP, signal_handler);
+    signal(SIGINT, signal_handler);
+
+    server = new labo::Server{ 12345 };
+    server->start();
     return 0;
 }
