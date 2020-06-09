@@ -5,7 +5,6 @@
 ///
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
-#include <experimental/source_location>
 #include <labo/debug/Log.h>
 #include <labo/server/http.h>
 #include <limits>
