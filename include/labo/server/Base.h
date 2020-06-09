@@ -111,7 +111,7 @@ Server<Action>::start()
     ::bzero((char*)&server_address, sizeof(server_address));
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = INADDR_ANY;
-    server_address.sin_port = ::htons(port);
+    server_address.sin_port = htons(port);
 
     // Bind our socket to an address
     if (::bind(socket_fd, (sockaddr*)&server_address, sizeof(server_address)) <
