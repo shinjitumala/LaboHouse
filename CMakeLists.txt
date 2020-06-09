@@ -26,8 +26,8 @@ add_executable(LaboHouse
 # find_package(LLVM REQUIRED CONFIG)
 # set(CMAKE_C_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang)
 # set(CMAKE_CXX_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang++)
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_CXX_COMPILER clang++)
+# set(CMAKE_C_COMPILER clang)
+# set(CMAKE_CXX_COMPILER clang++)
 
 target_include_directories(LaboHouse
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
