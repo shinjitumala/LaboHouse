@@ -7,7 +7,6 @@
 /// See the licenses directory for details.
 #pragma once
 
-#include <experimental/source_location>
 #include <fpr/log/LineCallbackBuf.h>
 #include <fpr/log/callback/Indent.h>
 
