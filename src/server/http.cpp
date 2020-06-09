@@ -26,11 +26,10 @@ to_string(Response::Status status)
 void
 Request::deserialize(istream& is)
 {
-    auto check_is = [&](experimental::source_location loc =
-                          experimental::source_location::current()) {
+    auto check_is = [&]() {
         if (is.bad()) {
             errs << "Parsing error." << endl;
-            failure(loc);
+            failure();
         }
     };
 

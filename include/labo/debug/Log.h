@@ -14,17 +14,13 @@
 namespace labo {
 using namespace std;
 
-/// Outputs 'loc' before crashing the program.
-/// @param loc
+/// Crashes the program.
 [[noreturn]] void
-failure(
-  experimental::source_location loc = experimental::source_location::current());
+failure();
 
-/// Outputs 'loc' as warning
-/// @param loc
+/// Outputs a warning message.
 void
-warning(
-  experimental::source_location loc = experimental::source_location::current());
+warning();
 
 namespace log {
 using namespace fpr::log;

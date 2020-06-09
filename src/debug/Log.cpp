@@ -8,25 +8,22 @@
 #include <chrono>
 #include <ctime>
 #include <fpr/log/LineCallbackBuf.h>
-#include <fpr/log/Location.h>
 #include <iomanip>
 #include <labo/debug/Log.h>
 #include <sstream>
 
 namespace labo {
 void
-failure(experimental::source_location loc)
+failure()
 {
-    using fpr::log::operator<<;
-    logs << "Error at: " << loc << std::endl;
+    logs << "Error" << std::endl;
     ::abort();
 };
 
 void
-warning(experimental::source_location loc)
+warning()
 {
-    using fpr::log::operator<<;
-    logs << "Warning at: " << loc << std::endl;
+    logs << "Warning" << std::endl;
 }
 
 namespace log {
