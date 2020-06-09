@@ -13,17 +13,17 @@
 #include <labo/server/http.h>
 #include <labo/server/socket_stream.h>
 #include <limits>
-#include <llvm/Support/CommandLine.h>
+// #include <llvm/Support/CommandLine.h>
 #include <regex>
 #include <signal.h>
 
-namespace labo::cl {
-using namespace std;
-using namespace llvm::cl;
+// namespace labo::cl {
+// using namespace std;
+// using namespace llvm::cl;
 
-/// List used commandline options here.
-const vector<const OptionCategory*> related_categories{};
-};
+// /// List used commandline options here.
+// const vector<const OptionCategory*> related_categories{};
+// };
 
 struct Action
 {
@@ -81,8 +81,8 @@ int
 main(int argc, char* argv[])
 {
     // Command line stuff. It's magic.
-    llvm::cl::HideUnrelatedOptions(labo::cl::related_categories);
-    llvm::cl::ParseCommandLineOptions(argc, argv);
+    // llvm::cl::HideUnrelatedOptions(labo::cl::related_categories);
+    // llvm::cl::ParseCommandLineOptions(argc, argv);
 
     signal(SIGQUIT, signal_handler);
     signal(SIGTERM, signal_handler);
