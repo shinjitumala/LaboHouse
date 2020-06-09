@@ -6,7 +6,6 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #include <algorithm>
-#include <bits/types/FILE.h>
 #include <labo/server/socket_stream.h>
 #include <unistd.h>
 
