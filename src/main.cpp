@@ -6,11 +6,13 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
+#include <fstream>
 #include <iostream>
 #include <labo/debug/Log.h>
 #include <labo/server/Base.h>
 #include <labo/server/http.h>
 #include <labo/server/socket_stream.h>
+#include <limits>
 #include <llvm/Support/CommandLine.h>
 #include <regex>
 #include <signal.h>
@@ -40,9 +42,13 @@ struct Action
 
         http::Request req;
         in >> req;
+        if(req.path == "/"){
+            /// reply with home page
+        }
 
         const string s{ "hello wolrd" };
         out << "HTTP/1.1 200 OK" << endl;
+        out << "Set-Cookie: COOKIE" << endl;
         out << "Content-Length: " << s.size() << endl;
         out << endl;
         out << s << endl << endl;
@@ -71,13 +77,6 @@ signal_handler(int sig)
     ::kill(::getpid(), sig);
 };
 
-template<class T, typename labo::is_action<T>::value = true>
-void
-foo()
-{}
-
-struct Hoge
-{};
 int
 main(int argc, char* argv[])
 {

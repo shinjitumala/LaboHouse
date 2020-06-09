@@ -28,10 +28,10 @@ set(CMAKE_C_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang)
 set(CMAKE_CXX_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang++)
 
 # Setup libfpr
-find_package(libfpr REQUIRED
-    HINTS "/home/shinjitumala/E_DRIVE/Project/C++/libfpr/build" # Where your copy of libfpr exists.
-)
-message(STATUS "Found libfpr at ${libfpr_DIR}")
+# find_package(libfpr REQUIRED
+    # HINTS "/home/shinjitumala/E_DRIVE/Project/C++/libfpr/build" # Where your copy of libfpr exists.
+# )
+# message(STATUS "Found libfpr at ${libfpr_DIR}")
 
 target_include_directories(LaboHouse
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -39,6 +39,6 @@ target_include_directories(LaboHouse
 
 target_link_libraries(LaboHouse
     LLVM
-    libfpr
+    # libfpr
     pthread
 )
