@@ -6,11 +6,14 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <labo/debug/Log.h>
 #include <labo/server/Base.h>
+#include <labo/server/http/Body.h>
 #include <labo/server/http/Request.h>
+#include <labo/server/http/Response.h>
 #include <labo/util/fdstreambuf.h>
 #include <limits>
 // #include <llvm/Support/CommandLine.h>
@@ -41,29 +44,17 @@ struct Action
         if (req.path == "/") {
             /// reply with home page
 
-            ifstream is{ "../res/home.html" };
-            // get length of file
-            is.seekg(0, ios::end);
-            auto length{ is.tellg() };
+            http::Response res{ http::Response::Status::OK,
+                                { "../res/home.html" } };
+            out << res;
 
-            // Reset ifs
-            is.seekg(0);
-
-            out << "HTTP/1.1 200 OK" << endl;
-            out << "Set-Cookie: COOKIE" << endl;
-            out << "Content-Length: " << length << endl;
-            out << endl;
-            copy(istreambuf_iterator<char>(is),
-                 istreambuf_iterator<char>(),
-                 ostreambuf_iterator<char>(out));
-            out << endl << endl;
-
+            logs << "Replied with home page." << endl;
             return;
         }
 
-        const string s{ "Welcome to LaboHose!" };
-
-        logs << "Finish hoge" << endl;
+        out << http::Response{ http::Response::Status::NOT_FOUND,
+                                { "../res/not_found.html" } };
+        logs << "Replied with not found." << endl;
     }
 };
 
