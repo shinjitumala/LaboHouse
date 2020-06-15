@@ -6,6 +6,7 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #pragma once
+#include <labo/server/http/Body.h>
 #include <labo/util/stream.h>
 #include <map>
 #include <string>
@@ -16,13 +17,15 @@ using namespace std;
 /// Represents a HTTP Response
 class Response
 {
+  public:
     /// Status codes
-    enum class Status
+    enum class Status : uint
     {
         OK = 200,
         NOT_FOUND = 404,
     };
 
+  private:
     /// Alias for readability.
     using Headers = map<string, string>;
 
@@ -30,9 +33,15 @@ class Response
     Status status;
     /// All header data
     Headers headers;
+    /// The response body
+    Body body;
 
   public:
-    Response(Status status, Headers headers = {}, Body body);
+    /// Construct a response.
+    /// @param status The status.
+    /// @param body The response body.
+    /// @param headers Headers. Optional. NOTE: 'Content-Length' is not needed.
+    Response(Status status, Body&& body, Headers headers = {});
 
     /// Print this Response to a stream.
     /// @param os
@@ -40,7 +49,7 @@ class Response
 
   private:
     /// Helper funciton.
-    string to_string(Response::Status status);
+    static string to_string(Response::Status status);
 };
 
 };
