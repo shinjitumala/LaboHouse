@@ -34,7 +34,5 @@ class fdstreambuf : public streambuf
     int overflow(int c);
     int underflow();
     int sync();
-
-  private:
 };
 };
