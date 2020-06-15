@@ -7,7 +7,7 @@
 /// See the licenses directory for details.
 #include <algorithm>
 #include <bits/types/FILE.h>
-#include <labo/server/socket_stream.h>
+#include <labo/util/fdstreambuf.h>
 #include <unistd.h>
 
 namespace labo::socket {

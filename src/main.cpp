@@ -10,8 +10,8 @@
 #include <iostream>
 #include <labo/debug/Log.h>
 #include <labo/server/Base.h>
-#include <labo/server/http.h>
-#include <labo/server/socket_stream.h>
+#include <labo/server/http/Request.h>
+#include <labo/util/fdstreambuf.h>
 #include <limits>
 // #include <llvm/Support/CommandLine.h>
 #include <regex>
@@ -36,22 +36,32 @@ struct Action
         istream in{ &stream };
         ostream out{ &stream };
 
-        // for (string line; getline(in, line);) {
-        //     out << line << endl;
-        // }
-
         http::Request req;
         in >> req;
-        if(req.path == "/"){
+        if (req.path == "/") {
             /// reply with home page
+
+            ifstream is{ "../res/home.html" };
+            // get length of file
+            is.seekg(0, ios::end);
+            auto length{ is.tellg() };
+
+            // Reset ifs
+            is.seekg(0);
+
+            out << "HTTP/1.1 200 OK" << endl;
+            out << "Set-Cookie: COOKIE" << endl;
+            out << "Content-Length: " << length << endl;
+            out << endl;
+            copy(istreambuf_iterator<char>(is),
+                 istreambuf_iterator<char>(),
+                 ostreambuf_iterator<char>(out));
+            out << endl << endl;
+
+            return;
         }
 
-        const string s{ "hello wolrd" };
-        out << "HTTP/1.1 200 OK" << endl;
-        out << "Set-Cookie: COOKIE" << endl;
-        out << "Content-Length: " << s.size() << endl;
-        out << endl;
-        out << s << endl << endl;
+        const string s{ "Welcome to LaboHose!" };
 
         logs << "Finish hoge" << endl;
     }
