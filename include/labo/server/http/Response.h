@@ -28,20 +28,29 @@ class Response
   private:
     /// Alias for readability.
     using Headers = map<string, string>;
+    /// Alias for convenience.
+    using path = filesystem::path;
 
     /// Status code
     Status status;
     /// All header data
     Headers headers;
     /// The response body
-    Body body;
+    Body* const body;
 
   public:
     /// Construct a response.
     /// @param status The status.
-    /// @param body The response body.
+    /// @param body_path Path to the html content.
     /// @param headers Headers. Optional. NOTE: 'Content-Length' is not needed.
-    Response(Status status, Body&& body, Headers headers = {});
+    Response(Status status, path body_path, Headers headers = {});
+    /// Create a response without a body.
+    /// @param status
+    /// @param headers
+    Response(Status status, Headers headers = {});
+
+    /// We own 'body'
+    ~Response();
 
     /// Print this Response to a stream.
     /// @param os
