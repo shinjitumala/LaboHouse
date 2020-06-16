@@ -53,7 +53,7 @@ struct Action
         }
 
         out << http::Response{ http::Response::Status::NOT_FOUND,
-                                { "../res/not_found.html" } };
+                               { "../res/not_found.html" } };
         logs << "Replied with not found." << endl;
     }
 };
@@ -67,8 +67,8 @@ signal_handler(int sig)
     errs << "Signal received: " << strsignal(sig) << endl;
     if (server) {
         errs << "Terminating..." << endl;
-        server->kill();
         delete server;
+        logs << "Server terminated." << endl;
     } else {
         errs << "Server was not running." << endl;
     }
