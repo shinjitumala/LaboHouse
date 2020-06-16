@@ -6,12 +6,15 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <labo/debug/Log.h>
 #include <labo/server/Base.h>
-#include <labo/server/http.h>
-#include <labo/server/socket_stream.h>
+#include <labo/server/http/Body.h>
+#include <labo/server/http/Request.h>
+#include <labo/server/http/Response.h>
+#include <labo/util/fdstreambuf.h>
 #include <limits>
 // #include <llvm/Support/CommandLine.h>
 #include <regex>
@@ -36,24 +39,22 @@ struct Action
         istream in{ &stream };
         ostream out{ &stream };
 
-        // for (string line; getline(in, line);) {
-        //     out << line << endl;
-        // }
-
         http::Request req;
         in >> req;
-        if(req.path == "/"){
+        if (req.path == "/") {
             /// reply with home page
+
+            http::Response res{ http::Response::Status::OK,
+                                { "../res/home.html" } };
+            out << res;
+
+            logs << "Replied with home page." << endl;
+            return;
         }
 
-        const string s{ "hello wolrd" };
-        out << "HTTP/1.1 200 OK" << endl;
-        out << "Set-Cookie: COOKIE" << endl;
-        out << "Content-Length: " << s.size() << endl;
-        out << endl;
-        out << s << endl << endl;
-
-        logs << "Finish hoge" << endl;
+        out << http::Response{ http::Response::Status::NOT_FOUND,
+                               { "../res/not_found.html" } };
+        logs << "Replied with not found." << endl;
     }
 };
 
@@ -66,8 +67,8 @@ signal_handler(int sig)
     errs << "Signal received: " << strsignal(sig) << endl;
     if (server) {
         errs << "Terminating..." << endl;
-        server->kill();
         delete server;
+        logs << "Server terminated." << endl;
     } else {
         errs << "Server was not running." << endl;
     }

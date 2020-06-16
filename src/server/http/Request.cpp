@@ -6,22 +6,11 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #include <labo/debug/Log.h>
-#include <labo/server/http.h>
+#include <labo/server/http/Request.h>
 #include <limits>
 #include <regex>
 
 namespace labo::http {
-string
-to_string(Response::Status status)
-{
-    switch (status) {
-        case Response::Status::OK:
-            return "OK";
-        case Response::Status::NOT_FOUND:
-            return "NOT FOUND";
-    }
-}
-
 void
 Request::deserialize(istream& is)
 {

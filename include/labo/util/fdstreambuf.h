@@ -7,9 +7,11 @@
 /// See the licenses directory for details.
 #pragma once
 #include <streambuf>
+
 namespace labo::socket {
 using namespace std;
 
+/// This class is used to turn a filedescriptor to a C++ ifstream.
 class fdstreambuf : public streambuf
 {
     /// Alias for convenience

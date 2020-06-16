@@ -36,31 +36,4 @@ struct Request
     /// @param is
     void deserialize(istream& is);
 };
-
-/// Represents a HTTP Response
-struct Response
-{
-    /// Status codes
-    enum class Status
-    {
-        OK = 200,
-        NOT_FOUND = 404,
-    };
-
-    /// Status code
-    Status status;
-    /// All header data
-    map<string, string> headers;
-    /// body
-    string body;
-
-    /// Print this Response to a stream.
-    /// @param os
-    void print(ostream& os) const;
-
-  private:
-    /// Helper funciton.
-    string to_string(Response::Status status);
-};
-
 };
