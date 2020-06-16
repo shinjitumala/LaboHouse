@@ -89,7 +89,6 @@ main(int argc, char* argv[])
     signal(SIGTERM, signal_handler);
     signal(SIGSTOP, signal_handler);
     signal(SIGINT, signal_handler);
-    signal(SIGABRT, signal_handler);
 
     server = new labo::Server<Action>{ 12345 };
     server->start();
