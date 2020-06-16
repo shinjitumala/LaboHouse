@@ -16,8 +16,8 @@
 #include <thread>
 #include <type_traits>
 #include <unistd.h>
-#include <unordered_set>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace labo {
 using namespace std;
@@ -114,6 +114,16 @@ Server<Action>::start()
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = INADDR_ANY;
     server_address.sin_port = htons(port);
+
+    {
+        // Override the socket for faster testing.
+        int option{ 1 };
+        setsockopt(socket_listen,
+                   SOL_SOCKET,
+                   (SO_REUSEADDR | SO_REUSEPORT),
+                   (const char*)&option,
+                   sizeof(option));
+    }
 
     // Bind our socket to an address
     if (::bind(socket_listen,
