@@ -17,7 +17,7 @@ add_executable(
   LaboHouse
   src/main.cpp src/debug/Log.cpp src/util/fdstreambuf.cpp
   src/server/http/Request.cpp src/server/http/Response.cpp
-  src/server/http/Body.cpp)
+  src/server/http/Body.cpp src/LaboHouse.cpp)
 
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
