@@ -37,7 +37,7 @@ Request::deserialize(istream& is)
 
     is >> path;
     check_is();
-    static const regex uri_pattern{ "^(/[^\?]+)(?:\\?)(.*)$" };
+    static const regex uri_pattern{ "^(/[^\?]*)\\?\?(.*)$" };
     if (smatch matches; regex_match(path, matches, uri_pattern)) {
         path = matches[1];
         string values{ matches[2] };
@@ -67,16 +67,17 @@ Request::deserialize(istream& is)
     is >> protocol;
     check_is();
     logs << "Protocol Version: " << protocol << endl;
+    is.ignore(numeric_limits<streamsize>::max(), '\n');
 
     for (string line; getline(is, line);) {
         if (line.size() == 0 || line == "\r") {
             break;
         }
         const regex header_pattern{
-            "^([^:]*): (.*)(\r)*"
+            "^([^:]+): (.+)\r?*"
         }; // HOLY SHIT FUCK YOU CARRIGE RETURN. FUCK YOU FUCK YOU FFUCK YOU.
-        smatch matches;
-        if (regex_match(line, matches, header_pattern) && matches.size() > 2) {
+        if (smatch matches;
+            regex_match(line, matches, header_pattern) && matches.size() > 2) {
             headers.insert({ matches[1], matches[2] });
             logs << "[ " << matches[1] << ", " << matches[2] << " ]" << endl;
         } else {
