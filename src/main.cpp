@@ -36,41 +36,58 @@ struct Action
     Action(int socket_fd)
     {
         using namespace labo;
+        using namespace http;
         socket::fdstreambuf stream{ socket_fd };
         istream in{ &stream };
         ostream out{ &stream };
 
-        http::Request req;
+        Request req;
         in >> req;
         switch (req.method) {
-            case http::Request::Method::GET:
+            case Request::Method::GET:
                 if (req.path == "/") {
                     /// reply with home page
 
-                    out << http::Response{ http::Response::Status::OK,
-                                           { "../res/home.html" },
-                                           { { "Set-Cookie", "foobar" } } };
+                    out << Response{ Response::Status::OK,
+                                     { "../res/home.html" },
+                                     { { "Set-Cookie", "foobar" } } };
 
                     logs << "Replied with home page." << endl;
                     return;
                 }
                 break;
-            case http::Request::Method::POST:
+            case Request::Method::POST:
                 if (req.path == "/register") {
-                    /// Register new name
+                    // Register new name
                     auto name{ req.headers.at("name") };
+                    if (labohouse.name_exists(name)) {
+                        out << Response{ Response::Status::FORBIDDEN };
+                        return;
+                    }
                     auto id{ labohouse.add_name(name) };
 
-                    out << http::Response{ http::Response::Status::OK,
-                                           { { "Set-Cookie",
-                                               to_string(id) } } };
+                    out << Response{ Response::Status::OK,
+                                     { { "Set-Cookie", to_string(id) } } };
+                    return;
+                }
+                if (req.path == "/name") {
+                    if (!req.headers.count("Cookie")) {
+                        out << Response{ Response::Status::BAD_REQUEST };
+                        return;
+                    }
+                    auto cookie{ stoul(req.headers.at("Cookie")) };
+                    auto name{ labohouse.get_name(cookie) };
+                    logs << "Name for user " << cookie << " is " << name
+                         << endl;
+                    out << Response{ Response::Status::OK,
+                                     { { "name", name } } };
                     return;
                 }
                 break;
         }
 
-        out << http::Response{ http::Response::Status::NOT_FOUND,
-                               { "../res/not_found.html" } };
+        out << Response{ Response::Status::NOT_FOUND,
+                         { "../res/not_found.html" } };
         logs << "Replied with not found." << endl;
     }
 };
