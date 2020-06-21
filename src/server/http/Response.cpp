@@ -18,6 +18,10 @@ Response::to_string(Response::Status status)
     switch (status) {
         case Response::Status::OK:
             return "OK";
+        case Response::Status::BAD_REQUEST:
+            return "BAD REQUEST";
+        case Response::Status::FORBIDDEN:
+            return "FORBIDDEN";
         case Response::Status::NOT_FOUND:
             return "NOT FOUND";
     }
