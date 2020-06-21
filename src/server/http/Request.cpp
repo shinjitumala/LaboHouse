@@ -37,17 +37,30 @@ Request::deserialize(istream& is)
 
     is >> path;
     check_is();
-    {
-        smatch matches;
-        static const regex uri_pattern{ "^([^\?]+)(.*)$" };
-        if (regex_match(path, matches, uri_pattern)) {
-            for (auto match : matches) {
-                logs << "Match: " << match << endl;
-            }
-        } else {
-            logs << "no matches" << endl;
+    static const regex uri_pattern{ "^(/[^\?]+)(?:\\?)(.*)$" };
+    if (smatch matches; regex_match(path, matches, uri_pattern)) {
+        path = matches[1];
+        string values{ matches[2] };
+        static const regex value_pattern{ "([^&]+)=([^&]+)" };
+        for (sregex_iterator itr{ values.begin(), values.end(), value_pattern };
+             itr != sregex_iterator{};
+             itr++) {
+            // Must parse values if needed.
+            auto& matches{ *itr };
+            uri.insert({ matches[1], matches[2] });
         }
-        logs << path << endl;
+    } else {
+        errs << "Error parsing URI: " << path;
+        failure();
+    }
+
+    logs << "Path: " << path << endl;
+    if (uri.size()) {
+        logs << "Values: {" << endl;
+        for (auto [name, value] : uri) {
+            logs << "  " << name << ": " << value << "," << endl;
+        }
+        logs << "}" << endl;
     }
 
     string protocol;
