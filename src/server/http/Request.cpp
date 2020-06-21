@@ -21,7 +21,7 @@ Request::deserialize(istream& is)
         }
     };
 
-    logs << "Deserializing request..." << endl;
+    logs << "Request: Parsing..." << endl;
     string raw_method;
     is >> raw_method;
     check_is();
@@ -33,24 +33,34 @@ Request::deserialize(istream& is)
         errs << "Unexpected Request: " << raw_method << endl;
         failure();
     }
-    logs << raw_method << " ";
+    logs << "Method: " << raw_method << endl;
 
     is >> path;
     check_is();
-    logs << path << " ";
+    {
+        smatch matches;
+        static const regex uri_pattern{ "^([^\?]+)(.*)$" };
+        if (regex_match(path, matches, uri_pattern)) {
+            for (auto match : matches) {
+                logs << "Match: " << match << endl;
+            }
+        } else {
+            logs << "no matches" << endl;
+        }
+        logs << path << endl;
+    }
 
     string protocol;
     is >> protocol;
     check_is();
-    logs << protocol << endl;
-    is.ignore(numeric_limits<streamsize>::max(), '\n');
+    logs << "Protocol Version: " << protocol << endl;
 
     for (string line; getline(is, line);) {
         if (line.size() == 0 || line == "\r") {
             break;
         }
         const regex header_pattern{
-            "^([^:]*):(.*)(\r)*"
+            "^([^:]*): (.*)(\r)*"
         }; // HOLY SHIT FUCK YOU CARRIGE RETURN. FUCK YOU FUCK YOU FFUCK YOU.
         smatch matches;
         if (regex_match(line, matches, header_pattern) && matches.size() > 2) {
@@ -62,6 +72,6 @@ Request::deserialize(istream& is)
         }
     }
 
-    logs << "Done!" << endl;
+    logs << "Request: Done parsing!" << endl;
 }
 };

@@ -27,6 +27,8 @@ struct Request
     Method method;
     /// Path of the request
     string path;
+    /// All value data from uri
+    map<string, string> uri;
     /// All header data
     map<string, string> headers;
     /// body
