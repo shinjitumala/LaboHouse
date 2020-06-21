@@ -30,9 +30,9 @@ class LaboHouse
     /// @return ulong
     ulong get_id(string name) const;
 
-    /// 
-    /// @param id 
-    /// @return string 
+    ///
+    /// @param id
+    /// @return string
     string get_name(ulong id) const;
 
     ///
