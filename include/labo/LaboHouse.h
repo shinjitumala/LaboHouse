@@ -25,17 +25,22 @@ class LaboHouse
     /// @param name
     /// @return ulong the cookie for the newly added name
     ulong add_name(string name);
-    ///
+    /// Check if a name exists.
+    /// @param name
+    /// @return true If 'name' is taken.
+    /// @return false
+    bool name_exists(string name) const;
+
+    /// Fatal error if missing.
     /// @param name
     /// @return ulong
     ulong get_id(string name) const;
-
-    ///
+    /// Fatal error if missing.
     /// @param id
     /// @return string
     string get_name(ulong id) const;
 
-    ///
+    /// Dump contents for debugging.
     /// @param os
     void print(ostream& os) const;
 
