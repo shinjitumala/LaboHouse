@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <labo/LaboHouse.h>
 #include <labo/debug/Log.h>
 #include <labo/server/Base.h>
 #include <labo/server/http/Body.h>
@@ -28,28 +29,44 @@
 // const vector<const OptionCategory*> related_categories{};
 // };
 
+labo::LaboHouse labohouse{};
+
 struct Action
 {
     Action(int socket_fd)
     {
         using namespace labo;
-        logs << "Start hoge: " << socket_fd << endl;
-
         socket::fdstreambuf stream{ socket_fd };
         istream in{ &stream };
         ostream out{ &stream };
 
         http::Request req;
         in >> req;
-        if (req.path == "/") {
-            /// reply with home page
+        switch (req.method) {
+            case http::Request::Method::GET:
+                if (req.path == "/") {
+                    /// reply with home page
 
-            http::Response res{ http::Response::Status::OK,
-                                { "../res/home.html" } };
-            out << res;
+                    out << http::Response{ http::Response::Status::OK,
+                                           { "../res/home.html" },
+                                           { { "Set-Cookie", "foobar" } } };
 
-            logs << "Replied with home page." << endl;
-            return;
+                    logs << "Replied with home page." << endl;
+                    return;
+                }
+                break;
+            case http::Request::Method::POST:
+                if (req.path == "/register") {
+                    /// Register new name
+                    auto name{ req.headers.at("name") };
+                    auto id{ labohouse.add_name(name) };
+
+                    out << http::Response{ http::Response::Status::OK,
+                                           { { "Set-Cookie",
+                                               to_string(id) } } };
+                    return;
+                }
+                break;
         }
 
         out << http::Response{ http::Response::Status::NOT_FOUND,
