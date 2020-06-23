@@ -6,15 +6,28 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script>
         function hello() {
-            $.post("http://localhost:12345/")
+            // $.post("http://localhost:12345/")
 
-            .done(function(){
-                window.alert("success")
-            })
+            // .done(function(){
+            //     window.alert("success")
+            // })
 
-            .fail(function(){
-                window.alert("fail")
-            })
+            // .fail(function(){
+            //     window.alert("fail")
+            // })
+
+            $.ajax({
+                url: "/register",
+                headers:{
+                    'NAME' : document.getElementById("name").value
+                },
+                success : function(){
+                    window.alear("Success")
+                },
+                error: function(){
+                    window.alert("Error!!!!!!!!!")
+                }
+            });
         }
         </script>
     </head>
@@ -31,11 +44,7 @@
                     value="placeholde"
                 >
             </form>
-            <select name = "select hima_do"</option>
-                <option value = "1">extreme hima</option>
-                <option value = "2">very hima</option>
-                <option value = "3">hima a little</option>
-            </select>
+            
             <button type="button" onclick = "hello()" class="btn btn-primary rounded-pill">Send</button>
         </center>
     </body>
