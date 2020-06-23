@@ -21,3 +21,10 @@
         * Cookie: \<your user id which is also the cookie\>
   * Response
     * name: \<your display name\>
+
+### Change 'HIMADO'
+  * Method: POST
+  * URL: /sethimado
+    * Parameters:
+      * Himado: \<himado in integer\>
+  * Response
