@@ -14,6 +14,7 @@
 
 namespace labo {
 using namespace std;
+using ulong = unsigned long;
 class User;
 
 /// Dictionary of users.
