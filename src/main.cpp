@@ -20,6 +20,7 @@
 #include <labo/server/http/Body.h>
 #include <labo/server/http/Request.h>
 #include <labo/server/http/Response.h>
+#include <labo/server/http/ResponseHelper.h>
 #include <labo/util/fdstreambuf.h>
 #include <limits>
 // #include <llvm/Support/CommandLine.h>
@@ -82,12 +83,12 @@ struct Action
                 }
                 if (req.path == "/name") {
                     if (!req.headers.count("Cookie")) {
-                        out << Response{ Response::Status::BAD_REQUEST };
+                        out << forbidden("Missing cookie.");
                         return;
                     }
                     auto cookie{ stoul(req.headers.at("Cookie")) };
                     if (auto opt{ labohouse.Users::get(cookie) }; !opt) {
-                        out << Response{ Response::Status::FORBIDDEN };
+                        out << forbidden("Invalid cookie.");
                     } else {
                         auto& user{ opt.get() };
                         logs << "Name for user " << user.id << " is "
@@ -100,8 +101,7 @@ struct Action
                 break;
         }
 
-        out << Response{ Response::Status::NOT_FOUND,
-                         { "../res/not_found.html" } };
+        out << not_found("Invalid URL.");
         logs << "Replied with not found." << endl;
     }
 };
