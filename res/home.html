@@ -1,27 +1,51 @@
 <!DOCTYPE html>
 <html>
     <title>Welcome to LaboHouse!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script>
         function hello() {
-            window.alert("Welcome to LaboHouse!");
+            $.post("http://localhost:12345/")
+
+            .done(function(){
+                window.alert("success")
+            })
+
+            .fail(function(){
+                window.alert("fail")
+            })
         }
         </script>
     </head>
     <body>
         <center>
+        <div class="row">
             <h1 style="text-align:center;">Welcome to LaboHouse</h1>
-            <p style="text-align:center;">Please enter your name.</p>
-            <form>
-                <label for="name">Your name:</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value="placeholde"
-                >
-            </form>
-            <button onclick="hello()">Click me</button>
+        </div>
+        <br>
+        <div class="row">
+            <h3 style="text-align:center;">Please enter your name.</h3>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <form action="/register" method="post">
+                    <div class="form-group">
+                        <label for="api-url">Your name:</label>
+                        <input class="form-control" type="text" id="name" name="name" value="placeholde">
+                    </div>
+            <!-- <div class="form-group">
+                                <label>hima:</label>
+                                <select class="form-control" name="name" id="name">
+                                    <option value="1">very hima</option>
+                                    <option value="2">hima</option>
+                                    <option value="3">not hima</option>
+                                </select>
+                            </div> -->
+                    <button type="button" onclick="hello()" class="btn btn-primary rounded-pill">Send</button>
+                </form>
+            </div>
+        </div>
         </center>
     </body>
 </html>
