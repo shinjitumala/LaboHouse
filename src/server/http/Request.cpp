@@ -67,7 +67,6 @@ Request::deserialize(istream& is)
     is >> protocol;
     check_is();
     logs << "Protocol Version: " << protocol << endl;
-    is.ignore(numeric_limits<streamsize>::max(), '\n');
 
     for (string line; getline(is, line);) {
         if (line.size() == 0 || line == "\r") {
