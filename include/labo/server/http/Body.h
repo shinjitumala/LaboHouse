@@ -6,7 +6,11 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #pragma once
+#if __has_include(<filesystem>)
 #include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
 #include <fstream>
 #include <utility>
 

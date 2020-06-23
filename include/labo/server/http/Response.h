@@ -30,8 +30,13 @@ class Response
   private:
     /// Alias for readability.
     using Headers = map<string, string>;
+#if __has_include(<filesystem>)
     /// Alias for convenience.
     using path = filesystem::path;
+#else
+    /// Alias for convenience.
+    using path = experimental::filesystem::path;
+#endif
 
     /// Status code
     Status status;
