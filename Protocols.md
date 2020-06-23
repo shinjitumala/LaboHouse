@@ -1,25 +1,24 @@
 # LaboHouse Protocols
 
-* User-data
-  * Register a new name
-    - Request
-      - POST /register
-      * data-values:
-        - name: name
-    * Response
-      * 200 OK: Success.
-      * 403 Forbidden: Name is already taken.
-      * data-values:
-        * Set-Cookie: your temporary identifier
+## Rules for all protocols
+  * Any response that is not 'OK 200' is considered an error.
+  * Any header parameters are required unless specified otherwise.
+  * All error responses contain the error message in the header.
+    * error: \<error reason\>
 
-  * Get name
-    - Request
-      * POST /name
-      * data-values:
-        * Cookie: 
-    - Reponse
-      * 200 OK: Success.
-      * 404 Not Found: Cookie not recognized.
-      * data-values:
-        * name: your name if it exists
+### Register a new User
+  * Method: POST
+  * URL: /register
+  * Header Parameters:
+    * name: \<requested display name of new User\>
+  * Response:
+    * Set-Cookie: \<your new id\>
+
+### Query username
+  * Method: POST
+  * URL: /name
+    * Parameters
+        * Cookie: \<your user id which is also the cookie\>
+  * Response
+    * name: \<your display name\>
     
