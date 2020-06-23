@@ -6,8 +6,11 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
-#include "labo/house/User.h"
+#if __has_include(<filesystem>)
 #include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
 #include <fstream>
 #include <iostream>
 #include <labo/LaboHouse.h>
