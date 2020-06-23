@@ -15,6 +15,7 @@
 #include <iostream>
 #include <labo/LaboHouse.h>
 #include <labo/debug/Log.h>
+#include <labo/house/User.h>
 #include <labo/server/Base.h>
 #include <labo/server/http/Body.h>
 #include <labo/server/http/Request.h>
