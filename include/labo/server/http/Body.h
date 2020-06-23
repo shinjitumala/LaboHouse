@@ -21,8 +21,13 @@ class Body
 {
     /// Allow response to touch the internal 'ifs'.
     friend Response;
+#if __has_include(<filesystem>)
     /// Alias for convenience.
     using path = filesystem::path;
+#else
+    /// Alias for convenience.
+    using path = experimental::filesystem::path;
+#endif
 
     /// stream of the opened file.
     ifstream ifs;
