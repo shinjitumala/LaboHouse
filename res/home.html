@@ -5,7 +5,7 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script>
-        function hello() {
+        function registerName() {
 
             $.ajax({
                 type:'POST',
@@ -22,6 +22,25 @@
                 }
             });
         }
+
+        function registerHima() {
+
+            $.ajax({
+                type: 'POST',
+                url: "/register_hima",
+                headers: {
+                    'hima': document.getElementById("hima").value
+                },
+
+                success: function () {
+                    window.alear("Success")
+                },
+                error: function () {
+                    window.alert("Error!!!!!!!!")
+                }
+            });
+        }
+        
         </script>
     </head>
     <body>
@@ -42,21 +61,22 @@
                     <form action="/register" method="post">
                         <div class="form-group">
                             <label for="api-url">Your name:</label>
-                            <input class="form-control" type="text" id="name" name="name" value="">
+                            <input class="form-control" type="text" id="name" value="">
                             <br>
                             <center>
-                                aa
-                                <button type="button" onclick="hello()" class="btn btn-primary rounded-pill">Send</button>
+                                <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
                             </center>
                         </div>
-                        <!-- <div class="form-group">
-                                        <label>hima:</label>
-                                        <select class="form-control" name="name" id="name">
-                                            <option value="1">very hima</option>
-                                            <option value="2">hima</option>
-                                            <option value="3">not hima</option>
-                                        </select>
-                                    </div> -->
+                        <div class="form-group" hidden>
+                            <label>hima:</label>
+                            <center>
+                                <select class="form-control" id="hima">
+                                    <option value="1">very hima</option>
+                                    <option value="2">hima</option>
+                                    <option value="3">not hima</option>
+                                </select>
+                            </center>
+                        </div>
                     </form>
                 </div>
             </div>
