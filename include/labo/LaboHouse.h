@@ -6,39 +6,19 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #pragma once
+#include <labo/house/Users.h>
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace labo {
 using namespace std;
-class LaboHouse
+class LaboHouse : public Users
 {
-    mutex mtx_names;
-    unordered_map<string, ulong> name_to_id;
-    unordered_map<ulong, string> id_to_name;
 
   public:
     LaboHouse() = default;
-
-    /// Adds a new name
-    /// @param name
-    /// @return ulong the cookie for the newly added name
-    ulong add_name(string name);
-    /// Check if a name exists.
-    /// @param name
-    /// @return true If 'name' is taken.
-    /// @return false
-    bool name_exists(string name) const;
-
-    /// Fatal error if missing.
-    /// @param name
-    /// @return ulong
-    ulong get_id(string name) const;
-    /// Fatal error if missing.
-    /// @param id
-    /// @return string
-    string get_name(ulong id) const;
 
     /// Dump contents for debugging.
     /// @param os

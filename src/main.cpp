@@ -59,6 +59,11 @@ struct Action
             case Request::Method::POST:
                 if (req.path == "/register") {
                     // Register new name
+                    if (!req.headers.count("name")) {
+                        out << Response{ Response::Status::BAD_REQUEST };
+                        return;
+                    }
+
                     auto name{ req.headers.at("name") };
                     if (labohouse.name_exists(name)) {
                         out << Response{ Response::Status::FORBIDDEN };
