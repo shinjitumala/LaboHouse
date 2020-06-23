@@ -27,7 +27,6 @@ target_include_directories(LaboHouse
 target_link_libraries(
   LaboHouse
   # LLVM
-  stdc++fs
   pthread)
 
 # documentation related

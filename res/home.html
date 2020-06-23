@@ -6,21 +6,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script>
         function hello() {
-            // $.post("http://localhost:12345/")
-
-            // .done(function(){
-            //     window.alert("success")
-            // })
-
-            // .fail(function(){
-            //     window.alert("fail")
-            // })
 
             $.ajax({
+                type:'POST',
                 url: "/register",
                 headers:{
-                    'NAME' : document.getElementById("name").value
+                    'name' : document.getElementById("name").value
                 },
+                
                 success : function(){
                     window.alear("Success")
                 },
