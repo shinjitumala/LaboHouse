@@ -16,6 +16,7 @@ Users::~Users()
 {
     for_each(users.begin(), users.end(), [](auto u) { delete u; });
 }
+
 User&
 Users::add(string display_name)
 {
@@ -35,22 +36,24 @@ Users::add(string display_name)
     return *user;
 }
 
-bool
-Users::name_inuse(string display_name) const
-{
-    return usernames.count(display_name);
-}
-
-User&
+OptionalRef<User>
 Users::get(string display_name) const
 {
-    return *usernames.at(display_name);
+    if (auto itr{ usernames.find(display_name) }; itr == usernames.end()) {
+        return OptionalRef<User>{};
+    } else {
+        return *itr->second;
+    }
 }
 
-User&
+OptionalRef<User>
 Users::get(ulong id) const
 {
-    return *ids.at(id);
+    if(auto itr{ids.find(id)}; itr == ids.end()){
+        return OptionalRef<User>{};
+    }else{
+    return *itr->second;
+    }
 }
 
 };

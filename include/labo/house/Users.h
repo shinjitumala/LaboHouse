@@ -7,6 +7,7 @@
 /// See the licenses directory for details.
 #pragma once
 
+#include <labo/util/OptionalRef.h>
 #include <mutex>
 #include <unordered_map>
 #include <unordered_set>
@@ -32,23 +33,18 @@ class Users
     ~Users();
 
     /// Adds a new user
+    /// Note that it will return the existing user if there is one.
     /// @param display_name
-    /// @return User& The new user.
+    /// @return OptionalRef<User> The new user.
     User& add(string display_name);
 
-    /// Check if a display_name exists.
-    /// @param name
-    /// @return true If 'display_name' is taken.
-    /// @return false
-    bool name_inuse(string display_name) const;
-
     /// Fatal error if missing.
     /// @param display_name
-    /// @return User&
-    User& get(string display_name) const;
+    /// @return OptionalRef<User>
+    OptionalRef<User> get(string display_name) const;
     /// Fatal error if missing.
     /// @param id
-    /// @return User&
-    User& get(ulong id) const;
+    /// @return OptionalRef<User>
+    OptionalRef<User> get(ulong id) const;
 };
 };

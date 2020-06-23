@@ -66,7 +66,7 @@ struct Action
                     }
 
                     auto name{ req.headers.at("name") };
-                    if (labohouse.name_inuse(name)) {
+                    if (labohouse.get(name)) {
                         out << Response{ Response::Status::FORBIDDEN };
                         return;
                     }
@@ -82,11 +82,15 @@ struct Action
                         return;
                     }
                     auto cookie{ stoul(req.headers.at("Cookie")) };
-                    auto& user{ labohouse.Users::get(cookie) };
-                    logs << "Name for user " << user.id << " is "
-                         << user.display_name << endl;
-                    out << Response{ Response::Status::OK,
-                                     { { "name", user.display_name } } };
+                    if (auto opt{ labohouse.Users::get(cookie) }; !opt) {
+                        out << Response{ Response::Status::FORBIDDEN };
+                    } else {
+                        auto& user{ opt.get() };
+                        logs << "Name for user " << user.id << " is "
+                             << user.display_name << endl;
+                        out << Response{ Response::Status::OK,
+                                         { { "name", user.display_name } } };
+                    }
                     return;
                 }
                 break;
