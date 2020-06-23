@@ -6,9 +6,11 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
+#include "labo/house/User.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <labo/LaboHouse.h>
 #include <labo/debug/Log.h>
 #include <labo/server/Base.h>
 #include <labo/server/http/Body.h>
@@ -28,32 +30,74 @@
 // const vector<const OptionCategory*> related_categories{};
 // };
 
+labo::LaboHouse labohouse{};
+
 struct Action
 {
     Action(int socket_fd)
     {
         using namespace labo;
-        logs << "Start hoge: " << socket_fd << endl;
-
+        using namespace http;
         socket::fdstreambuf stream{ socket_fd };
         istream in{ &stream };
         ostream out{ &stream };
 
-        http::Request req;
+        Request req;
         in >> req;
-        if (req.path == "/") {
-            /// reply with home page
+        switch (req.method) {
+            case Request::Method::GET:
+                if (req.path == "/") {
+                    /// reply with home page
 
-            http::Response res{ http::Response::Status::OK,
-                                { "../res/home.html" } };
-            out << res;
+                    out << Response{ Response::Status::OK,
+                                     { "../res/home.html" },
+                                     { { "Set-Cookie", "foobar" } } };
 
-            logs << "Replied with home page." << endl;
-            return;
+                    logs << "Replied with home page." << endl;
+                    return;
+                }
+                break;
+            case Request::Method::POST:
+                if (req.path == "/register") {
+                    // Register new name
+                    if (!req.headers.count("name")) {
+                        out << Response{ Response::Status::BAD_REQUEST };
+                        return;
+                    }
+
+                    auto name{ req.headers.at("name") };
+                    if (labohouse.get(name)) {
+                        out << Response{ Response::Status::FORBIDDEN };
+                        return;
+                    }
+                    auto& user{ labohouse.Users::add(name) };
+
+                    out << Response{ Response::Status::OK,
+                                     { { "Set-Cookie", to_string(user.id) } } };
+                    return;
+                }
+                if (req.path == "/name") {
+                    if (!req.headers.count("Cookie")) {
+                        out << Response{ Response::Status::BAD_REQUEST };
+                        return;
+                    }
+                    auto cookie{ stoul(req.headers.at("Cookie")) };
+                    if (auto opt{ labohouse.Users::get(cookie) }; !opt) {
+                        out << Response{ Response::Status::FORBIDDEN };
+                    } else {
+                        auto& user{ opt.get() };
+                        logs << "Name for user " << user.id << " is "
+                             << user.display_name << endl;
+                        out << Response{ Response::Status::OK,
+                                         { { "name", user.display_name } } };
+                    }
+                    return;
+                }
+                break;
         }
 
-        out << http::Response{ http::Response::Status::NOT_FOUND,
-                               { "../res/not_found.html" } };
+        out << Response{ Response::Status::NOT_FOUND,
+                         { "../res/not_found.html" } };
         logs << "Replied with not found." << endl;
     }
 };

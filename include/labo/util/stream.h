@@ -57,11 +57,11 @@ class is_deserializable
 };
 
 /// Muahahahahahahaha
-/// @tparam I 
-/// @tparam true 
-/// @param is 
-/// @param i 
-/// @return istream& 
+/// @tparam I
+/// @tparam true
+/// @param is
+/// @param i
+/// @return istream&
 template<class I, enable_if_t<is_deserializable<I>::value, bool> = true>
 istream&
 operator>>(istream& is, I& i)

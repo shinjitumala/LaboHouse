@@ -1,0 +1,23 @@
+# LaboHouse Protocols
+
+## Rules for all protocols
+  * Any response that is not 'OK 200' is considered an error.
+  * Any header parameters are required unless specified otherwise.
+  * All error responses contain the error message in the header.
+    * error: \<error reason\>
+
+### Register a new User
+  * Method: POST
+  * URL: /register
+  * Header Parameters:
+    * name: \<requested display name of new User\>
+  * Response:
+    * Set-Cookie: \<your new id\>
+
+### Query username
+  * Method: POST
+  * URL: /name
+    * Parameters
+        * Cookie: \<your user id which is also the cookie\>
+  * Response
+    * name: \<your display name\>

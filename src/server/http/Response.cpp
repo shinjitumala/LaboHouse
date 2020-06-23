@@ -18,15 +18,30 @@ Response::to_string(Response::Status status)
     switch (status) {
         case Response::Status::OK:
             return "OK";
+        case Response::Status::BAD_REQUEST:
+            return "BAD REQUEST";
+        case Response::Status::FORBIDDEN:
+            return "FORBIDDEN";
         case Response::Status::NOT_FOUND:
             return "NOT FOUND";
     }
 }
 
-Response::Response(Status status, Body&& body, Headers headers)
+Response::Response(Status status, path body_path, Headers headers)
   : status{ status }
   , headers{ headers }
-  , body{ move(body) } {};
+  , body{ new Body{ body_path } } {};
+
+Response::Response(Status status, Headers headers)
+  : status{ status }
+  , headers{ headers }
+  , body{ nullptr }
+{}
+
+Response::~Response()
+{
+    delete body;
+}
 
 void
 Response::print(ostream& os) const
@@ -38,18 +53,20 @@ Response::print(ostream& os) const
         os << data << ": " << value << endl;
     }
 
-    // get length of file
-    auto& ifs{ const_cast<ifstream&>(body.ifs) };
-    ifs.seekg(0, ios::end);
-    auto content_length{ ifs.tellg() };
-    os << "Content-Length: " << content_length << endl << endl;
+    if (body) {
+        // get length of file
+        auto& ifs{ const_cast<ifstream&>(body->ifs) };
+        ifs.seekg(0, ios::end);
+        auto content_length{ ifs.tellg() };
+        os << "Content-Length: " << content_length << endl << endl;
 
-    // Reset ifs
-    ifs.seekg(0);
-    // copy entire stream into os
-    copy(istreambuf_iterator<char>(ifs),
-         istreambuf_iterator<char>(),
-         ostreambuf_iterator<char>(os));
+        // Reset ifs
+        ifs.seekg(0);
+        // copy entire stream into os
+        copy(istreambuf_iterator<char>(ifs),
+             istreambuf_iterator<char>(),
+             ostreambuf_iterator<char>(os));
+    }
     os << endl << endl;
 }
 };
