@@ -10,11 +10,13 @@
 
 namespace labo {
 using namespace std;
+using ulong = unsigned long;
 
 /// Holds the data relevant to the user.
 class User
 {
   public:
+
     enum class Status : unsigned char
     {
         free, // Doing nothing
