@@ -16,41 +16,41 @@ Users::~Users()
 {
     for_each(users.begin(), users.end(), [](auto u) { delete u; });
 }
-ulong
-Users::add_name(string name)
+User&
+Users::add(string display_name)
 {
     static ulong name_counter{ 0 };
     lock_guard<mutex> lg{ mtx };
-    if (usernames.count(name)) {
-        return get_id(name);
+    if (auto itr{ usernames.find(display_name) }; itr != usernames.end()) {
+        return *(itr->second);
     }
-    auto user{ new User{ name_counter, name } };
+    auto user{ new User{ name_counter, display_name } };
     users.insert(user);
-    usernames.insert({ name, user });
+    usernames.insert({ display_name, user });
     ids.insert({ name_counter, user });
     auto id{ name_counter };
-    logs << "[Users] New user: { id = " << id << ", name = " << name << " }"
-         << endl;
+    logs << "[Users] New user: { id = " << id << ", name = " << display_name
+         << " }" << endl;
     name_counter++;
-    return id;
+    return *user;
 }
 
 bool
-Users::name_exists(string name) const
+Users::name_inuse(string display_name) const
 {
-    return usernames.count(name);
+    return usernames.count(display_name);
 }
 
-ulong
-Users::get_id(string name) const
+User&
+Users::get(string display_name) const
 {
-    return usernames.at(name)->id;
+    return *usernames.at(display_name);
 }
 
-string
-Users::get_name(ulong id) const
+User&
+Users::get(ulong id) const
 {
-    return ids.at(id)->display_name;
+    return *ids.at(id);
 }
 
 };

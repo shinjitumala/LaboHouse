@@ -6,6 +6,7 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
+#include "labo/house/User.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -65,14 +66,14 @@ struct Action
                     }
 
                     auto name{ req.headers.at("name") };
-                    if (labohouse.name_exists(name)) {
+                    if (labohouse.name_inuse(name)) {
                         out << Response{ Response::Status::FORBIDDEN };
                         return;
                     }
-                    auto id{ labohouse.add_name(name) };
+                    auto& user{ labohouse.Users::add(name) };
 
                     out << Response{ Response::Status::OK,
-                                     { { "Set-Cookie", to_string(id) } } };
+                                     { { "Set-Cookie", to_string(user.id) } } };
                     return;
                 }
                 if (req.path == "/name") {
@@ -81,11 +82,11 @@ struct Action
                         return;
                     }
                     auto cookie{ stoul(req.headers.at("Cookie")) };
-                    auto name{ labohouse.get_name(cookie) };
-                    logs << "Name for user " << cookie << " is " << name
-                         << endl;
+                    auto& user{ labohouse.Users::get(cookie) };
+                    logs << "Name for user " << user.id << " is "
+                         << user.display_name << endl;
                     out << Response{ Response::Status::OK,
-                                     { { "name", name } } };
+                                     { { "name", user.display_name } } };
                     return;
                 }
                 break;

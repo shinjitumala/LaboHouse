@@ -43,5 +43,9 @@ class User
     /// Change status of user.
     /// @param status
     void set_status(Status status);
+
+  private:
+    /// Disallow copy because users are supposed to be unique.
+    User(const User&) = delete;
 };
 };

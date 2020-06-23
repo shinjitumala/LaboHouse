@@ -31,24 +31,24 @@ class Users
     /// We own users.
     ~Users();
 
-    /// Adds a new name
-    /// @param name
-    /// @return ulong the cookie for the newly added name
-    ulong add_name(string name);
+    /// Adds a new user
+    /// @param display_name
+    /// @return User& The new user.
+    User& add(string display_name);
 
-    /// Check if a name exists.
+    /// Check if a display_name exists.
     /// @param name
-    /// @return true If 'name' is taken.
+    /// @return true If 'display_name' is taken.
     /// @return false
-    bool name_exists(string name) const;
+    bool name_inuse(string display_name) const;
 
     /// Fatal error if missing.
-    /// @param name
-    /// @return ulong
-    ulong get_id(string name) const;
+    /// @param display_name
+    /// @return User&
+    User& get(string display_name) const;
     /// Fatal error if missing.
     /// @param id
-    /// @return string
-    string get_name(ulong id) const;
+    /// @return User&
+    User& get(ulong id) const;
 };
 };
