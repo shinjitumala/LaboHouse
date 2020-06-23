@@ -21,4 +21,3 @@
         * Cookie: \<your user id which is also the cookie\>
   * Response
     * name: \<your display name\>
-    
