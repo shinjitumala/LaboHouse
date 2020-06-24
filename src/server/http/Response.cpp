@@ -60,7 +60,9 @@ Response::print(ostream& os) const
         auto& ifs{ const_cast<ifstream&>(body->ifs) };
         ifs.seekg(0, ios::end);
         auto content_length{ ifs.tellg() };
+        os << "Content-Type: text/html; charset=UTF8" << endl;
         os << "Content-Length: " << content_length << endl << endl;
+        /// Assume that the body is always an html for now.
 
         // Reset ifs
         ifs.seekg(0);
@@ -68,6 +70,8 @@ Response::print(ostream& os) const
         copy(istreambuf_iterator<char>(ifs),
              istreambuf_iterator<char>(),
              ostreambuf_iterator<char>(os));
+    } else {
+        os << "Content-Length: 0" << endl;
     }
     os << endl << endl;
 }
