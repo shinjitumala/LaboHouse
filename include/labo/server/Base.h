@@ -103,7 +103,7 @@ Server<Action>::start()
     // Try to open socket.
     socket_listen = ::socket(AF_INET, SOCK_STREAM, 0);
     if (socket_listen < 0) {
-        errs << "Failed to create socket." << endl;
+        errs << "[Server] Failed to create socket." << endl;
         failure();
     }
 
@@ -129,14 +129,14 @@ Server<Action>::start()
     if (::bind(socket_listen,
                (sockaddr*)&server_address,
                sizeof(server_address)) < 0) {
-        errs << "Failed to bind to port: " << port << endl;
+        errs << "[Server] Failed to bind to port: " << port << endl;
         failure();
     }
 
     // Start listening. Standby for new connections.
     ::listen(socket_listen, 8);
 
-    logs << "Server started at port: " << port << endl;
+    logs << "[Server] Started at port: " << port << endl;
 
     sockaddr_in client_address;
     uint client_address_length;
@@ -144,11 +144,11 @@ Server<Action>::start()
         auto socket_accepted{ ::accept(
           socket_listen, (sockaddr*)&client_address, &client_address_length) };
         if (socket_accepted < 0) {
-            errs << "Failed to accept connection." << endl;
+            errs << "[Server] Failed to accept connection." << endl;
             continue;
         }
 
-        logs << "Accepted connection from: " << client_address.sin_addr.s_addr
+        logs << "[Server] Accepted connection from: " << client_address.sin_addr.s_addr
              << ":" << client_address.sin_port << endl;
         auto [itr, status]{ threads.insert(
           new thread{ Server<Action>::action, socket_accepted }) };
@@ -159,7 +159,7 @@ Server<Action>::start()
 template<class Action>
 Server<Action>::~Server()
 {
-    logs << "Waiting for all threads to finish..." << endl;
+    logs << "[Server] Waiting for all threads to finish..." << endl;
     for_each(threads.begin(), threads.end(), [&](auto thread_ptr) {
         thread_ptr->join();
         auto itr{ sockets_accepted.find(thread_ptr) };

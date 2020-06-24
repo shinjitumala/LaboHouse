@@ -6,6 +6,7 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
+#include <ratio>
 #if __has_include(<filesystem>)
 #include <filesystem>
 #else
@@ -70,9 +71,10 @@ struct Action
                 for (auto v : missing_values) {
                     oss << v << ", ";
                 }
-                oss << " }";
+                oss << "}";
                 string error{ oss.str() };
                 out << bad_request(error) << endl << endl;
+                errs << "[Action] ERROR: Bad request, " << error << endl;
             }
             return is_bad_request;
         };
@@ -85,6 +87,7 @@ struct Action
                     out << Response{ Response::Status::OK,
                                      { "../res/home.html" },
                                      { { "Set-Cookie", "foobar" } } };
+                    logs << "[Action] Homepage access." << endl;
                     return;
                 }
                 break;
@@ -101,6 +104,8 @@ struct Action
                     if (labohouse.get(name)) {
                         out << forbidden(
                           "Name already exists. Please choose another one");
+                        errs << "[Action] ERROR: Name already exists, " << name
+                             << endl;
                         return;
                     }
 
@@ -108,6 +113,8 @@ struct Action
                     out << Response{ Response::Status::OK,
                                      { { "Set-Cookie", to_string(user.id) },
                                        { "name", user.display_name } } };
+
+                    logs << "[Action] New user added." << endl;
                     return;
                 }
                 if (path == "/name") {
@@ -121,6 +128,9 @@ struct Action
                     auto opt{ labohouse.Users::get(cookie) };
                     if (!opt) {
                         out << forbidden("Invalid cookie.");
+                        errs << "[Action] ERROR: Invalid cookie, " << cookie
+                             << endl;
+                        return;
                     }
 
                     auto& user{ opt.get() };
@@ -128,13 +138,16 @@ struct Action
                          << user.display_name << endl;
                     out << Response{ Response::Status::OK,
                                      { { "name", user.display_name } } };
+
+                    logs << "[Action] Name of user " << user.id << " is "
+                         << user.display_name << endl;
                     return;
                 }
                 break;
         }
 
         out << not_found("Invalid URL.");
-        logs << "Replied with not found." << endl;
+        errs << "[Action] ERROR: Invalid URL." << endl;
     }
 };
 
