@@ -66,13 +66,14 @@ struct Action
                 if (req.path == "/register") {
                     // Register new name
                     if (!req.headers.count("name")) {
-                        out << Response{ Response::Status::BAD_REQUEST };
+                        out << bad_request("Missing data fields.");
                         return;
                     }
 
                     auto name{ req.headers.at("name") };
                     if (labohouse.get(name)) {
-                        out << Response{ Response::Status::FORBIDDEN };
+                        out << forbidden(
+                          "Name already exists. Please choose another one");
                         return;
                     }
                     auto& user{ labohouse.Users::add(name) };
