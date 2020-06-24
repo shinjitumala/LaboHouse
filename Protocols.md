@@ -13,6 +13,7 @@
     * name: \<requested display name of new User\>
   * Response:
     * Set-Cookie: \<your new id\>
+    * name: \<your name\>
 
 ### Query username
   * Method: POST

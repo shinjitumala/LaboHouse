@@ -5,6 +5,10 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script>
+        function show_error(res, status){
+            window.alert(status + ": " + res.getResponseHeader("error"))
+        }
+
         function hello() {
 
             $.ajax({
@@ -14,11 +18,12 @@
                     'name' : document.getElementById("name").value
                 },
                 
-                success : function(){
-                    window.alear("Success")
+                success : function(data, status, res){
+                    // This is how you parse a response.
+                    window.alert("Your name is " + res.getResponseHeader("name"))
                 },
-                error: function(){
-                    window.alert("Error!!!!!!!!")
+                error: function(res, error, status){
+                    show_error(res, status)
                 }
             });
         }
