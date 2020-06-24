@@ -67,6 +67,11 @@ Request::deserialize(istream& is)
     is >> protocol;
     check_is();
     logs << "Protocol Version: " << protocol << endl;
+#ifdef __linux__
+    is.ignore(numeric_limits<streamsize>::max(), '\n');
+#elif __APPLE__
+    is.ignore(numeric_limits<streamsize>::max(), '\r');
+#endif
 
     for (string line; getline(is, line);) {
         if (line.size() == 0 || line == "\r") {
