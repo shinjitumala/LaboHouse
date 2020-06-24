@@ -49,55 +49,83 @@ struct Action
 
         Request req;
         in >> req;
-        switch (req.method) {
-            case Request::Method::GET:
-                if (req.path == "/") {
-                    /// reply with home page
 
+        auto is_bad_request{ false };
+        vector<string> missing_values;
+        auto get_header = [&](const string value_name) -> string {
+            auto opt{ req.query_value(value_name) };
+            if (!opt) {
+                is_bad_request = true;
+                missing_values.push_back(value_name);
+                return "";
+            }
+            return opt.get();
+        };
+        auto check_request = [&]() {
+            if (is_bad_request) {
+                ostringstream oss;
+                oss << "Values missing: { ";
+                for (auto v : missing_values) {
+                    oss << v << ", ";
+                }
+                oss << " }";
+                string error{ oss.str() };
+                out << bad_request(error) << endl << endl;
+            }
+            return is_bad_request;
+        };
+
+        auto path{ req.path() };
+        switch (req.method()) {
+            case Request::Method::GET:
+                if (path == "/") {
+                    /// reply with home page
                     out << Response{ Response::Status::OK,
                                      { "../res/home.html" },
                                      { { "Set-Cookie", "foobar" } } };
-
-                    logs << "Replied with home page." << endl;
                     return;
                 }
                 break;
             case Request::Method::POST:
-                if (req.path == "/register") {
+                if (path == "/register") {
                     // Register new name
-                    if (!req.headers.count("name")) {
-                        out << bad_request("Missing data fields.");
+                    auto name{ get_header("name") };
+
+                    // Mandatory check.
+                    if (check_request()) {
                         return;
                     }
 
-                    auto name{ req.headers.at("name") };
                     if (labohouse.get(name)) {
                         out << forbidden(
                           "Name already exists. Please choose another one");
                         return;
                     }
-                    auto& user{ labohouse.Users::add(name) };
 
+                    auto& user{ labohouse.Users::add(name) };
                     out << Response{ Response::Status::OK,
                                      { { "Set-Cookie", to_string(user.id) },
-                                       { "name", name } } };
+                                       { "name", user.display_name } } };
                     return;
                 }
-                if (req.path == "/name") {
-                    if (!req.headers.count("Cookie")) {
-                        out << forbidden("Missing cookie.");
+                if (path == "/name") {
+                    auto cookie{ get_header("name") };
+
+                    // Mandatory check.
+                    if (check_request()) {
                         return;
                     }
-                    auto cookie{ stoul(req.headers.at("Cookie")) };
-                    if (auto opt{ labohouse.Users::get(cookie) }; !opt) {
+
+                    auto opt{ labohouse.Users::get(cookie) };
+                    if (!opt) {
                         out << forbidden("Invalid cookie.");
-                    } else {
-                        auto& user{ opt.get() };
-                        logs << "Name for user " << user.id << " is "
-                             << user.display_name << endl;
-                        out << Response{ Response::Status::OK,
-                                         { { "name", user.display_name } } };
                     }
+
+                    auto& user{ opt.get() };
+                    logs << "Name for user " << user.id << " is "
+                         << user.display_name << endl;
+                    out << Response{ Response::Status::OK,
+                                     { { "name", user.display_name } } };
                     return;
                 }
                 break;

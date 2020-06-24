@@ -5,6 +5,7 @@
 ///
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
+#include "labo/util/OptionalRef.h"
 #include <labo/debug/Log.h>
 #include <labo/server/http/Request.h>
 #include <limits>
@@ -22,24 +23,24 @@ Request::deserialize(istream& is)
     };
 
     logs << "Request: Parsing..." << endl;
-    string raw_method;
-    is >> raw_method;
+    string raw_method_tag;
+    is >> raw_method_tag;
     check_is();
-    if (raw_method == "GET") {
-        method = Method::GET;
-    } else if (raw_method == "POST") {
-        method = Method::POST;
+    if (raw_method_tag == "GET") {
+        method_tag = Method::GET;
+    } else if (raw_method_tag == "POST") {
+        method_tag = Method::POST;
     } else {
-        errs << "Unexpected Request: " << raw_method << endl;
+        errs << "Unexpected Request: " << raw_method_tag << endl;
         failure();
     }
-    logs << "Method: " << raw_method << endl;
+    logs << "Method: " << raw_method_tag << endl;
 
-    is >> path;
+    is >> raw_path;
     check_is();
-    static const regex uri_pattern{ "^(/[^\?]*)\\?\?(.*)$" };
-    if (smatch matches; regex_match(path, matches, uri_pattern)) {
-        path = matches[1];
+    static const regex query_pattern{ "^(/[^\?]*)\\?\?(.*)$" };
+    if (smatch matches; regex_match(raw_path, matches, query_pattern)) {
+        raw_path = matches[1];
         string values{ matches[2] };
         static const regex value_pattern{ "([^&]+)=([^&]+)" };
         for (sregex_iterator itr{ values.begin(), values.end(), value_pattern };
@@ -47,17 +48,17 @@ Request::deserialize(istream& is)
              itr++) {
             // Must parse values if needed.
             auto& matches{ *itr };
-            uri.insert({ matches[1], matches[2] });
+            query.insert({ matches[1], matches[2] });
         }
     } else {
-        errs << "Error parsing URI: " << path;
+        errs << "Error parsing URI: " << raw_path;
         failure();
     }
 
-    logs << "Path: " << path << endl;
-    if (uri.size()) {
+    logs << "Path: " << raw_path << endl;
+    if (query.size()) {
         logs << "Values: {" << endl;
-        for (auto [name, value] : uri) {
+        for (auto [name, value] : query) {
             logs << "  " << name << ": " << value << "," << endl;
         }
         logs << "}" << endl;
@@ -91,5 +92,41 @@ Request::deserialize(istream& is)
     }
 
     logs << "Request: Done parsing!" << endl;
+}
+
+Request::Method
+Request::method() const
+{
+    return method_tag;
+}
+
+const string
+Request::path() const
+{
+    return raw_path;
+}
+
+OptionalRef<const string>
+Request::query_value(const string value_name) const
+{
+    auto itr{ query.find(value_name) };
+    if (itr == query.end()) {
+        errs << "No query value: " << value_name << endl;
+        return OptionalRef<const string>{};
+    }
+
+    return itr->second;
+}
+
+OptionalRef<const string>
+Request::header_value(const string value_name) const
+{
+    auto itr{ headers.find(value_name) };
+    if (itr == headers.end()) {
+        errs << "No header value: " << value_name << endl;
+        return OptionalRef<const string>{};
+    }
+
+    return itr->second;
 }
 };
