@@ -78,7 +78,8 @@ struct Action
                     auto& user{ labohouse.Users::add(name) };
 
                     out << Response{ Response::Status::OK,
-                                     { { "Set-Cookie", to_string(user.id) } } };
+                                     { { "Set-Cookie", to_string(user.id) },
+                                       { "name", name } } };
                     return;
                 }
                 if (req.path == "/name") {
