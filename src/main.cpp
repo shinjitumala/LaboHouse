@@ -53,7 +53,7 @@ struct Action
         auto is_bad_request{ false };
         vector<string> missing_values;
         auto get_header = [&](const string value_name) -> string {
-            auto opt{ req.query_value(value_name) };
+            auto opt{ req.header_value(value_name) };
             if (!opt) {
                 is_bad_request = true;
                 missing_values.push_back(value_name);
