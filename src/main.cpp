@@ -52,6 +52,7 @@ struct Action
 
         auto is_bad_request{ false };
         vector<string> missing_values;
+        /// Convenience function for obtaining header values.
         auto get_header = [&](const string value_name) -> string {
             auto opt{ req.header_value(value_name) };
             if (!opt) {
@@ -61,6 +62,7 @@ struct Action
             }
             return opt.get();
         };
+        /// Must be called after obtaining all required values with 'get_header'
         auto check_request = [&]() {
             if (is_bad_request) {
                 ostringstream oss;
