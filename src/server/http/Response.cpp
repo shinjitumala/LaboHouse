@@ -20,6 +20,8 @@ Response::to_string(Response::Status status)
             return "OK";
         case Response::Status::BAD_REQUEST:
             return "BAD REQUEST";
+        case Response::Status::UNAURHORIZED:
+            return "UNAUTHORIZED";
         case Response::Status::FORBIDDEN:
             return "FORBIDDEN";
         case Response::Status::NOT_FOUND:
