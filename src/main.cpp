@@ -144,6 +144,26 @@ struct Action
                     return;
                 }
 
+                if (path == "/sethimado") {
+                    auto himado{ get_header("Himado") };
+                    auto cookie{ get_header("Cookie") };
+
+                    // Mandatory check.
+                    if (check_request()) {
+                        return;
+                    }
+
+                    auto opt{ labohouse.Users::get(stoul(cookie)) };
+                    if (!opt) {
+                        out << forbidden("User does not exist: id = " + cookie);
+                        return;
+                    }
+                    auto& user{ opt.get() };
+                    user.set_status(static_cast<User::Status>(stoul(himado)));
+                    out << Response{ Response::Status::OK };
+                    return;
+                }
+
                 if (path == "/names") {
                     out << Response{ Response::Status::OK,
                                      labohouse.Users::to_json() };

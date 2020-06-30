@@ -28,6 +28,7 @@
   * URL: /sethimado
     * Parameters:
       * Himado: \<himado in integer\>
+      * Cookie: \<your user id which is also the cookie\>
   * Response
 
 ### Query list of users

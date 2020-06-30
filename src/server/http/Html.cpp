@@ -7,6 +7,7 @@
 /// See the licenses directory for details.
 
 #include <filesystem>
+#include <fstream>
 #include <labo/debug/Log.h>
 #include <labo/server/http/Html.h>
 
