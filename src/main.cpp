@@ -198,6 +198,13 @@ struct Action
                                      labohouse.Users::to_json() };
                     return;
                 }
+
+                if (path == "/names_sorted") {
+                    out << Response{ Response::Status::OK,
+                                     labohouse.Users::to_json_sorted() };
+                    return;
+                }
+
                 break;
         }
 

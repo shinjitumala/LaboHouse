@@ -16,16 +16,16 @@ using ulong = unsigned long;
 class User
 {
   public:
-
     enum class Status : unsigned char
     {
         free, // Doing nothing
         easy, // Working but available for some chit-chat
         busy, // Do not disturb
+        last, // Final element
     };
     /// Convert status to string.
-    /// @param s 
-    /// @return string 
+    /// @param s
+    /// @return string
     static string to_string(Status s);
 
     /// Identifier for the user. Also used as the cookie. (FIXME: Vulnerable)

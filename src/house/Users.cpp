@@ -68,4 +68,22 @@ Users::to_json() const
     return names;
 }
 
+nlohmann::json
+Users::to_json_sorted() const
+{
+    vector<vector<string>> sorted_names;
+    auto himado_count{ static_cast<uint>(User::Status::last) };
+    sorted_names.resize(himado_count);
+    for_each(users.begin(), users.end(), [&](auto u) {
+        sorted_names.at(static_cast<uint>(u->status()))
+          .push_back(u->display_name);
+    });
+
+    nlohmann::json j;
+    for (auto i{ 0U }; i < himado_count; i++) {
+        j[User::to_string(static_cast<User::Status>(i))] = sorted_names.at(i);
+    }
+    return j;
+}
+
 };

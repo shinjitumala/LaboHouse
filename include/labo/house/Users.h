@@ -52,5 +52,9 @@ class Users
     /// Convert Users into a json array.
     /// @return nlohmann::json
     nlohmann::json to_json() const;
+
+    /// Convert Users into an json array (Separated with HIMADO)
+    /// @return nlohmann::json
+    nlohmann::json to_json_sorted() const;
 };
 };

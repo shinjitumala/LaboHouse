@@ -40,8 +40,15 @@
     * Himado: \<your himado (string)\>
 
 ### Query list of users
-    * Method: POST
-    * URL: /names
-      * Parameters
-    * Response
-      * Json: \<array of registered names\>
+  * Method: POST
+  * URL: /names
+    * Parameters
+  * Response
+    * Json: \<array of registered names\>
+
+### Query list of users separated by 'HIMADO'
+  * Method: POST
+  * URL: /names_sorted
+    * Parameters
+  * Response
+    * Json:  { 'Each HIMADO' { \<array of users with 'HIMADO'\> } }
