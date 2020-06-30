@@ -31,6 +31,14 @@
       * Cookie: \<your user id which is also the cookie\>
   * Response
 
+### Get 'HIMADO'
+  * Method: POST
+  * URL: /gethimado
+    * Parameters:
+      * Cookie: \<your user id which is also the cookie\>
+  * Response
+    * Himado: \<your himado (string)\>
+
 ### Query list of users
     * Method: POST
     * URL: /names

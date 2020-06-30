@@ -159,8 +159,37 @@ struct Action
                         return;
                     }
                     auto& user{ opt.get() };
-                    user.set_status(static_cast<User::Status>(stoul(himado)));
+                    auto status{ static_cast<User::Status>(stoul(himado)) };
+                    user.set_status(status);
                     out << Response{ Response::Status::OK };
+
+                    logs << "[User] " << user.display_name
+                         << "'s himado was changed to '"
+                         << User::to_string(status) << "'." << endl;
+                    return;
+                }
+
+                if (path == "/gethimado") {
+                    auto cookie{ get_header("Cookie") };
+
+                    // Mandatory check.
+                    if (check_request()) {
+                        return;
+                    }
+
+                    auto opt{ labohouse.Users::get(stoul(cookie)) };
+                    if (!opt) {
+                        out << forbidden("User does not exist: id = " + cookie);
+                        return;
+                    }
+                    auto& user{ opt.get() };
+
+                    auto himado{ User::to_string(user.status()) };
+                    out << Response{ Response::Status::OK,
+                                     { { "Himado", himado } } };
+                    logs << "[User] " << user.display_name
+                         << " obtained his/her himado which is '" << himado
+                         << "'." << endl;
                     return;
                 }
 

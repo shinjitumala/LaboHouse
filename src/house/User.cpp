@@ -25,4 +25,17 @@ User::set_status(Status status)
 {
     status_flag = status;
 }
+
+string
+User::to_string(Status s)
+{
+    switch (s) {
+        case Status::free:
+            return "free";
+        case Status::easy:
+            return "easy";
+        case Status::busy:
+            return "busy";
+    }
+}
 }
