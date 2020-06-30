@@ -23,73 +23,80 @@ Request::deserialize(istream& is)
     };
 
     logs << "Request: Parsing..." << endl;
-    string raw_method_tag;
-    is >> raw_method_tag;
-    check_is();
-    if (raw_method_tag == "GET") {
-        method_tag = Method::GET;
-    } else if (raw_method_tag == "POST") {
-        method_tag = Method::POST;
+
+    /// Get first line
+    if (string line; getline(is, line)) {
+        istringstream is{ line };
+        string raw_method_tag;
+        is >> raw_method_tag;
+        if (raw_method_tag == "GET") {
+            method_tag = Method::GET;
+        } else if (raw_method_tag == "POST") {
+            method_tag = Method::POST;
+        } else {
+            errs << "Unexpected Request: " << raw_method_tag << endl;
+            failure();
+        }
+        logs << "Method: " << raw_method_tag << endl;
+
+        is >> raw_path;
+        check_is();
+        static const regex query_pattern{ "^(/[^\?]*)\\?\?(.*)$" };
+        if (smatch matches; regex_match(raw_path, matches, query_pattern)) {
+            raw_path = matches[1];
+            string values{ matches[2] };
+            static const regex value_pattern{ "([^&]+)=([^&]+)" };
+            for (sregex_iterator itr{
+                   values.begin(), values.end(), value_pattern };
+                 itr != sregex_iterator{};
+                 itr++) {
+                // Must parse values if needed.
+                auto& matches{ *itr };
+                query.insert({ matches[1], matches[2] });
+            }
+        } else {
+            errs << "Error parsing URI: " << raw_path;
+            failure();
+        }
+
+        logs << "Path: " << raw_path << endl;
+        if (query.size()) {
+            logs << "Values: {" << endl;
+            for (auto [name, value] : query) {
+                logs << "  " << name << ": " << value << "," << endl;
+            }
+            logs << "}" << endl;
+        }
+
+        string protocol;
+        is >> protocol;
+        check_is();
+        logs << "Protocol Version: " << protocol << endl;
     } else {
-        errs << "Unexpected Request: " << raw_method_tag << endl;
+        errs << "Parsing error." << endl;
         failure();
     }
-    logs << "Method: " << raw_method_tag << endl;
 
-    is >> raw_path;
-    check_is();
-    static const regex query_pattern{ "^(/[^\?]*)\\?\?(.*)$" };
-    if (smatch matches; regex_match(raw_path, matches, query_pattern)) {
-        raw_path = matches[1];
-        string values{ matches[2] };
-        static const regex value_pattern{ "([^&]+)=([^&]+)" };
-        for (sregex_iterator itr{ values.begin(), values.end(), value_pattern };
-             itr != sregex_iterator{};
-             itr++) {
-            // Must parse values if needed.
-            auto& matches{ *itr };
-            query.insert({ matches[1], matches[2] });
-        }
-    } else {
-        errs << "Error parsing URI: " << raw_path;
-        failure();
-    }
-
-    logs << "Path: " << raw_path << endl;
-    if (query.size()) {
-        logs << "Values: {" << endl;
-        for (auto [name, value] : query) {
-            logs << "  " << name << ": " << value << "," << endl;
-        }
-        logs << "}" << endl;
-    }
-
-    string protocol;
-    is >> protocol;
-    check_is();
-    logs << "Protocol Version: " << protocol << endl;
-#ifdef __linux__
-    is.ignore(numeric_limits<streamsize>::max(), '\n');
-#elif __APPLE__
-    is.ignore(numeric_limits<streamsize>::max(), '\r');
-#endif
-
+    /// Get rest.
+    logs << "Headers {" << endl;
     for (string line; getline(is, line);) {
         if (line.size() == 0 || line == "\r") {
             break;
         }
+
         const regex header_pattern{
-            "^([^:]+): (.+)\r?*"
+            "^([^:]+): (.+)\r?$"
         }; // HOLY SHIT FUCK YOU CARRIGE RETURN. FUCK YOU FUCK YOU FFUCK YOU.
         if (smatch matches;
             regex_match(line, matches, header_pattern) && matches.size() > 2) {
             headers.insert({ matches[1], matches[2] });
-            logs << "[ " << matches[1] << ", " << matches[2] << " ]" << endl;
+            logs << "  { " << matches[1] << ", " << matches[2] << " }, "
+                 << endl;
         } else {
             errs << "Failed to match header: " << line << endl;
-            errs << matches.size() << endl;
         }
     }
+    logs << "}" << endl;
 
     logs << "Request: Done parsing!" << endl;
 }
