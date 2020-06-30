@@ -16,18 +16,18 @@
 
         function registerName() {
             $.ajax({
-                type: 'POST',
+                type:'POST',
                 url: "/register",
-                headers: {
-                    'name': document.getElementById("name").value
+                headers:{
+                    'name' : document.getElementById("name").value
                 },
-
-                success: function () {
-                    // wip ひま度alert
+                
+                success : function(){
+                // wip ひま度alert
                     window.location.href = "#hima"
                 },
-                error: function (res, error, status) {
-                    show_error(res, status);
+            error: function (res, error, status) {
+                show_error(res, status)
                 }
             });
         }
@@ -38,12 +38,11 @@
                 type: 'POST',
                 url: "/sethimado",
                 headers: {
-                    'Himado': document.getElementById("hima").value
+                    'Himado': document.getElementById("himado").value
                 },
 
                 success: function () {
-                    window.alert("Success")
-                    document.getElementById("enter_name").style.display = "none";
+                    window.location.href = "#list"
                 },
                 error: function (res, error, status) {
                     show_error(res, status)
@@ -51,14 +50,18 @@
             });
         }
 
-    </script>
-</head>
+        function checkHima(){
 
-<body>
-    <div class="container" data-role="page" id="home">
-        <div class="row">
-            <div class="mx-auto">
-                <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+        }
+        
+        </script>
+    </head>
+    <body>
+        <div class="container" data-role="page" id="home">
+            <div class="row">
+                <div class="mx-auto">
+                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+                </div>
             </div>
         </div>
         <br>
@@ -99,27 +102,49 @@
             <div class="mx-auto">
                 <h3 style="text-align:center;">Please set your Himado</h3>
             </div>
+            <div class="row">
+                <div class="col-6 mx-auto">
+
+                    <!-- ひま度の登録 -->
+                    <form>
+                        <div class="form-group">
+                            <center>
+                                <select class="form-control" id="himado">
+                                    <option value="1">very hima</option>
+                                    <option value="2">hima</option>
+                                    <option value="3">not hima</option>
+                                </select>
+                                <button type="button" onclick="registerHima()" class="btn btn-primary rounded-pill">Register</button>
+                            </center>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-6 mx-auto">
 
-                <!-- ひま度の登録 -->
-                <form>
-                    <div class="form-group">
-                        <center>
-                            <select class="form-control" id="hima">
-                                <option value="1">very hima</option>
-                                <option value="2">hima</option>
-                                <option value="3">not hima</option>
-                            </select>
-                            <button type="button" onclick="registerHima()"
-                                class="btn btn-primary rounded-pill">Register</button>
-                        </center>
-                    </div>
-                </form>
+        <div class="container" data-role="page" id="list">
+            <div class="row">
+                <div class="mx-auto">
+                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="mx-auto">
+                    <h3 style="text-align:center;"></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 mx-auto">
 
-
-
+                    <form>
+                        <div class="form-group">
+                            <center>
+                                <button type="button" onclick="checkHima()" class="btn btn-primary rounded-pill">Check</button>
+                            </center>
+                        </div>
+                    </form>
+                </div>
             </div>
             <center>
                 <button type="button" onclick="getNames()" class="btn btn-primary rounded-pill">See names!</button>
