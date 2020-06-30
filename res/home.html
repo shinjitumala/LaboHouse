@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html>
-<title>Welcome to LaboHouse!</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Welcome to LaboHouse!</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script>
 
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>
         function show_error(res, status) {
             window.alert(status + ": " + res.getResponseHeader("error"))
         }
 
         function registerName() {
-
-            $.ajax({
-                type: 'POST',
-                url: "/register",
-                headers: {
-                    'name': document.getElementById("name").value
-                },
-
-                success: function (data, status, res) {
-                    // This is how you parse a response.
-                    window.alert("Your name is " + res.getResponseHeader("name"))
-                },
-                error: function (res, error, status) {
-                    show_error(res, status)
-                }
-            });
+            // $.ajax({
+            //     type:'POST',
+            //     url: "/register",
+            //     headers:{
+            //         'name' : document.getElementById("name").value
+            //     },
+                
+            //     success : function(){
+                // wip ひま度alert
+                    // window.location.href = "#hima"
+            //     },
+            //     error: function(){
+            // error: function (res, error, status) {
+            //     show_error(res, status)
+            //     }
+            // });
         }
 
         function registerHima() {
@@ -43,60 +44,31 @@
                     window.alert("Success")
                     document.getElementById("enter_name").style.display = "none";
                 },
-                error: function () {
-                    window.alert("Error!!!!!!!!")
+                error: function (res, error, status) {
+                    show_error(res, status)
                 }
             });
         }
-
-        function getNames() {
-            $.ajax({
-                type: 'POST',
-                url: "/names",
-
-                success: function (data, status, res) {
-                    var mytable = document.getElementById("mytable");
-
-                    mytable.innerHTM = ""; // Reset content.
-
-                    var table = document.createElement('table');
-                    table.border = '1';
-
-                    var table_header = document.createElement('thead');
-                    table.appendChild(table_header);
-                    var table_body = document.createElement('tbody');
-                    table.appendChild(table_body);
-
-                    for (var i = 0; i < data.length; i++) {
-                        var tr = document.createElement('tr');
-                        var td = document.createElement('td');
-                        tr.appendChild(td);
-                        td.innerText = data[i];
-                        table_body.appendChild(tr);
-                    }
-
-                    mytable.appendChild(table);
-                },
-                error: function () {
-                    window.alert("Error!!!!!!!!")
-                }
-            });
-        }
-
-    </script>
-</head>
-
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="mx-auto">
-                <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+        
+        </script>
+    </head>
+    <body>
+        <div class="container" data-role="page" id="home">
+            <div class="row">
+                <div class="mx-auto">
+                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="mx-auto">
+                    <h3 style="text-align:center;">Please enter your name.</h3>
+                </div>
             </div>
             <div class="row">
                 <div class="col-6 mx-auto">
 
                     <!-- 名前の登録 -->
-
                     <form>
                         <div class="form-group">
                             <label for="api-url">Your name:</label>
@@ -108,10 +80,29 @@
                         </div>
                     </form>
 
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="container" data-role="page" id="hima">
+            <div class="row">
+                <div class="mx-auto">
+                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="mx-auto">
+                    <h3 style="text-align:center;">Please set your Himado</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 mx-auto">
+
                     <!-- ひま度の登録 -->
                     <form>
                         <div class="form-group">
-                            <label>hima:</label>
                             <center>
                                 <select class="form-control" id="hima">
                                     <option value="1">very hima</option>
@@ -122,6 +113,9 @@
                             </center>
                         </div>
                     </form>
+
+
+                    
                 </div>
                 <center>
                     <button type="button" onclick="getNames()" class="btn btn-primary rounded-pill">See names!</button>
@@ -137,8 +131,12 @@
                                     </div> -->
             </form>
         </div>
-    </div>
-    </div>
-</body>
 
+
+        
+
+
+
+
+    </body>
 </html>
