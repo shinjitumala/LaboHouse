@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html>
-    <title>Welcome to LaboHouse!</title>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-        <script>
+<title>Welcome to LaboHouse!</title>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script>
 
         function show_error(res, status) {
             window.alert(status + ": " + res.getResponseHeader("error"))
         }
 
         function registerName() {
-            // $.ajax({
-            //     type:'POST',
-            //     url: "/register",
-            //     headers:{
-            //         'name' : document.getElementById("name").value
-            //     },
-                
-            //     success : function(){
-                // wip ひま度alert
-                    // window.location.href = "#hima"
-            //     },
-            //     error: function(){
-            // error: function (res, error, status) {
-            //     show_error(res, status)
-            //     }
-            // });
+            $.ajax({
+                type: 'POST',
+                url: "/register",
+                headers: {
+                    'name': document.getElementById("name").value
+                },
+
+                success: function () {
+                    // wip ひま度alert
+                    window.location.href = "#hima"
+                },
+                error: function (res, error, status) {
+                    show_error(res, status);
+                }
+            });
         }
 
         function registerHima() {
@@ -49,79 +50,82 @@
                 }
             });
         }
-        
-        </script>
-    </head>
-    <body>
-        <div class="container" data-role="page" id="home">
-            <div class="row">
-                <div class="mx-auto">
-                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="mx-auto">
-                    <h3 style="text-align:center;">Please enter your name.</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6 mx-auto">
 
-                    <!-- 名前の登録 -->
-                    <form>
-                        <div class="form-group">
-                            <label for="api-url">Your name:</label>
-                            <input class="form-control" type="text" id="name" value="">
-                            <br>
-                            <center>
-                                <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
-                            </center>
-                        </div>
-                    </form>
+    </script>
+</head>
 
-                    
-                </div>
+<body>
+    <div class="container" data-role="page" id="home">
+        <div class="row">
+            <div class="mx-auto">
+                <h1 style="text-align:center;">Welcome to LaboHouse</h1>
             </div>
         </div>
-
-        <div class="container" data-role="page" id="hima">
-            <div class="row">
-                <div class="mx-auto">
-                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
-                </div>
+        <br>
+        <div class="row">
+            <div class="mx-auto">
+                <h3 style="text-align:center;">Please enter your name.</h3>
             </div>
-            <br>
-            <div class="row">
-                <div class="mx-auto">
-                    <h3 style="text-align:center;">Please set your Himado</h3>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-6 mx-auto">
+
+                <!-- 名前の登録 -->
+                <form>
+                    <div class="form-group">
+                        <label for="api-url">Your name:</label>
+                        <input class="form-control" type="text" id="name" value="">
+                        <br>
+                        <center>
+                            <button type="button" onclick="registerName()"
+                                class="btn btn-primary rounded-pill">Send</button>
+                        </center>
+                    </div>
+                </form>
+
+
             </div>
-            <div class="row">
-                <div class="col-6 mx-auto">
+        </div>
+    </div>
 
-                    <!-- ひま度の登録 -->
-                    <form>
-                        <div class="form-group">
-                            <center>
-                                <select class="form-control" id="hima">
-                                    <option value="1">very hima</option>
-                                    <option value="2">hima</option>
-                                    <option value="3">not hima</option>
-                                </select>
-                                <button type="button" onclick="registerHima()" class="btn btn-primary rounded-pill">Register</button>
-                            </center>
-                        </div>
-                    </form>
+    <div class="container" data-role="page" id="hima">
+        <div class="row">
+            <div class="mx-auto">
+                <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="mx-auto">
+                <h3 style="text-align:center;">Please set your Himado</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 mx-auto">
+
+                <!-- ひま度の登録 -->
+                <form>
+                    <div class="form-group">
+                        <center>
+                            <select class="form-control" id="hima">
+                                <option value="1">very hima</option>
+                                <option value="2">hima</option>
+                                <option value="3">not hima</option>
+                            </select>
+                            <button type="button" onclick="registerHima()"
+                                class="btn btn-primary rounded-pill">Register</button>
+                        </center>
+                    </div>
+                </form>
 
 
-                    
-                </div>
-                <center>
-                    <button type="button" onclick="getNames()" class="btn btn-primary rounded-pill">See names!</button>
-                    <div id="mytable"></div>
-                </center>
-                <!-- <div class="form-group">
+
+            </div>
+            <center>
+                <button type="button" onclick="getNames()" class="btn btn-primary rounded-pill">See names!</button>
+                <div id="mytable"></div>
+            </center>
+            <!-- <div class="form-group">
                                         <label>hima:</label>
                                         <select class="form-control" name="name" id="name">
                                             <option value="1">very hima</option>
@@ -133,10 +137,11 @@
         </div>
 
 
-        
 
 
 
 
-    </body>
+
+</body>
+
 </html>
