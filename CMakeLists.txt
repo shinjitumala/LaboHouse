@@ -67,7 +67,7 @@ target_sources(
           src/util/fdstreambuf.cpp
           src/server/http/Request.cpp
           src/server/http/Response.cpp
-          src/server/http/Body.cpp
+          src/server/http/Html.cpp
           src/server/http/ResponseHelper.cpp
           src/LaboHouse.cpp
           src/house/User.cpp

@@ -6,10 +6,11 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #pragma once
-#include <labo/server/http/Body.h>
+#include <labo/server/http/Html.h>
 #include <labo/util/stream.h>
 #include <map>
 #include <string>
+#include <variant>
 
 namespace labo::http {
 using namespace std;
@@ -29,6 +30,15 @@ class Response
     };
 
   private:
+    /// Dummy class used to represent empty body.
+    struct None
+    {
+        explicit None() = default;
+    };
+
+    /// Body
+    using Body = variant<None, Html>;
+
     /// Alias for readability.
     using Headers = map<string, string>;
 #if __has_include(<filesystem>)
@@ -44,21 +54,19 @@ class Response
     /// All header data
     Headers headers;
     /// The response body
-    Body* const body;
+    Body body;
 
   public:
     /// Construct a response.
     /// @param status The status.
-    /// @param body_path Path to the html content.
+    /// @param body The body.
     /// @param headers Headers. Optional. NOTE: 'Content-Length' is not needed.
-    Response(Status status, path body_path, Headers headers = {});
+    template<class T>
+    Response(Status status, T body, Headers headers = {});
     /// Create a response without a body.
     /// @param status
     /// @param headers
     Response(Status status, Headers headers = {});
-
-    /// We own 'body'
-    ~Response();
 
     /// Print this Response to a stream.
     /// @param os
@@ -68,5 +76,12 @@ class Response
     /// Helper funciton.
     static string to_string(Response::Status status);
 };
+
+template<class T>
+Response::Response(Status status, T body, Headers headers)
+  : status{ status }
+  , headers{ headers }
+  , body{ body }
+{}
 
 };

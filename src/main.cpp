@@ -18,7 +18,7 @@
 #include <labo/debug/Log.h>
 #include <labo/house/User.h>
 #include <labo/server/Base.h>
-#include <labo/server/http/Body.h>
+#include <labo/server/http/Html.h>
 #include <labo/server/http/Request.h>
 #include <labo/server/http/Response.h>
 #include <labo/server/http/ResponseHelper.h>
@@ -85,7 +85,7 @@ struct Action
                 if (path == "/") {
                     /// reply with home page
                     out << Response{ Response::Status::OK,
-                                     { "../res/home.html" },
+                                     Html{ "../res/home.html" },
                                      { { "Set-Cookie", "foobar" } } };
                     logs << "[Action] Homepage access." << endl;
                     return;

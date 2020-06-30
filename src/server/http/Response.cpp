@@ -6,7 +6,7 @@
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
 #include <labo/debug/Log.h>
-#include <labo/server/http/Body.h>
+#include <labo/server/http/Html.h>
 #include <labo/server/http/Response.h>
 #include <limits>
 #include <regex>
@@ -29,21 +29,11 @@ Response::to_string(Response::Status status)
     }
 }
 
-Response::Response(Status status, path body_path, Headers headers)
-  : status{ status }
-  , headers{ headers }
-  , body{ new Body{ body_path } } {};
-
 Response::Response(Status status, Headers headers)
   : status{ status }
   , headers{ headers }
-  , body{ nullptr }
+  , body{ None{} }
 {}
-
-Response::~Response()
-{
-    delete body;
-}
 
 void
 Response::print(ostream& os) const
@@ -55,23 +45,27 @@ Response::print(ostream& os) const
         os << data << ": " << value << endl;
     }
 
-    if (body) {
-        // get length of file
-        auto& ifs{ const_cast<ifstream&>(body->ifs) };
-        ifs.seekg(0, ios::end);
-        auto content_length{ ifs.tellg() };
-        os << "Content-Type: text/html; charset=UTF8" << endl;
-        os << "Content-Length: " << content_length << endl << endl;
-        /// Assume that the body is always an html for now.
+    switch (body.index()) {
+        case 0: // None
+            os << "Content-Length: 0" << endl;
+            break;
+        case 1: // Html
+            // get length of file
+            auto ifs{ get<Html>(body).read() };
+            ifs.seekg(0, ios::end);
+            auto content_length{ ifs.tellg() };
+            os << "Content-Type: text/html; charset=UTF8" << endl;
+            os << "Content-Length: " << content_length << endl << endl;
+            /// Assume that the body is always an html for now.
 
-        // Reset ifs
-        ifs.seekg(0);
-        // copy entire stream into os
-        copy(istreambuf_iterator<char>(ifs),
-             istreambuf_iterator<char>(),
-             ostreambuf_iterator<char>(os));
-    } else {
-        os << "Content-Length: 0" << endl;
+            // Reset ifs
+            ifs.seekg(0);
+            // copy entire stream into os
+            copy(istreambuf_iterator<char>(ifs),
+                 istreambuf_iterator<char>(),
+                 ostreambuf_iterator<char>(os));
+
+            break;
     }
     os << endl << endl;
 }
