@@ -58,7 +58,10 @@
             </div>
             <div class="row">
                 <div class="col-6 mx-auto">
-                    <form action="/register" method="post">
+
+                    <!-- 名前の登録 -->
+
+                    <form>
                         <div class="form-group">
                             <label for="api-url">Your name:</label>
                             <input class="form-control" type="text" id="name" value="">
@@ -67,7 +70,11 @@
                                 <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
                             </center>
                         </div>
-                        <div class="form-group" hidden>
+                    </form>
+
+                    <!-- ひま度の登録 -->
+                    <form>
+                        <div class="form-group">
                             <label>hima:</label>
                             <center>
                                 <select class="form-control" id="hima">
@@ -75,6 +82,7 @@
                                     <option value="2">hima</option>
                                     <option value="3">not hima</option>
                                 </select>
+                                <button type="button" onclick="registerHima()" class="btn btn-primary rounded-pill">Register</button>
                             </center>
                         </div>
                     </form>
