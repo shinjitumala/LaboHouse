@@ -7,8 +7,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
         <script>
+
+        function show_error(res, status) {
+            window.alert(status + ": " + res.getResponseHeader("error"))
+        }
+
         function registerName() {
-            window.location.href="#hima"
             // $.ajax({
             //     type:'POST',
             //     url: "/register",
@@ -17,10 +21,12 @@
             //     },
                 
             //     success : function(){
-                    
+                // wip ひま度alert
+                    // window.location.href = "#hima"
             //     },
             //     error: function(){
-            //         window.alert("Error!!!!!!!!")
+            // error: function (res, error, status) {
+            //     show_error(res, status)
             //     }
             // });
         }
@@ -37,8 +43,8 @@
                 success: function () {
                     window.alear("Success")
                 },
-                error: function () {
-                    window.alert("Error!!!!!!!!")
+                error: function (res, error, status) {
+                    show_error(res, status)
                 }
             });
         }
@@ -69,7 +75,6 @@
                             <br>
                             <center>
                                 <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
-                                
                             </center>
                         </div>
                     </form>
