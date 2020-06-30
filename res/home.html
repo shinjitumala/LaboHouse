@@ -16,18 +16,20 @@
 
         function registerName() {
             $.ajax({
-                type:'POST',
+                type: 'POST',
                 url: "/register",
-                headers:{
-                    'name' : document.getElementById("name").value
+                headers: {
+                    'name': document.getElementById("name").value
                 },
-                
-                success : function(){
-                // wip ひま度alert
+
+                success: function (data, status, req) {
+                    // wip ひま度alert
                     window.location.href = "#hima"
+                    var name = req.getResponseHeader("name");
+                    console.log(name);
                 },
-            error: function (res, error, status) {
-                show_error(res, status)
+                error: function (res, error, status) {
+                    show_error(res, status)
                 }
             });
         }
@@ -41,8 +43,9 @@
                     'Himado': document.getElementById("himado").value
                 },
 
-                success: function () {
+                success: function (data, status, req) {
                     window.location.href = "#list"
+                    getHima();
                 },
                 error: function (res, error, status) {
                     show_error(res, status)
@@ -50,45 +53,60 @@
             });
         }
 
-        function checkHima(){
+        function getHima() {
+            $.ajax({
+                type: 'POST',
+                url: '/gethimado',
+                success: function (data, status, req) {
+                    var himado = req.getResponseHeader("Himado");
+                    window.alert(himado);
+                },
+                error: function (res, error, status) {
+                    show_error(res, status)
+                }
+            });
+        }
+
+        function checkHima() {
 
         }
-        
-        </script>
-    </head>
-    <body>
-        <div class="container" data-role="page" id="home">
-            <div class="row">
-                <div class="mx-auto">
-                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
-                </div>
-            </div>
-        </div>
-        <br>
+
+    </script>
+</head>
+
+<body>
+    <div class="container" data-role="page" id="home">
         <div class="row">
             <div class="mx-auto">
-                <h3 style="text-align:center;">Please enter your name.</h3>
+                <h1 style="text-align:center;">Welcome to LaboHouse</h1>
             </div>
         </div>
-        <div class="row">
-            <div class="col-6 mx-auto">
-
-                <!-- 名前の登録 -->
-                <form>
-                    <div class="form-group">
-                        <label for="api-url">Your name:</label>
-                        <input class="form-control" type="text" id="name" value="">
-                        <br>
-                        <center>
-                            <button type="button" onclick="registerName()"
-                                class="btn btn-primary rounded-pill">Send</button>
-                        </center>
-                    </div>
-                </form>
-
-
-            </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="mx-auto">
+            <h3 style="text-align:center;">Please enter your name.</h3>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-6 mx-auto">
+
+            <!-- 名前の登録 -->
+            <form>
+                <div class="form-group">
+                    <label for="api-url">Your name:</label>
+                    <input class="form-control" type="text" id="name" value="">
+                    <br>
+                    <center>
+                        <button type="button" onclick="registerName()"
+                            class="btn btn-primary rounded-pill">Send</button>
+                    </center>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
     </div>
 
     <div class="container" data-role="page" id="hima">
@@ -114,7 +132,8 @@
                                     <option value="2">hima</option>
                                     <option value="3">not hima</option>
                                 </select>
-                                <button type="button" onclick="registerHima()" class="btn btn-primary rounded-pill">Register</button>
+                                <button type="button" onclick="registerHima()"
+                                    class="btn btn-primary rounded-pill">Register</button>
                             </center>
                         </div>
                     </form>
@@ -140,7 +159,8 @@
                     <form>
                         <div class="form-group">
                             <center>
-                                <button type="button" onclick="checkHima()" class="btn btn-primary rounded-pill">Check</button>
+                                <button type="button" onclick="checkHima()"
+                                    class="btn btn-primary rounded-pill">Check</button>
                             </center>
                         </div>
                     </form>
