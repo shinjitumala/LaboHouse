@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html>
     <title>Welcome to LaboHouse!</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
         <script>
         function registerName() {
-
-            $.ajax({
-                type:'POST',
-                url: "/register",
-                headers:{
-                    'name' : document.getElementById("name").value
-                },
+            window.location.href="#hima"
+            // $.ajax({
+            //     type:'POST',
+            //     url: "/register",
+            //     headers:{
+            //         'name' : document.getElementById("name").value
+            //     },
                 
-                success : function(){
-                    window.alear("Success")
-                },
-                error: function(){
-                    window.alert("Error!!!!!!!!")
-                }
-            });
+            //     success : function(){
+                    
+            //     },
+            //     error: function(){
+            //         window.alert("Error!!!!!!!!")
+            //     }
+            // });
         }
 
         function registerHima() {
 
             $.ajax({
                 type: 'POST',
-                url: "/register_hima",
+                url: "/sethimado",
                 headers: {
                     'hima': document.getElementById("hima").value
                 },
@@ -44,7 +46,7 @@
         </script>
     </head>
     <body>
-        <div class="container">
+        <div class="container" data-role="page" id="home">
             <div class="row">
                 <div class="mx-auto">
                     <h1 style="text-align:center;">Welcome to LaboHouse</h1>
@@ -60,7 +62,6 @@
                 <div class="col-6 mx-auto">
 
                     <!-- 名前の登録 -->
-
                     <form>
                         <div class="form-group">
                             <label for="api-url">Your name:</label>
@@ -68,14 +69,34 @@
                             <br>
                             <center>
                                 <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
+                                
                             </center>
                         </div>
                     </form>
 
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="container" data-role="page" id="hima">
+            <div class="row">
+                <div class="mx-auto">
+                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="mx-auto">
+                    <h3 style="text-align:center;">Please set your Himado</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 mx-auto">
+
                     <!-- ひま度の登録 -->
                     <form>
                         <div class="form-group">
-                            <label>hima:</label>
                             <center>
                                 <select class="form-control" id="hima">
                                     <option value="1">very hima</option>
@@ -86,8 +107,18 @@
                             </center>
                         </div>
                     </form>
+
+
+                    
                 </div>
             </div>
         </div>
+
+
+        
+
+
+
+
     </body>
 </html>
