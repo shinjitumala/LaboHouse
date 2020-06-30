@@ -40,12 +40,16 @@
                 },
 
                 success: function () {
-                    window.alear("Success")
+                    window.location.href = "#list"
                 },
                 error: function (res, error, status) {
                     show_error(res, status)
                 }
             });
+        }
+
+        function checkHima(){
+
         }
         
         </script>
@@ -108,6 +112,32 @@
                                     <option value="3">not hima</option>
                                 </select>
                                 <button type="button" onclick="registerHima()" class="btn btn-primary rounded-pill">Register</button>
+                            </center>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" data-role="page" id="list">
+            <div class="row">
+                <div class="mx-auto">
+                    <h1 style="text-align:center;">Welcome to LaboHouse</h1>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="mx-auto">
+                    <h3 style="text-align:center;"></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 mx-auto">
+
+                    <form>
+                        <div class="form-group">
+                            <center>
+                                <button type="button" onclick="checkHima()" class="btn btn-primary rounded-pill">Check</button>
                             </center>
                         </div>
                     </form>
