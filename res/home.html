@@ -11,7 +11,7 @@
             window.alert(status + ": " + res.getResponseHeader("error"))
         }
 
-        function hello() {
+        function registerName() {
 
             $.ajax({
                 type: 'POST',
@@ -29,6 +29,25 @@
                 }
             });
         }
+
+        function registerHima() {
+
+            $.ajax({
+                type: 'POST',
+                url: "/register_hima",
+                headers: {
+                    'hima': document.getElementById("hima").value
+                },
+
+                success: function () {
+                    window.alear("Success")
+                },
+                error: function () {
+                    window.alert("Error!!!!!!!!")
+                }
+            });
+        }
+
     </script>
 </head>
 
@@ -39,25 +58,26 @@
                 <h1 style="text-align:center;">Welcome to LaboHouse</h1>
             </div>
         </div>
-        <br>
-        <div class="row">
-            <div class="mx-auto">
-                <h3 style="text-align:center;">Please enter your name.</h3>
-            </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="mx-auto">
+            <h3 style="text-align:center;">Please enter your name.</h3>
         </div>
-        <div class="row">
-            <div class="col-6 mx-auto">
-                <form action="/register" method="post">
-                    <div class="form-group">
-                        <label for="api-url">Your name:</label>
-                        <input class="form-control" type="text" id="name" name="name" value="">
-                        <br>
-                        <center>
-                            aa
-                            <button type="button" onclick="hello()" class="btn btn-primary rounded-pill">Send</button>
-                        </center>
-                    </div>
-                    <!-- <div class="form-group">
+    </div>
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <form action="/register" method="post">
+                <div class="form-group">
+                    <label for="api-url">Your name:</label>
+                    <input class="form-control" type="text" id="name" name="name" value="">
+                    <br>
+                    <center>
+                        <button type="button" onclick="registerName()"
+                            class="btn btn-primary rounded-pill">Send</button>
+                    </center>
+                </div>
+                <!-- <div class="form-group">
                                         <label>hima:</label>
                                         <select class="form-control" name="name" id="name">
                                             <option value="1">very hima</option>
@@ -65,9 +85,9 @@
                                             <option value="3">not hima</option>
                                         </select>
                                     </div> -->
-                </form>
-            </div>
+            </form>
         </div>
+    </div>
     </div>
 </body>
 
