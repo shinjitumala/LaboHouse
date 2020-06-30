@@ -178,9 +178,6 @@ main(int argc, char* argv[])
     // llvm::cl::HideUnrelatedOptions(labo::cl::related_categories);
     // llvm::cl::ParseCommandLineOptions(argc, argv);
 
-    signal(SIGQUIT, signal_handler);
-    signal(SIGTERM, signal_handler);
-    signal(SIGSTOP, signal_handler);
     signal(SIGINT, signal_handler);
 
     server = new labo::Server<Action>{ 12345 };
