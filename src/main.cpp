@@ -143,6 +143,12 @@ struct Action
                          << user.display_name << endl;
                     return;
                 }
+
+                if (path == "/names") {
+                    out << Response{ Response::Status::OK,
+                                     labohouse.Users::to_json() };
+                    return;
+                }
                 break;
         }
 

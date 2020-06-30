@@ -40,7 +40,41 @@
                 },
 
                 success: function () {
-                    window.alear("Success")
+                    window.alert("Success")
+                },
+                error: function () {
+                    window.alert("Error!!!!!!!!")
+                }
+            });
+        }
+
+        function getNames() {
+            $.ajax({
+                type: 'POST',
+                url: "/names",
+
+                success: function (data, status, res) {
+                    var mytable = document.getElementById("mytable");
+
+                    mytable.innerHTM = ""; // Reset content.
+
+                    var table = document.createElement('table');
+                    table.border = '1';
+
+                    var table_header = document.createElement('thead');
+                    table.appendChild(table_header);
+                    var table_body = document.createElement('tbody');
+                    table.appendChild(table_body);
+
+                    for (var i = 0; i < data.length; i++) {
+                        var tr = document.createElement('tr');
+                        var td = document.createElement('td');
+                        tr.appendChild(td);
+                        td.innerText = data[i];
+                        table_body.appendChild(tr);
+                    }
+
+                    mytable.appendChild(table);
                 },
                 error: function () {
                     window.alert("Error!!!!!!!!")
@@ -77,6 +111,10 @@
                             class="btn btn-primary rounded-pill">Send</button>
                     </center>
                 </div>
+                <center>
+                    <button type="button" onclick="getNames()" class="btn btn-primary rounded-pill">See names!</button>
+                    <div id="mytable"></div>
+                </center>
                 <!-- <div class="form-group">
                                         <label>hima:</label>
                                         <select class="form-control" name="name" id="name">
