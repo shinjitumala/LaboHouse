@@ -29,3 +29,10 @@
     * Parameters:
       * Himado: \<himado in integer\>
   * Response
+
+### Query list of users
+    * Method: POST
+    * URL: /names
+      * Parameters
+    * Response
+      * Json: \<array of registered names\>
