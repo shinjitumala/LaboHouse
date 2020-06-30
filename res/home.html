@@ -13,22 +13,21 @@
         }
 
         function registerName() {
-            // $.ajax({
-            //     type:'POST',
-            //     url: "/register",
-            //     headers:{
-            //         'name' : document.getElementById("name").value
-            //     },
+            $.ajax({
+                type:'POST',
+                url: "/register",
+                headers:{
+                    'name' : document.getElementById("name").value
+                },
                 
-            //     success : function(){
+                success : function(){
                 // wip ひま度alert
-                    // window.location.href = "#hima"
-            //     },
-            //     error: function(){
-            // error: function (res, error, status) {
-            //     show_error(res, status)
-            //     }
-            // });
+                    window.location.href = "#hima"
+                },
+            error: function (res, error, status) {
+                show_error(res, status)
+                }
+            });
         }
 
         function registerHima() {
@@ -37,7 +36,7 @@
                 type: 'POST',
                 url: "/sethimado",
                 headers: {
-                    'hima': document.getElementById("hima").value
+                    'Himado': document.getElementById("himado").value
                 },
 
                 success: function () {
@@ -103,7 +102,7 @@
                     <form>
                         <div class="form-group">
                             <center>
-                                <select class="form-control" id="hima">
+                                <select class="form-control" id="himado">
                                     <option value="1">very hima</option>
                                     <option value="2">hima</option>
                                     <option value="3">not hima</option>
@@ -112,9 +111,6 @@
                             </center>
                         </div>
                     </form>
-
-
-                    
                 </div>
             </div>
         </div>
