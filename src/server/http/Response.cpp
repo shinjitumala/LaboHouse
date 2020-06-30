@@ -8,6 +8,7 @@
 #include <labo/debug/Log.h>
 #include <labo/server/http/Html.h>
 #include <labo/server/http/Response.h>
+#include <labo/util/json.hpp>
 #include <limits>
 #include <regex>
 
@@ -46,10 +47,10 @@ Response::print(ostream& os) const
     }
 
     switch (body.index()) {
-        case 0: // None
+        case 0: { // None
             os << "Content-Length: 0" << endl;
-            break;
-        case 1: // Html
+        } break;
+        case 1: { // Html
             // get length of file
             auto ifs{ get<Html>(body).read() };
             ifs.seekg(0, ios::end);
@@ -65,7 +66,14 @@ Response::print(ostream& os) const
                  istreambuf_iterator<char>(),
                  ostreambuf_iterator<char>(os));
 
-            break;
+        } break;
+        case 2: { // Json
+            auto s{ get<nlohmann::json>(body).dump() };
+            os << "Content-Type: application/json; charset=UTF8" << endl;
+            os << "Content-Length: " << s.size() << endl << endl;
+
+            os << s;
+        } break;
     }
     os << endl << endl;
 }

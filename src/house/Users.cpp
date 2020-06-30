@@ -10,6 +10,7 @@
 #include <labo/debug/Log.h>
 #include <labo/house/User.h>
 #include <labo/house/Users.h>
+#include <labo/util/json.hpp>
 
 namespace labo {
 Users::~Users()
@@ -49,11 +50,22 @@ Users::get(string display_name) const
 OptionalRef<User>
 Users::get(ulong id) const
 {
-    if(auto itr{ids.find(id)}; itr == ids.end()){
+    if (auto itr{ ids.find(id) }; itr == ids.end()) {
         return OptionalRef<User>{};
-    }else{
-    return *itr->second;
+    } else {
+        return *itr->second;
     }
+}
+
+nlohmann::json
+Users::to_json() const
+{
+    vector<string> names;
+    names.reserve(users.size());
+    for_each(usernames.begin(), usernames.end(), [&](auto& p) {
+        names.push_back(p.first);
+    });
+    return names;
 }
 
 };

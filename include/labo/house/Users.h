@@ -8,6 +8,7 @@
 #pragma once
 
 #include <labo/util/OptionalRef.h>
+#include <labo/util/json.hpp>
 #include <mutex>
 #include <unordered_map>
 #include <unordered_set>
@@ -47,5 +48,9 @@ class Users
     /// @param id
     /// @return OptionalRef<User>
     OptionalRef<User> get(ulong id) const;
+
+    /// Convert Users into a json array.
+    /// @return nlohmann::json
+    nlohmann::json to_json() const;
 };
 };

@@ -7,6 +7,7 @@
 /// See the licenses directory for details.
 #pragma once
 #include <labo/server/http/Html.h>
+#include <labo/util/json.hpp>
 #include <labo/util/stream.h>
 #include <map>
 #include <string>
@@ -37,7 +38,7 @@ class Response
     };
 
     /// Body
-    using Body = variant<None, Html>;
+    using Body = variant<None, Html, nlohmann::json>;
 
     /// Alias for readability.
     using Headers = map<string, string>;
