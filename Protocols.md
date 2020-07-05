@@ -52,3 +52,10 @@
     * Parameters
   * Response
     * Json:  { 'Each HIMADO' { \<array of users with 'HIMADO'\> } }
+
+### Echo
+  * Method: POST
+  * URL: /echo
+    * Parameters
+      * text: \<The text to be echoed\>
+  * Response

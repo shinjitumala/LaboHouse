@@ -206,6 +206,18 @@ struct Action
                     return;
                 }
 
+                if (path == "/echo") {
+                    auto text{ get_header("text") };
+
+                    // Mandatory check.
+                    if (check_request()) {
+                        return;
+                    }
+
+                    logs << "[Echo] " << text << endl;
+                    return;
+                }
+
                 break;
         }
 
