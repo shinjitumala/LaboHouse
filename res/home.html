@@ -19,7 +19,9 @@
                 },
 
                 success: function (data, status, req) {
-                    var name = req.getResponseHeader("name");
+                    refresh_main();
+
+                    // Hide the registration page and show the main page.
                     document.getElementById("page::register").style.display = "none";
                     document.getElementById("page::main").style.display = "block";
                 },
@@ -29,13 +31,20 @@
             });
         }
 
-        function queryUser() {
+        function queryUser(callback) {
             $.ajax({
                 type: 'POST',
                 url: "/name",
 
                 success: function (data, status, req) {
                     var name = req.getResponseHeader("name");
+                    // Changing the name display.
+                    document.getElementById("block::name").innerText = "";
+                    document.getElementById("block::name").innerText = name;
+
+                    callback();
+
+                    // Hide the registration page and show the main page.
                     document.getElementById("page::register").style.display = "none";
                     document.getElementById("page::main").style.display = "block";
                 },
@@ -54,8 +63,8 @@
                 },
 
                 success: function (data, status, req) {
-                    window.location.href = "#list"
                     getHima();
+                    refresh_main();
                 },
                 error: function (res, error, status) {
                     show_error(res, status)
@@ -69,7 +78,6 @@
                 url: '/gethimado',
                 success: function (data, status, req) {
                     var himado = req.getResponseHeader("Himado");
-                    window.alert(himado);
                 },
                 error: function (res, error, status) {
                     show_error(res, status)
@@ -77,12 +85,50 @@
             });
         }
 
-        window.onload = queryUser();
+        function getNames() {
+            $.ajax({
+                type: 'POST',
+                url: '/names_sorted',
+                success: function (data, status, req) {
+                    var members = document.getElementById("list::members");
+                    members.innerText = ""; // Clear content
+
+                    function create_list(himado) {
+                        var header = document.createElement("h3");
+                        header.innerText = himado;
+                        var list = document.createElement("ul");
+                        header.appendChild(list);
+                        for (var i in data[himado]) {
+                            var m = data[himado][i];
+                            var ml = document.createElement("li");
+                            ml.innerText = m;
+                            list.appendChild(ml);
+                        }
+                        return header;
+                    };
+
+                    members.appendChild(create_list("free"));
+                    members.appendChild(create_list("easy"));
+                    members.appendChild(create_list("busy"));
+                },
+                error: function (res, error, status) {
+                    show_error(res, status)
+                }
+            });
+        }
+
+        // Refreshes the entire main page.
+        function refresh_main() {
+            getNames();
+            queryUser();
+        };
+
+        // Check if the cookie is familiar.
+        window.onload = queryUser(refresh_main);
     </script>
     <style>
-        .column {
-            float: left;
-            width: 50%;
+        * {
+            margin: 0;
         }
 
         .row:after {
@@ -90,17 +136,50 @@
             display: table;
             clear: both;
         }
+
+        html,
+        body {
+            position: fixed;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+        }
+
+        .header {
+            box-sizing: border-box;
+            background-color: lightseagreen;
+            border-style: groove;
+            border-width: thick;
+            height: 8%;
+        }
+
+        .page {
+            box-sizing: border-box;
+            background-color: lightgreen;
+            border-style: solid;
+            border-width: medium;
+            height: 92%;
+        }
+
+        .panel {
+            box-sizing: border-box;
+            border-style: dotted;
+            border-width: thin;
+            float: left;
+            overflow-y: scroll;
+            height: 100%;
+        }
     </style>
 </head>
 
 <body>
     <!-- Page Header -->
-    <div id="header">
+    <div id="header" class="header">
         <h1 style="text-align:center;">LaboHouse (alpha)</h1>
-        <br>
     </div>
 
-    <div id="page::register">
+    <div id="page::register" class="page">
         <!-- Register Name -->
         <center>
             <form>
@@ -111,26 +190,72 @@
         </center>
     </div>
 
-    <div id="page::main" class="row" style="display: none;">
-        <div id="panel::himado" class="column">
-            <!-- ひま度の登録 -->
-            <center>
-                <h3 style="text-align:center;">Please set your Himado</h3>
-                <select class="form-control" id="himado">
-                    <option value="1">very hima</option>
-                    <option value="2">hima</option>
-                    <option value="3">not hima</option>
+    <div id="page::main" class="page" style="display: none;">
+        <div id="panel::control" class="panel" style="width: 15%;">
+            <h2 id="block::name"></h2>
+            <div id="block::himado">
+                <!-- Change 'HIMADO' -->
+                <label><b>Himado: </b></label>
+                <select id="himado" onchange="registerHima()">
+                    <option value="0">free</option>
+                    <option value="1">easy</option>
+                    <option value="2">busy</option>
                 </select>
-                <button type="button" onclick="registerHima()" class="btn btn-primary rounded-pill">Register</button>
-            </center>
+            </div>
         </div>
 
-        <div id="panel::members" class="column">
+        <div id="panel::main" class="panel" style="width: 70%">
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+            <br>
+            Placeholder text.
+        </div>
+
+        <div id="panel::members" class="panel" style="width: 15%;">
             <center>
                 <h3>Members</h3>
                 <button type="button" onclick="getNames()" class="btn btn-primary rounded-pill">Refresh</button>
-                <div id="list::members">
-                </div>
+                <left>
+                    <div id="list::members" style="text-align: left;">
+                    </div>
+                </left>
             </center>
         </div>
 </body>

@@ -100,7 +100,7 @@ Users::to_json_sorted() const
     });
 
     nlohmann::json j;
-    for (auto i{ 1U }; i < himado_count; i++) {
+    for (auto i{ 0U }; i < himado_count; i++) {
         j[User::to_string(static_cast<User::Status>(i))] = sorted_names.at(i);
     }
     return j;
