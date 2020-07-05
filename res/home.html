@@ -10,6 +10,8 @@
             window.alert(status + ": " + res.getResponseHeader("error"));
         }
 
+        function noop() { };
+
         function registerName() {
             $.ajax({
                 type: 'POST',
@@ -31,7 +33,7 @@
             });
         }
 
-        function queryUser(callback) {
+        function queryUser(callback = noop) {
             $.ajax({
                 type: 'POST',
                 url: "/name",
@@ -54,12 +56,13 @@
             });
         }
 
-        function registerHima() {
+        function registerHima(value = document.getElementById("himado").value) {
+            document.getElementById("himado").value = value;
             $.ajax({
                 type: 'POST',
                 url: "/sethimado",
                 headers: {
-                    'Himado': document.getElementById("himado").value
+                    'Himado': value
                 },
 
                 success: function (data, status, req) {
@@ -123,8 +126,56 @@
             queryUser();
         };
 
+        var timer;
+        // Run on page load.
+        function init() {
+            queryUser(refresh_main)
+            addEventListener("mousemove", resetTimer, false);
+            addEventListener("mousedown", resetTimer, false);
+            addEventListener("keypress", resetTimer, false);
+            addEventListener("DOMMouseScroll", resetTimer, false);
+            addEventListener("mousewheel", resetTimer, false);
+            addEventListener("touchmove", resetTimer, false);
+            addEventListener("MSPointerMove", resetTimer, false);
+
+            resetTimer();
+        };
+
+        function goInactive() {
+            registerHima(2);
+        };
+
+        function resetTimer() {
+            window.clearTimeout(timer);
+            timer = window.setTimeout(goInactive, 2000); // Timeout is in ms
+        }
+
+
+
         // Check if the cookie is familiar.
-        window.onload = queryUser(refresh_main);
+        window.onload = init();
+
+        function lostFocus() {
+            $.ajax({
+                type: 'POST',
+                url: '/echo',
+                headers: {
+                    'text': "lost",
+                },
+            });
+        };
+
+        function gainFocus() {
+            $.ajax({
+                type: 'POST',
+                url: '/echo',
+                headers: {
+                    'text': "gain",
+                },
+            });
+            console.log("F");
+        };
+
     </script>
     <style>
         * {
