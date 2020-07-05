@@ -118,6 +118,8 @@ struct Action
                                      { { "Set-Cookie", to_string(user.id) },
                                        { "name", user.display_name } } };
 
+                    labohouse.chat(user, " has joined the chat!");
+
                     logs << "[Action] New user added." << endl;
                     return;
                 }
