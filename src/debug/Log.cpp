@@ -32,14 +32,33 @@ TimeCallback tcb_err;
 LineCallbackBuf<TimeCallback> stream_hook{ cout, tcb };
 LineCallbackBuf<TimeCallback> stream_hook_errs{ cerr, tcb_err };
 
+mutex mtx;
+auto
+get_threadnum()
+{
+
+    auto tid{ pthread_self() };
+    static unordered_map<decltype(tid), uint> thread_nums;
+    static uint count{ 0 };
+
+    uint thread_num;
+    if (auto itr{ thread_nums.find(tid) }; itr == thread_nums.end()) {
+        thread_nums.insert({ tid, count });
+        thread_num = count;
+        count++;
+    } else {
+        thread_num = itr->second;
+    }
+    ostringstream oss;
+    oss << setw(4) << setfill('0') << thread_num;
+    return oss.str();
+}
+
 int
 TimeCallback::call(streambuf& buf) const
 {
-    auto now{ chrono::system_clock::now() };
-    auto time_t{ chrono::system_clock::to_time_t(now) };
-    stringstream ss;
-    ss << "[" << put_time(localtime(&time_t), "%Y-%m-%d_%X") << "] ";
-    auto output{ ss.str() };
+    lock_guard<mutex> lg{ mtx };
+    string output{ "[T" + get_threadnum() + "] " };
     return buf.sputn(output.c_str(), output.size());
 };
 };
