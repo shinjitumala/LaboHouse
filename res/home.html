@@ -120,10 +120,57 @@
             });
         }
 
+        function sendChat() {
+            $.ajax({
+                type: 'POST',
+                url: '/chat_main',
+                headers: { 'message': document.getElementById("chatbox").value },
+                success: function (data, status, req) {
+                    document.getElementById("chatbox").value = "";
+                    getChat();
+                },
+                error: function (r, e, s) {
+                    show_error(r, s);
+                }
+            });
+        }
+
+        function chatOnEnter(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                sendChat();
+            }
+        };
+
+        function getChat() {
+            $.ajax({
+                type: 'POST',
+                url: '/chat_main_get',
+                success: function (data, status, req) {
+                    var chat = document.getElementById("block::chat_main");
+                    chat.innerText = ""; // Reset chat
+
+                    var text = "";
+                    for (var i in data) {
+                        var m = data[i];
+                        text += m.time;
+                        text += m.user + ": ";
+                        text += m.msg + "\n";
+                    }
+                    chat.innerText = text;
+                },
+                error: function (r, e, s) {
+                    show_error(r, s);
+                }
+            });
+        };
+
+
         // Refreshes the entire main page.
         function refresh_main() {
             getNames();
             queryUser();
+            getChat();
         };
 
         var timer;
@@ -138,6 +185,8 @@
             addEventListener("touchmove", resetTimer, false);
             addEventListener("MSPointerMove", resetTimer, false);
 
+            document.getElementById("chatbox").addEventListener("keypress", chatOnEnter);
+
             resetTimer();
         };
 
@@ -150,32 +199,7 @@
             timer = window.setTimeout(goInactive, 2000); // Timeout is in ms
         }
 
-
-
-        // Check if the cookie is familiar.
-        window.onload = init();
-
-        function lostFocus() {
-            $.ajax({
-                type: 'POST',
-                url: '/echo',
-                headers: {
-                    'text': "lost",
-                },
-            });
-        };
-
-        function gainFocus() {
-            $.ajax({
-                type: 'POST',
-                url: '/echo',
-                headers: {
-                    'text': "gain",
-                },
-            });
-            console.log("F");
-        };
-
+        window.onload = init;
     </script>
     <style>
         * {
@@ -221,6 +245,11 @@
             overflow-y: scroll;
             height: 100%;
         }
+
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 
@@ -255,48 +284,18 @@
             </div>
         </div>
 
-        <div id="panel::main" class="panel" style="width: 70%">
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
-            <br>
-            Placeholder text.
+        <div id="panel::main" class="panel" style="width: 70%;">
+            <h2 style="text-align: center;"><b>Chat</b></h2>
+            <div style="display: flex; flex-wrap: wrap; height: 92%;">
+                <div id="block::chat_main" class="chat" style="width: 100%; align-self: flex-start;"></div>
+                <div style="align-self: flex-end;">
+                    <form action="noop" id="form_chat">
+                        <textarea id="chatbox" cols="999" rows="1" name="chat"
+                            form="form_chat">Say something...</textarea>
+                        <button type="button" onclick="sendChat()">Chat</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div id="panel::members" class="panel" style="width: 15%;">

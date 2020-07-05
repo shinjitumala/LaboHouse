@@ -221,6 +221,36 @@ struct Action
                     return;
                 }
 
+                if (path == "/chat_main") {
+                    auto cookie{ get_header("Cookie") };
+                    auto str{ get_header("message") };
+
+                    // Mandatory check.
+                    if (check_request()) {
+                        return;
+                    }
+
+                    auto opt{ labohouse.Users::get_from_id(cookie) };
+                    if (!opt) {
+                        out << forbidden("User does not exist: id = " + cookie);
+                        return;
+                    }
+                    auto& user{ opt.get() };
+                    auto msg{ labohouse.chat(user, str) };
+
+                    logs << msg << endl;
+
+                    out << Response{ Response::Status::OK };
+
+                    return;
+                }
+
+                if (path == "/chat_main_get") {
+                    out << Response{ Response::Status::OK,
+                                     labohouse.get_main_chat().to_json() };
+                    return;
+                }
+
                 break;
         }
 

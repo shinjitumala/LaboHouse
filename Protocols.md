@@ -59,3 +59,16 @@
     * Parameters
       * text: \<The text to be echoed\>
   * Response
+
+### Chat to main
+  * Method: POST
+  * URL: /chat_main
+    * Parameters
+      * Cookie: \<your user id which is also the cookie\>
+  * Response
+
+### Refresh chat
+  * Method: POST
+  * URL: /chat_main_get
+    * Parameters
+  * Response

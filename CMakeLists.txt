@@ -71,4 +71,5 @@ target_sources(
           src/server/http/ResponseHelper.cpp
           src/LaboHouse.cpp
           src/house/User.cpp
-          src/house/Users.cpp)
+          src/house/Users.cpp
+          src/house/Chat.cpp)

@@ -46,13 +46,14 @@ class Request
     /// @return OptionalRef<string>
     OptionalRef<const string> header_value(const string value_name) const;
 
+    /// body
+    string body;
+
   private:
     /// Method of the request
     Method method_tag;
     /// Path of the request
     string raw_path;
-    /// body
-    string body;
 
     /// All value data from query string
     map<string, string> query;
