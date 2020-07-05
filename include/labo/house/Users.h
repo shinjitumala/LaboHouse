@@ -47,7 +47,7 @@ class Users
     /// Fatal error if missing.
     /// @param id
     /// @return OptionalRef<User>
-    OptionalRef<User> get(ulong id) const;
+    OptionalRef<User> get_from_id(string id) const;
 
     /// Convert Users into a json array.
     /// @return nlohmann::json
@@ -56,5 +56,11 @@ class Users
     /// Convert Users into an json array (Separated with HIMADO)
     /// @return nlohmann::json
     nlohmann::json to_json_sorted() const;
+
+  private:
+    /// Fatal error if missing.
+    /// @param id
+    /// @return OptionalRef<User>
+    OptionalRef<User> get(ulong id) const;
 };
 };

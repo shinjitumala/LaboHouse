@@ -7,6 +7,7 @@
 /// See the licenses directory for details.
 
 #include <algorithm>
+#include <cctype>
 #include <labo/debug/Log.h>
 #include <labo/house/User.h>
 #include <labo/house/Users.h>
@@ -45,6 +46,25 @@ Users::get(string display_name) const
     } else {
         return *itr->second;
     }
+}
+
+bool
+is_number(string s)
+{
+    return !s.empty() && find_if(s.begin(), s.end(), [](auto c) {
+                             return !isdigit(c);
+                         }) == s.end();
+}
+
+OptionalRef<User>
+Users::get_from_id(string id) const
+{
+    if (!is_number(id)) {
+        errs << "ID is not a number: " << id << endl;
+        return OptionalRef<User>{};
+    }
+
+    return get(stoul(id));
 }
 
 OptionalRef<User>

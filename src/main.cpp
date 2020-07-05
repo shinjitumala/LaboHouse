@@ -119,14 +119,14 @@ struct Action
                     return;
                 }
                 if (path == "/name") {
-                    auto cookie{ get_header("name") };
+                    auto cookie{ get_header("Cookie") };
 
                     // Mandatory check.
                     if (check_request()) {
                         return;
                     }
 
-                    auto opt{ labohouse.Users::get(cookie) };
+                    auto opt{ labohouse.Users::get_from_id(cookie) };
                     if (!opt) {
                         out << forbidden("Invalid cookie.");
                         errs << "[Action] ERROR: Invalid cookie, " << cookie
@@ -154,7 +154,7 @@ struct Action
                         return;
                     }
 
-                    auto opt{ labohouse.Users::get(stoul(cookie)) };
+                    auto opt{ labohouse.Users::get_from_id(cookie) };
                     if (!opt) {
                         out << forbidden("User does not exist: id = " + cookie);
                         return;
@@ -178,7 +178,7 @@ struct Action
                         return;
                     }
 
-                    auto opt{ labohouse.Users::get(stoul(cookie)) };
+                    auto opt{ labohouse.Users::get_from_id(cookie) };
                     if (!opt) {
                         out << forbidden("User does not exist: id = " + cookie);
                         return;
