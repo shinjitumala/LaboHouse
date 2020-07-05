@@ -38,10 +38,13 @@
 
 labo::LaboHouse labohouse{};
 
+std::mutex mtx;
+
 struct Action
 {
     Action(int socket_fd)
     {
+        std::lock_guard<std::mutex> lg{ mtx };
         using namespace labo;
         using namespace http;
         socket::fdstreambuf stream{ socket_fd };
