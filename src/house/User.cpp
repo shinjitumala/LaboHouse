@@ -5,8 +5,8 @@
 ///
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
-#include <labo/house/User.h>
 #include <labo/debug/Log.h>
+#include <labo/house/User.h>
 
 namespace labo {
 User::User(const ulong id, const string display_name)
@@ -38,6 +38,7 @@ User::to_string(Status s)
         case Status::busy:
             return "busy";
         default:
+            errs << "Invalid 'HIMADO': " << static_cast<char>(s) << endl;
             failure();
     }
 }
