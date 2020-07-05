@@ -84,9 +84,10 @@ struct Action
             case Request::Method::GET:
                 if (path == "/") {
                     /// reply with home page
-                    out << Response{ Response::Status::OK,
-                                     Html{ "../res/home.html" },
-                                     { { "Set-Cookie", "foobar" } } };
+                    out << Response{
+                        Response::Status::OK,
+                        Html{ "../res/home.html" },
+                    };
                     logs << "[Action] Homepage access." << endl;
                     return;
                 }
