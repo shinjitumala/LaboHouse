@@ -10,7 +10,9 @@
 #include <fpr/log/LineCallbackBuf.h>
 #include <iomanip>
 #include <labo/debug/Log.h>
+#include <mutex>
 #include <sstream>
+#include <unordered_map>
 
 namespace labo {
 void
