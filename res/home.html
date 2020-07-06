@@ -171,9 +171,11 @@
             getNames();
             queryUser();
             getChat();
+            timer_on = true;
         };
 
         var timer;
+        var timer_on = false;
         // Run on page load.
         function init() {
             queryUser(refresh_main)
@@ -195,6 +197,9 @@
         };
 
         function resetTimer() {
+            if (!timer_on) {
+                return;
+            }
             window.clearTimeout(timer);
             timer = window.setTimeout(goInactive, 2000); // Timeout is in ms
         }
