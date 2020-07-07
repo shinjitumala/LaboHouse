@@ -12,6 +12,7 @@
 #include <labo/util/json.hpp>
 #include <labo/util/stream.h>
 #include <ostream>
+#include <sstream>
 
 namespace labo {
 using namespace chrono;
