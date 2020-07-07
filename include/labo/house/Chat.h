@@ -14,7 +14,7 @@
 namespace labo {
 using namespace std;
 
-class User;
+struct User;
 
 /// Basic chat functionality.
 class Chat

@@ -10,8 +10,8 @@
   * Method: POST
   * URL: /register
   * Header Parameters:
-    * name: \<requested display name of new User\>
-    * student_id: \<student id\>
+    * id: \<unique id\>
+    * display_name: \<requested display name of new User\>
   * Response:
     * Set-Cookie: \<your new id\>
     * name: \<your name\>

@@ -98,25 +98,25 @@ struct Action
             case Request::Method::POST:
                 if (path == "/register") {
                     // Register new name
-                    auto name{ get_header("name") };
-                    auto student_id{ get_header("student_id") };
+                    auto id{ get_header("id") };
+                    auto display_name{ get_header("display_name") };
 
                     // Mandatory check.
                     if (check_request()) {
                         return;
                     }
 
-                    if (labohouse.get(name)) {
+                    if (labohouse.get(id)) {
                         out << forbidden(
                           "Name already exists. Please choose another one");
-                        errs << "[Action] ERROR: Name already exists, " << name
+                        errs << "[Action] ERROR: Name already exists, " << id
                              << endl;
                         return;
                     }
 
-                    auto& user{ labohouse.Users::add(name, student_id) };
+                    auto& user{ labohouse.Users::add(id, display_name) };
                     out << Response{ Response::Status::OK,
-                                     { { "Set-Cookie", to_string(user.id) },
+                                     { { "Set-Cookie", user.id },
                                        { "name", user.display_name } } };
 
                     labohouse.chat(user, " has joined the chat!");
@@ -167,7 +167,7 @@ struct Action
                     }
                     auto& user{ opt.get() };
                     auto status{ static_cast<User::Status>(stoul(himado)) };
-                    user.set_status(status);
+                    user.status = status;
                     out << Response{ Response::Status::OK };
 
                     logs << "[User] " << user.display_name
@@ -191,7 +191,7 @@ struct Action
                     }
                     auto& user{ opt.get() };
 
-                    auto himado{ User::to_string(user.status()) };
+                    auto himado{ User::to_string(user.status) };
                     out << Response{ Response::Status::OK,
                                      { { "Himado", himado } } };
                     logs << "[User] " << user.display_name

@@ -13,7 +13,7 @@ using namespace std;
 using ulong = unsigned long;
 
 /// Holds the data relevant to the user.
-class User
+struct User
 {
   public:
     enum class Status : unsigned char
@@ -30,30 +30,18 @@ class User
     static string to_string(Status s);
 
     /// Identifier for the user. Also used as the cookie. (FIXME: Vulnerable)
-    const ulong id;
+    string cookie;
+    /// Unique ID.
+    string id;
+
     /// Display name
-    const string display_name;
-    /// Student id
-    const string student_id;
+    string display_name;
 
-  private:
     /// level for freeness (is that a word?)
-    Status status_flag;
+    Status status;
 
-  public:
-    /// A user must have an id and a name.
-    /// @param id
-    /// @param display_name
-    User(const ulong id, const string display_name, const string student_id);
-
-    /// @return Status The current status of the user.
-    Status status() const;
-
-    /// Change status of user.
-    /// @param status
-    void set_status(Status status);
-
-  private:
+    /// Allow move.
+    User(User&&) = default;
     /// Disallow copy because users are supposed to be unique.
     User(const User&) = delete;
 };

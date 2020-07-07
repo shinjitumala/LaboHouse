@@ -17,8 +17,8 @@
                 type: 'POST',
                 url: "/register",
                 headers: {
-                    'name': document.getElementById("name").value,
-                    'student_id': document.getElementById("student_id").value,
+                    'id': document.getElementById("id").value,
+                    'display_name': document.getElementById("display_name").value,
                 },
 
                 success: function (data, status, req) {
@@ -297,10 +297,10 @@
         <!-- Register Name -->
         <center>
             <form>
-                <label for="api-url">Your name:</label>
-                <input class="form-control" type="text" id="name" value="">
-                <label for="api-url">Student id:</label>
-                <input class="form-control" type="text" id="student_id" value="">
+                <label for="api-url">ID: </label>
+                <input class="form-control" type="text" id="id" value="">
+                <label for="api-url">Display name: </label>
+                <input class="form-control" type="text" id="display_name" value="">
                 <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
             </form>
         </center>

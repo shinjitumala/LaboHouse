@@ -16,7 +16,7 @@
 namespace labo {
 using namespace std;
 using ulong = unsigned long;
-class User;
+struct User;
 
 /// Dictionary of users.
 class Users
@@ -27,8 +27,8 @@ class Users
     unordered_set<User*> users;
     /// Used for name lookups.
     unordered_map<string, User*> usernames;
-    /// Used for id lookups.
-    unordered_map<ulong, User*> ids;
+    /// Used for cookie lookups.
+    unordered_map<string, User*> cookies;
 
   public:
     /// We own users.
@@ -42,13 +42,9 @@ class Users
     User& add(string display_name, string student_id);
 
     /// Fatal error if missing.
-    /// @param display_name
+    /// @param cookie
     /// @return OptionalRef<User>
-    OptionalRef<User> get(string display_name) const;
-    /// Fatal error if missing.
-    /// @param id
-    /// @return OptionalRef<User>
-    OptionalRef<User> get_from_id(string id) const;
+    OptionalRef<User> get(string cookie) const;
 
     /// Convert Users into a json array.
     /// @return nlohmann::json
@@ -57,11 +53,5 @@ class Users
     /// Convert Users into an json array (Separated with HIMADO)
     /// @return nlohmann::json
     nlohmann::json to_json_sorted() const;
-
-  private:
-    /// Fatal error if missing.
-    /// @param id
-    /// @return OptionalRef<User>
-    OptionalRef<User> get(ulong id) const;
 };
 };

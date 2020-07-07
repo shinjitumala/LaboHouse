@@ -9,25 +9,6 @@
 #include <labo/house/User.h>
 
 namespace labo {
-User::User(const ulong id, const string display_name, const string student_id)
-  : id{ id }
-  , display_name{ display_name }
-  , student_id{ student_id }
-  , status_flag{ Status::free }
-{}
-
-User::Status
-User::status() const
-{
-    return status_flag;
-};
-
-void
-User::set_status(Status status)
-{
-    status_flag = status;
-}
-
 string
 User::to_string(Status s)
 {

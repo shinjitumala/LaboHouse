@@ -27,10 +27,10 @@ Users::add(string display_name, string student_id)
     if (auto itr{ usernames.find(display_name) }; itr != usernames.end()) {
         return *(itr->second);
     }
-    auto user{ new User{ name_counter, display_name, student_id } };
+    auto user{ new User{ to_string(name_counter), display_name, student_id } };
     users.insert(user);
     usernames.insert({ display_name, user });
-    ids.insert({ name_counter, user });
+    cookies.insert({ to_string(name_counter), user });
     auto id{ name_counter };
     logs << "[Users] New user: { id = " << id << ", name = " << display_name
          << " }" << endl;
@@ -39,38 +39,9 @@ Users::add(string display_name, string student_id)
 }
 
 OptionalRef<User>
-Users::get(string display_name) const
+Users::get(string cookie) const
 {
-    if (auto itr{ usernames.find(display_name) }; itr == usernames.end()) {
-        return OptionalRef<User>{};
-    } else {
-        return *itr->second;
-    }
-}
-
-bool
-is_number(string s)
-{
-    return !s.empty() && find_if(s.begin(), s.end(), [](auto c) {
-                             return !isdigit(c);
-                         }) == s.end();
-}
-
-OptionalRef<User>
-Users::get_from_id(string id) const
-{
-    if (!is_number(id)) {
-        errs << "ID is not a number: " << id << endl;
-        return OptionalRef<User>{};
-    }
-
-    return get(stoul(id));
-}
-
-OptionalRef<User>
-Users::get(ulong id) const
-{
-    if (auto itr{ ids.find(id) }; itr == ids.end()) {
+    if (auto itr{ cookies.find(cookie) }; itr == cookies.end()) {
         return OptionalRef<User>{};
     } else {
         return *itr->second;
@@ -98,7 +69,7 @@ Users::to_json_sorted() const
         sorted[s] = nlohmann::json::array();
     }
     for_each(users.begin(), users.end(), [&](auto u) {
-        sorted[u->status()].push_back(u->display_name);
+        sorted[u->status].push_back(u->display_name);
     });
     for (auto [s, sj] : sorted) {
         j[User::to_string(s)] = sj;
