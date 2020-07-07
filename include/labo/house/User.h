@@ -33,6 +33,8 @@ class User
     const ulong id;
     /// Display name
     const string display_name;
+    /// Student id
+    const string student_id;
 
   private:
     /// level for freeness (is that a word?)
@@ -42,7 +44,7 @@ class User
     /// A user must have an id and a name.
     /// @param id
     /// @param display_name
-    User(const ulong id, const string display_name);
+    User(const ulong id, const string display_name, const string student_id);
 
     /// @return Status The current status of the user.
     Status status() const;

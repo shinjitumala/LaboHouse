@@ -9,9 +9,10 @@
 #include <labo/house/User.h>
 
 namespace labo {
-User::User(const ulong id, const string display_name)
+User::User(const ulong id, const string display_name, const string student_id)
   : id{ id }
   , display_name{ display_name }
+  , student_id{ student_id }
   , status_flag{ Status::free }
 {}
 

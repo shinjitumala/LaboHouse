@@ -20,14 +20,14 @@ Users::~Users()
 }
 
 User&
-Users::add(string display_name)
+Users::add(string display_name, string student_id)
 {
     static ulong name_counter{ 0 };
     lock_guard<mutex> lg{ mtx };
     if (auto itr{ usernames.find(display_name) }; itr != usernames.end()) {
         return *(itr->second);
     }
-    auto user{ new User{ name_counter, display_name } };
+    auto user{ new User{ name_counter, display_name, student_id } };
     users.insert(user);
     usernames.insert({ display_name, user });
     ids.insert({ name_counter, user });

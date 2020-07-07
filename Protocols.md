@@ -11,6 +11,7 @@
   * URL: /register
   * Header Parameters:
     * name: \<requested display name of new User\>
+    * student_id: \<student id\>
   * Response:
     * Set-Cookie: \<your new id\>
     * name: \<your name\>

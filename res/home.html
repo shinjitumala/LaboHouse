@@ -17,7 +17,8 @@
                 type: 'POST',
                 url: "/register",
                 headers: {
-                    'name': document.getElementById("name").value
+                    'name': document.getElementById("name").value,
+                    'student_id': document.getElementById("student_id").value,
                 },
 
                 success: function (data, status, req) {
@@ -88,37 +89,64 @@
             });
         }
 
+        // list of members
+        var data_members = {};
+
+        function display_members(data) {
+            var members = document.getElementById("list::members");
+            members.innerText = ""; // Clear content
+
+            function create_list(himado) {
+                var header = document.createElement("h3");
+                header.innerText = himado;
+                var list = document.createElement("ul");
+                header.appendChild(list);
+                for (var i in data[himado]) {
+                    var m = data[himado][i];
+                    var ml = document.createElement("li");
+                    ml.innerText = m;
+                    list.appendChild(ml);
+                }
+                return header;
+            };
+
+            for (s in data) {
+                members.appendChild(create_list(s));
+            }
+        }
+
         function getNames() {
             $.ajax({
                 type: 'POST',
                 url: '/names_sorted',
                 success: function (data, status, req) {
-                    var members = document.getElementById("list::members");
-                    members.innerText = ""; // Clear content
+                    display_members(data);
 
-                    function create_list(himado) {
-                        var header = document.createElement("h3");
-                        header.innerText = himado;
-                        var list = document.createElement("ul");
-                        header.appendChild(list);
-                        for (var i in data[himado]) {
-                            var m = data[himado][i];
-                            var ml = document.createElement("li");
-                            ml.innerText = m;
-                            list.appendChild(ml);
-                        }
-                        return header;
-                    };
-
-                    members.appendChild(create_list("free"));
-                    members.appendChild(create_list("easy"));
-                    members.appendChild(create_list("busy"));
+                    data_members = data;
+                    console.log(data_members);
                 },
                 error: function (res, error, status) {
                     show_error(res, status)
                 }
             });
         }
+
+        function searchUser() {
+            var query = document.getElementById("member_search").value;
+            var filtered = {};
+            for (s in data_members) {
+                var visible = [];
+                for (var i in data_members[s]) {
+                    var m = data_members[s][i];
+                    if (m.includes(query)) {
+                        visible.push(m);
+                    }
+                }
+                filtered[s] = visible;
+            }
+
+            display_members(filtered);
+        };
 
         function sendChat() {
             $.ajax({
@@ -178,7 +206,8 @@
         var timer_on = false;
         // Run on page load.
         function init() {
-            queryUser(refresh_main)
+            queryUser(refresh_main);
+
             addEventListener("mousemove", resetTimer, false);
             addEventListener("mousedown", resetTimer, false);
             addEventListener("keypress", resetTimer, false);
@@ -270,6 +299,8 @@
             <form>
                 <label for="api-url">Your name:</label>
                 <input class="form-control" type="text" id="name" value="">
+                <label for="api-url">Student id:</label>
+                <input class="form-control" type="text" id="student_id" value="">
                 <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
             </form>
         </center>
@@ -285,6 +316,7 @@
                     <option value="0">free</option>
                     <option value="1">easy</option>
                     <option value="2">busy</option>
+                    <option value="3">offline</option>
                 </select>
             </div>
         </div>
@@ -306,10 +338,10 @@
         <div id="panel::members" class="panel" style="width: 15%;">
             <center>
                 <h3>Members</h3>
-                <button type="button" onclick="getNames()" class="btn btn-primary rounded-pill">Refresh</button>
-                <left>
-                    <div id="list::members" style="text-align: left;">
-                    </div>
+                <label>Search: </label>
+                <input type="text" id="member_search" onchange="searchUser()">
+                <div id="list::members" style="text-align: left;">
+                </div>
                 </left>
             </center>
         </div>

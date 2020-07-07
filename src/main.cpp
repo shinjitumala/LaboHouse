@@ -99,6 +99,7 @@ struct Action
                 if (path == "/register") {
                     // Register new name
                     auto name{ get_header("name") };
+                    auto student_id{ get_header("student_id") };
 
                     // Mandatory check.
                     if (check_request()) {
@@ -113,7 +114,7 @@ struct Action
                         return;
                     }
 
-                    auto& user{ labohouse.Users::add(name) };
+                    auto& user{ labohouse.Users::add(name, student_id) };
                     out << Response{ Response::Status::OK,
                                      { { "Set-Cookie", to_string(user.id) },
                                        { "name", user.display_name } } };

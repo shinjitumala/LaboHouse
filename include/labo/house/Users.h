@@ -37,8 +37,9 @@ class Users
     /// Adds a new user
     /// Note that it will return the existing user if there is one.
     /// @param display_name
+    /// @param student_id
     /// @return OptionalRef<User> The new user.
-    User& add(string display_name);
+    User& add(string display_name, string student_id);
 
     /// Fatal error if missing.
     /// @param display_name
