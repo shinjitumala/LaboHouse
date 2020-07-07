@@ -24,6 +24,6 @@ Html::Html(path file)
 ifstream
 Html::read() const
 {
-    return file;
+    return ifstream{ file };
 }
 };
