@@ -21,6 +21,7 @@ class User
         free, // Doing nothing
         easy, // Working but available for some chit-chat
         busy, // Do not disturb
+        offline,
         last, // Final element
     };
     /// Convert status to string.
