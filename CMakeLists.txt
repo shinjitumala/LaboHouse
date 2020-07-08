@@ -75,7 +75,7 @@ target_sources(
           src/house/Chat.cpp)
 
 # Configure HTML
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/test.js JAVASCRIPT)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js JAVASCRIPT)
 string(PREPEND JAVASCRIPT "<script=\"text/javascript\">")
 string(APPEND JAVASCRIPT "</script>")
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css CSS)
