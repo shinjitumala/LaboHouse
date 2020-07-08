@@ -76,10 +76,13 @@ target_sources(
 
 # Configure HTML
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js JAVASCRIPT)
-string(PREPEND JAVASCRIPT "<script=\"text/javascript\">")
+string(PREPEND JAVASCRIPT "<script type=\"text/javascript\">")
 string(APPEND JAVASCRIPT "</script>")
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css CSS)
 string(PREPEND CSS "<style>")
 string(APPEND CSS "</style>")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/res/home.html
                ${CMAKE_CURRENT_BINARY_DIR}/res/home.html)
+
+# Start server
+add_custom_target(start COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/start_server.sh)
