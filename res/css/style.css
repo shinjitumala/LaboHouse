@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+html,
+body {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.header {
+    box-sizing: border-box;
+    background-color: lightseagreen;
+    border-style: groove;
+    border-width: thick;
+    height: 8%;
+}
+
+.page {
+    box-sizing: border-box;
+    background-color: lightgreen;
+    border-style: solid;
+    border-width: medium;
+    height: 92%;
+}
+
+.panel {
+    box-sizing: border-box;
+    border-style: dotted;
+    border-width: thin;
+    float: left;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+}

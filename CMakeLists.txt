@@ -73,3 +73,13 @@ target_sources(
           src/house/User.cpp
           src/house/Users.cpp
           src/house/Chat.cpp)
+
+# Configure HTML
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/test.js JAVASCRIPT)
+string(PREPEND JAVASCRIPT "<script=\"text/javascript\">")
+string(APPEND JAVASCRIPT "</script>")
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css CSS)
+string(PREPEND CSS "<style>")
+string(APPEND CSS "</style>")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/res/home.html
+               ${CMAKE_CURRENT_BINARY_DIR}/res/home.html)
