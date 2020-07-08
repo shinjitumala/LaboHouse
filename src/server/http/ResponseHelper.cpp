@@ -18,7 +18,7 @@ not_found(string error)
 Response
 unauthorized(string error)
 {
-    return { Response::Status::NOT_FOUND, { { "error", error } } };
+    return { Response::Status::UNAURHORIZED, { { "error", error } } };
 };
 
 Response
