@@ -10,8 +10,8 @@ function registerName() {
         type: 'POST',
         url: "/register",
         headers: {
+            'id': document.getElementById("id").value,
             'name': document.getElementById("name").value,
-            'student_id': document.getElementById("student_id").value,
         },
 
         success: function (data, status, req) {
@@ -111,7 +111,7 @@ function display_members(data) {
 function getNames() {
     $.ajax({
         type: 'POST',
-        url: '/names_sorted',
+        url: '/names',
         success: function (data, status, req) {
             display_members(data);
 

@@ -45,10 +45,18 @@ class User
     /// @param cookie
     User(const string id, const string cookie);
 
-    /// Get hash.
-    /// @param u
-    /// @return size_t
-    static size_t hash(const User& u);
+    struct hash
+    {
+        /// Get hash.
+        /// @param u
+        /// @return size_t
+        size_t operator()(const User& u) const;
+    };
+
+    /// @param rhs
+    /// @return true If this is the same instance as rhs.
+    /// @return false
+    bool operator==(const User& rhs) const;
 
   private:
     /// Disallow copy because users are supposed to be unique.

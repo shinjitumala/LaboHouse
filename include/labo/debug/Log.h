@@ -9,6 +9,7 @@
 
 #include <fpr/log/LineCallbackBuf.h>
 #include <fpr/log/callback/Indent.h>
+#include <mutex>
 
 namespace labo {
 using namespace std;
@@ -24,14 +25,9 @@ warning();
 namespace log {
 using namespace fpr::log;
 
-/// Callback that inserts a time tag before the line.
-struct TimeCallback
-{
-    /// Inserts time tag before printing line.
-    /// @param buf
-    /// @return int
-    int call(streambuf& buf) const;
-};
+/// Obain the log lock guard.
+lock_guard<mutex>
+get_lg();
 };
 
 extern ostream logs;

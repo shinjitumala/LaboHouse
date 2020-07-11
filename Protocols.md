@@ -10,33 +10,33 @@
   * Method: POST
   * URL: /register
   * Header Parameters:
-    * name: \<requested display name of new User\>
-    * student_id: \<student id\>
+    * id: \<requested id\>
+    * name: \<requested display name\>
   * Response:
-    * Set-Cookie: \<your new id\>
-    * name: \<your name\>
+    * Set-Cookie: \<session cookie\>
+    * name: \<display name\>
 
 ### Query username
   * Method: POST
   * URL: /name
     * Parameters
-        * Cookie: \<your user id which is also the cookie\>
+      * Cookie: \<session cookie\>
   * Response
-    * name: \<your display name\>
+    * name: \<display name\>
 
 ### Change 'HIMADO'
   * Method: POST
   * URL: /sethimado
     * Parameters:
       * Himado: \<himado in integer\>
-      * Cookie: \<your user id which is also the cookie\>
+      * Cookie: \<session cookie\>
   * Response
 
 ### Get 'HIMADO'
   * Method: POST
   * URL: /gethimado
     * Parameters:
-      * Cookie: \<your user id which is also the cookie\>
+      * Cookie: \<session cookie\>
   * Response
     * Himado: \<your himado (string)\>
 
@@ -45,27 +45,13 @@
   * URL: /names
     * Parameters
   * Response
-    * Json: \<array of registered names\>
-
-### Query list of users separated by 'HIMADO'
-  * Method: POST
-  * URL: /names_sorted
-    * Parameters
-  * Response
-    * Json:  { 'Each HIMADO' { \<array of users with 'HIMADO'\> } }
-
-### Echo
-  * Method: POST
-  * URL: /echo
-    * Parameters
-      * text: \<The text to be echoed\>
-  * Response
+    * Json:  { 'Each HIMADO' { \<Users\> } }
 
 ### Chat to main
   * Method: POST
   * URL: /chat_main
     * Parameters
-      * Cookie: \<your user id which is also the cookie\>
+      * Cookie: \<session cookie\>
   * Response
 
 ### Refresh chat

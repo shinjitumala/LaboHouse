@@ -11,6 +11,7 @@
 #include <labo/util/OptionalRef.h>
 #include <labo/util/json.hpp>
 #include <mutex>
+#include <shared_mutex>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -22,15 +23,17 @@ using ulong = unsigned long;
 class Users
 {
     /// Mutex used to avoid data corruption.
-    mutex mtx;
+    shared_mutex mtx;
     /// All users. Owned by this.
-    unordered_set<User> users;
+    unordered_set<User, User::hash> users;
     /// Used for id lookups.
     unordered_map<string, User*> ids;
     /// Used for cookie lookups.
     unordered_map<string, User*> cookies;
 
   public:
+    Users() = default;
+
     /// Adds a new user. Attempting to add a user with the same ID is a fatal
     /// error. Note that it will return the existing user if there is one.
     /// @param id
@@ -39,14 +42,14 @@ class Users
 
     /// @param id
     /// @return OptionalRef<User>
-    OptionalRef<User> by_id(string id) const;
+    OptionalRef<User> by_id(string id);
     /// @param cookie
     /// @return OptionalRef<User>
-    OptionalRef<User> by_cookie(string cookie) const;
+    OptionalRef<User> by_cookie(string cookie);
 
     /// Convert Users into a json array.
     /// @return nlohmann::json
-    nlohmann::json to_json() const;
+    nlohmann::json to_json();
 
   private:
     /// Must be unique.

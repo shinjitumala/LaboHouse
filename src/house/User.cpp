@@ -12,6 +12,7 @@ namespace labo {
 User::User(const string id, const string cookie)
   : id{ id }
   , cookie{ cookie }
+  , status{ Status::free }
 {}
 
 string
@@ -33,8 +34,14 @@ User::to_string(Status s)
 }
 
 size_t
-User::hash(const User& u)
+User::hash::operator()(const User& u) const
 {
     return std::hash<string>()(u.cookie);
+}
+
+bool
+User::operator==(const User& rhs) const
+{
+    return this == &rhs;
 }
 }

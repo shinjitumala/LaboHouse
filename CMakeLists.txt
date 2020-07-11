@@ -65,6 +65,7 @@ target_sources(
   PRIVATE src/main.cpp
           src/debug/Log.cpp
           src/util/fdstreambuf.cpp
+          src/util/rand.cpp
           src/server/http/Request.cpp
           src/server/http/Response.cpp
           src/server/http/Html.cpp
@@ -83,6 +84,8 @@ string(PREPEND CSS "<style>")
 string(APPEND CSS "</style>")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/res/home.html
                ${CMAKE_CURRENT_BINARY_DIR}/res/home.html)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js)
 
 # Start server
 add_custom_target(start COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/start_server.sh)

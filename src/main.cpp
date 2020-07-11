@@ -38,13 +38,11 @@
 
 labo::LaboHouse labohouse{};
 
-std::mutex mtx;
-
 struct Action
 {
     Action(int socket_fd)
     {
-        std::lock_guard<std::mutex> lg{ mtx };
+        auto lg{ labo::log::get_lg() };
         using namespace labo;
         using namespace http;
         socket::fdstreambuf stream{ socket_fd };
@@ -98,15 +96,15 @@ struct Action
             case Request::Method::POST:
                 if (path == "/register") {
                     // Register new name
+                    auto id{ get_header("id") };
                     auto name{ get_header("name") };
-                    auto student_id{ get_header("student_id") };
 
                     // Mandatory check.
                     if (check_request()) {
                         return;
                     }
 
-                    if (labohouse.get(name)) {
+                    if (labohouse.Users::by_id(id)) {
                         out << forbidden(
                           "Name already exists. Please choose another one");
                         errs << "[Action] ERROR: Name already exists, " << name
@@ -114,10 +112,11 @@ struct Action
                         return;
                     }
 
-                    auto& user{ labohouse.Users::add(name, student_id) };
+                    auto& user{ labohouse.Users::add(id) };
+                    user.name = name;
                     out << Response{ Response::Status::OK,
-                                     { { "Set-Cookie", to_string(user.id) },
-                                       { "name", user.display_name } } };
+                                     { { "Set-Cookie", user.cookie },
+                                       { "name", user.name } } };
 
                     labohouse.chat(user, " has joined the chat!");
 
@@ -132,7 +131,7 @@ struct Action
                         return;
                     }
 
-                    auto opt{ labohouse.Users::get_from_id(cookie) };
+                    auto opt{ labohouse.Users::by_cookie(cookie) };
                     if (!opt) {
                         out << forbidden("Invalid cookie.");
                         errs << "[Action] ERROR: Invalid cookie, " << cookie
@@ -141,13 +140,11 @@ struct Action
                     }
 
                     auto& user{ opt.get() };
-                    logs << "Name for user " << user.id << " is "
-                         << user.display_name << endl;
                     out << Response{ Response::Status::OK,
-                                     { { "name", user.display_name } } };
+                                     { { "name", user.name } } };
 
-                    logs << "[Action] Name of user " << user.id << " is "
-                         << user.display_name << endl;
+                    logs << "[Action] Display name of user " << user.id
+                         << " is " << user.name << endl;
                     return;
                 }
 
@@ -160,18 +157,17 @@ struct Action
                         return;
                     }
 
-                    auto opt{ labohouse.Users::get_from_id(cookie) };
+                    auto opt{ labohouse.Users::by_cookie(cookie) };
                     if (!opt) {
                         out << forbidden("User does not exist: id = " + cookie);
                         return;
                     }
                     auto& user{ opt.get() };
                     auto status{ static_cast<User::Status>(stoul(himado)) };
-                    user.set_status(status);
+                    user.status = status;
                     out << Response{ Response::Status::OK };
 
-                    logs << "[User] " << user.display_name
-                         << "'s himado was changed to '"
+                    logs << "[User] " << user.id << "'s himado was changed to '"
                          << User::to_string(status) << "'." << endl;
                     return;
                 }
@@ -184,18 +180,17 @@ struct Action
                         return;
                     }
 
-                    auto opt{ labohouse.Users::get_from_id(cookie) };
+                    auto opt{ labohouse.Users::by_cookie(cookie) };
                     if (!opt) {
                         out << forbidden("User does not exist: id = " + cookie);
                         return;
                     }
                     auto& user{ opt.get() };
 
-                    auto himado{ User::to_string(user.status()) };
+                    auto himado{ User::to_string(user.status) };
                     out << Response{ Response::Status::OK,
                                      { { "Himado", himado } } };
-                    logs << "[User] " << user.display_name
-                         << " obtained his/her himado which is '" << himado
+                    logs << "[User] " << user.id << "'s himado is '" << himado
                          << "'." << endl;
                     return;
                 }
@@ -203,12 +198,6 @@ struct Action
                 if (path == "/names") {
                     out << Response{ Response::Status::OK,
                                      labohouse.Users::to_json() };
-                    return;
-                }
-
-                if (path == "/names_sorted") {
-                    out << Response{ Response::Status::OK,
-                                     labohouse.Users::to_json_sorted() };
                     return;
                 }
 
@@ -233,7 +222,7 @@ struct Action
                         return;
                     }
 
-                    auto opt{ labohouse.Users::get_from_id(cookie) };
+                    auto opt{ labohouse.Users::by_cookie(cookie) };
                     if (!opt) {
                         out << forbidden("User does not exist: id = " + cookie);
                         return;

@@ -21,7 +21,7 @@ Chat::Msg::print(ostream& os) const
 {
     auto time_t{ system_clock::to_time_t(time) };
     os << "[" << put_time(localtime(&time_t), "%Y-%m-%d_%X") << "] ";
-    os << user->display_name << " ";
+    os << user->name << " ";
     os << content;
 };
 
@@ -33,7 +33,7 @@ Chat::Msg::to_json() const
     auto time_t{ system_clock::to_time_t(time) };
     oss << "[" << put_time(localtime(&time_t), "%Y-%m-%d_%X") << "] ";
     j["time"] = oss.str();
-    j["user"] = user->display_name;
+    j["user"] = user->name;
     j["msg"] = content;
     return j;
 }

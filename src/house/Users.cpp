@@ -13,7 +13,6 @@
 #include <labo/house/Users.h>
 #include <labo/util/json.hpp>
 #include <labo/util/rand.h>
-#include <shared_mutex>
 
 namespace labo {
 User&
@@ -37,7 +36,7 @@ Users::add(string id)
 }
 
 OptionalRef<User>
-Users::by_id(string id) const
+Users::by_id(string id)
 {
     shared_lock lg{ mtx };
     if (auto itr{ ids.find(id) }; itr == ids.end()) {
@@ -48,7 +47,7 @@ Users::by_id(string id) const
 }
 
 OptionalRef<User>
-Users::by_cookie(string cookie) const
+Users::by_cookie(string cookie)
 {
     shared_lock lg{ mtx };
     if (auto itr{ cookies.find(cookie) }; itr == cookies.end()) {
@@ -59,8 +58,9 @@ Users::by_cookie(string cookie) const
 }
 
 nlohmann::json
-Users::to_json() const
+Users::to_json()
 {
+    shared_lock lg{ mtx };
     nlohmann::json j;
     unordered_map<User::Status, nlohmann::json> sorted;
     for (auto s{ User::Status::free };
@@ -68,8 +68,8 @@ Users::to_json() const
          s = static_cast<User::Status>(static_cast<char>(s) + 1)) {
         sorted[s] = nlohmann::json::array();
     }
-    for_each(users.begin(), users.end(), [&](auto u) {
-        sorted[u->status()].push_back(u->display_name);
+    for_each(users.begin(), users.end(), [&](auto& u) {
+        sorted[u.status].push_back(u.name);
     });
     for (auto [s, sj] : sorted) {
         j[User::to_string(s)] = sj;

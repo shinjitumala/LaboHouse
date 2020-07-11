@@ -29,12 +29,30 @@ warning()
 }
 
 namespace log {
+
+/// Callback that inserts a time tag before the line.
+struct TimeCallback
+{
+    /// Inserts time tag before printing line.
+    /// @param buf
+    /// @return int
+    int call(streambuf& buf) const;
+};
+
 TimeCallback tcb;
 TimeCallback tcb_err;
 LineCallbackBuf<TimeCallback> stream_hook{ cout, tcb };
 LineCallbackBuf<TimeCallback> stream_hook_errs{ cerr, tcb_err };
 
-mutex mtx;
+/// Lock used for logging.
+mutex lock;
+
+lock_guard<mutex>
+get_lg()
+{
+    return lock_guard<mutex>{ lock };
+};
+
 auto
 get_threadnum()
 {
@@ -59,7 +77,6 @@ get_threadnum()
 int
 TimeCallback::call(streambuf& buf) const
 {
-    lock_guard<mutex> lg{ mtx };
     string output{ "[T" + get_threadnum() + "] " };
     return buf.sputn(output.c_str(), output.size());
 };
