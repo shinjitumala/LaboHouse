@@ -207,11 +207,26 @@ function init() {
     addEventListener("mousewheel", resetTimer, false);
     addEventListener("touchmove", resetTimer, false);
     addEventListener("MSPointerMove", resetTimer, false);
+    addEventListener("blur", blur, false);
+    addEventListener("focus", focus, false);
 
     document.getElementById("chatbox").addEventListener("keypress", chatOnEnter);
 
     resetTimer();
 };
+
+function blur() {
+    if (!timer_on) {
+        return;
+    }
+    registerHima(2);
+}
+function focus() {
+    if (!timer_on) {
+        return;
+    }
+    registerHima(0);
+}
 
 function goInactive() {
     registerHima(2);
