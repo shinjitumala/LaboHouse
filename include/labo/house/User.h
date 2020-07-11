@@ -29,29 +29,26 @@ class User
     /// @return string
     static string to_string(Status s);
 
-    /// Identifier for the user. Also used as the cookie. (FIXME: Vulnerable)
-    const ulong id;
-    /// Display name
-    const string display_name;
     /// Student id
-    const string student_id;
+    const string id;
+    /// Identifier for the user. Also used as the cookie. (FIXME: Vulnerable)
+    const string cookie;
 
-  private:
+    /// Display name
+    string name;
     /// level for freeness (is that a word?)
-    Status status_flag;
+    Status status;
 
   public:
     /// A user must have an id and a name.
     /// @param id
-    /// @param display_name
-    User(const ulong id, const string display_name, const string student_id);
+    /// @param cookie
+    User(const string id, const string cookie);
 
-    /// @return Status The current status of the user.
-    Status status() const;
-
-    /// Change status of user.
-    /// @param status
-    void set_status(Status status);
+    /// Get hash.
+    /// @param u
+    /// @return size_t
+    static size_t hash(const User& u);
 
   private:
     /// Disallow copy because users are supposed to be unique.
