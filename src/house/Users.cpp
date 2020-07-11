@@ -12,65 +12,46 @@
 #include <labo/house/User.h>
 #include <labo/house/Users.h>
 #include <labo/util/json.hpp>
+#include <labo/util/rand.h>
+#include <shared_mutex>
 
 namespace labo {
-Users::~Users()
-{
-    for_each(users.begin(), users.end(), [](auto u) { delete u; });
-}
-
 User&
-Users::add(string display_name, string student_id)
+Users::add(string id)
 {
-    static ulong name_counter{ 0 };
-    lock_guard<mutex> lg{ mtx };
-    if (auto itr{ usernames.find(display_name) }; itr != usernames.end()) {
+    unique_lock lg{ mtx };
+    // Check if someone has the same id.
+    if (auto itr{ ids.find(id) }; itr != ids.end()) {
+        errs << "[Users] Same ID: " << id << endl;
         return *(itr->second);
     }
-    auto user{ new User{ name_counter, display_name, student_id } };
-    users.insert(user);
-    usernames.insert({ display_name, user });
-    ids.insert({ name_counter, user });
-    auto id{ name_counter };
-    logs << "[Users] New user: { id = " << id << ", name = " << display_name
-         << " }" << endl;
-    name_counter++;
-    return *user;
+    auto cookie{ random_string(256) };
+    for (; cookies.count(cookie); cookie = random_string(256)) {
+    }
+    auto [uitr, b]{ users.emplace(id, cookie) };
+    auto& user{ const_cast<User&>(*uitr) };
+    ids.insert({ id, &user });
+    cookies.insert({ cookie, &user });
+    logs << "[Users] New user: { id = " << id << " }" << endl;
+    return user;
 }
 
 OptionalRef<User>
-Users::get(string display_name) const
+Users::by_id(string id) const
 {
-    if (auto itr{ usernames.find(display_name) }; itr == usernames.end()) {
+    shared_lock lg{ mtx };
+    if (auto itr{ ids.find(id) }; itr == ids.end()) {
         return OptionalRef<User>{};
     } else {
         return *itr->second;
     }
 }
 
-bool
-is_number(string s)
-{
-    return !s.empty() && find_if(s.begin(), s.end(), [](auto c) {
-                             return !isdigit(c);
-                         }) == s.end();
-}
-
 OptionalRef<User>
-Users::get_from_id(string id) const
+Users::by_cookie(string cookie) const
 {
-    if (!is_number(id)) {
-        errs << "ID is not a number: " << id << endl;
-        return OptionalRef<User>{};
-    }
-
-    return get(stoul(id));
-}
-
-OptionalRef<User>
-Users::get(ulong id) const
-{
-    if (auto itr{ ids.find(id) }; itr == ids.end()) {
+    shared_lock lg{ mtx };
+    if (auto itr{ cookies.find(cookie) }; itr == cookies.end()) {
         return OptionalRef<User>{};
     } else {
         return *itr->second;
@@ -79,16 +60,6 @@ Users::get(ulong id) const
 
 nlohmann::json
 Users::to_json() const
-{
-    nlohmann::json j{ nlohmann::json::array() };
-    for_each(usernames.begin(), usernames.end(), [&](auto& p) {
-        j.push_back(p.first);
-    });
-    return j;
-}
-
-nlohmann::json
-Users::to_json_sorted() const
 {
     nlohmann::json j;
     unordered_map<User::Status, nlohmann::json> sorted;
@@ -106,5 +77,4 @@ Users::to_json_sorted() const
 
     return j;
 }
-
 };

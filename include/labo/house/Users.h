@@ -7,6 +7,7 @@
 /// See the licenses directory for details.
 #pragma once
 
+#include <labo/house/User.h>
 #include <labo/util/OptionalRef.h>
 #include <labo/util/json.hpp>
 #include <mutex>
@@ -16,7 +17,6 @@
 namespace labo {
 using namespace std;
 using ulong = unsigned long;
-class User;
 
 /// Dictionary of users.
 class Users
@@ -24,44 +24,32 @@ class Users
     /// Mutex used to avoid data corruption.
     mutex mtx;
     /// All users. Owned by this.
-    unordered_set<User*> users;
-    /// Used for name lookups.
-    unordered_map<string, User*> usernames;
+    unordered_set<User> users;
     /// Used for id lookups.
-    unordered_map<ulong, User*> ids;
+    unordered_map<string, User*> ids;
+    /// Used for cookie lookups.
+    unordered_map<string, User*> cookies;
 
   public:
-    /// We own users.
-    ~Users();
+    /// Adds a new user. Attempting to add a user with the same ID is a fatal
+    /// error. Note that it will return the existing user if there is one.
+    /// @param id
+    /// @return The new user.
+    User& add(string id);
 
-    /// Adds a new user
-    /// Note that it will return the existing user if there is one.
-    /// @param display_name
-    /// @param student_id
-    /// @return OptionalRef<User> The new user.
-    User& add(string display_name, string student_id);
-
-    /// Fatal error if missing.
-    /// @param display_name
-    /// @return OptionalRef<User>
-    OptionalRef<User> get(string display_name) const;
-    /// Fatal error if missing.
     /// @param id
     /// @return OptionalRef<User>
-    OptionalRef<User> get_from_id(string id) const;
+    OptionalRef<User> by_id(string id) const;
+    /// @param cookie
+    /// @return OptionalRef<User>
+    OptionalRef<User> by_cookie(string cookie) const;
 
     /// Convert Users into a json array.
     /// @return nlohmann::json
     nlohmann::json to_json() const;
 
-    /// Convert Users into an json array (Separated with HIMADO)
-    /// @return nlohmann::json
-    nlohmann::json to_json_sorted() const;
-
   private:
-    /// Fatal error if missing.
-    /// @param id
-    /// @return OptionalRef<User>
-    OptionalRef<User> get(ulong id) const;
+    /// Must be unique.
+    Users(const Users&) = delete;
 };
 };
