@@ -11,7 +11,7 @@
 #include <labo/debug/Log.h>
 #include <labo/house/User.h>
 #include <labo/house/Users.h>
-#include <labo/util/json.hpp>
+#include <nlohmann/json.hpp>
 #include <labo/util/rand.h>
 
 namespace labo {

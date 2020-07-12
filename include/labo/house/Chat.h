@@ -7,7 +7,7 @@
 /// See the licenses directory for details.
 #pragma once
 #include <chrono>
-#include <labo/util/json.hpp>
+#include <nlohmann/json.hpp>
 #include <list>
 #include <string>
 

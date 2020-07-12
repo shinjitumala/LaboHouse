@@ -7,7 +7,7 @@
 /// See the licenses directory for details.
 #pragma once
 #include <labo/server/http/Html.h>
-#include <labo/util/json.hpp>
+#include <nlohmann/json.hpp>
 #include <labo/util/stream.h>
 #include <map>
 #include <string>

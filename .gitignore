@@ -1,4 +1,3 @@
 build/*
 .vscode
 doxygen
-include/labo/util/json.hpp

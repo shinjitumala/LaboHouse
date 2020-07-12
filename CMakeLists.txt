@@ -28,8 +28,10 @@ add_compile_options(-Wall # enable all warnings, because why not?
 # List all sources here.
 add_executable(LaboHouse)
 target_compile_features(LaboHouse PUBLIC cxx_std_17)
-target_include_directories(LaboHouse
-                           PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(
+  LaboHouse
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/json/single_include/)
 target_link_libraries(
   LaboHouse
   # LLVM
@@ -84,8 +86,14 @@ string(PREPEND CSS "<style>")
 string(APPEND CSS "</style>")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/res/home.html
                ${CMAKE_CURRENT_BINARY_DIR}/res/home.html)
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css)
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js)
+set_property(
+  DIRECTORY
+  APPEND
+  PROPERTY CMAKE_CONFIGURE_DEPENDS
+           ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css)
+set_property(
+  DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+                            ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js)
 
 # Start server
 add_custom_target(start COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/start_server.sh)
