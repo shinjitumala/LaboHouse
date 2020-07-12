@@ -66,6 +66,7 @@ target_sources(
           src/server/http/Response.cpp
           src/server/http/Html.cpp
           src/server/http/ResponseHelper.cpp
+          src/server/Server.cpp
           src/LaboHouse.cpp
           src/house/User.cpp
           src/house/Users.cpp
