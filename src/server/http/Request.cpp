@@ -5,28 +5,67 @@
 ///
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
+#include <fstream>
 #include <labo/debug/Log.h>
 #include <labo/server/http/Request.h>
 #include <labo/util/OptionalRef.h>
 #include <limits>
+#include <mutex>
 #include <regex>
 #include <sstream>
 
 namespace labo::http {
+ofstream logs{ "requests.log" };
+mutex mtx;
+
+
+istream&
+get_line(istream& is, string& str)
+{
+    str.clear();
+    istream::sentry s{ is, true };
+    auto buf{ is.rdbuf() };
+    while (true) {
+        auto c{ buf->sbumpc() };
+        switch (c) {
+            case '\r':
+                if (buf->sgetc() == '\n') {
+                    buf->sbumpc();
+                } else {
+                    is.setstate(ios::eofbit);
+                    errs << "Unexpected '\\r': " << str << endl;
+                }
+                return is;
+            case std::streambuf::traits_type::eof():
+                is.setstate(std::ios::eofbit);
+                errs << "Line has no end: " << str << endl;
+                return is;
+            default:
+                str += static_cast<char>(c);
+        }
+    }
+}
+
 void
 Request::deserialize(istream& is)
 {
-    auto check_is = [&]() {
-        if (is.bad()) {
-            errs << "Parsing error." << endl;
-            failure();
+    lock_guard lg{mtx};
+    auto is_valid = [&]() {
+        if (is.bad() || is.eof()) {
+            errs << "[Request] error." << endl;
+            return false;
         }
+        return true;
     };
 
-    logs << "Request: Parsing..." << endl;
+    logs << "[Request] Parsing..." << endl;
+    valid = false;
 
     /// Get first line
-    if (string line; getline(is, line)) {
+    for (string line; get_line(is, line);) {
+        if (!line.size()) {
+            continue;
+        }
         istringstream is{ line };
         string raw_method_tag;
         is >> raw_method_tag;
@@ -36,12 +75,11 @@ Request::deserialize(istream& is)
             method_tag = Method::POST;
         } else {
             errs << "Unexpected Request: " << raw_method_tag << endl;
-            failure();
+            return;
         }
         logs << "Method: " << raw_method_tag << endl;
 
         is >> raw_path;
-        check_is();
         static const regex query_pattern{ "^(/[^\?]*)\\?\?(.*)$" };
         if (smatch matches; regex_match(raw_path, matches, query_pattern)) {
             raw_path = matches[1];
@@ -71,22 +109,24 @@ Request::deserialize(istream& is)
 
         string protocol;
         is >> protocol;
-        check_is();
         logs << "Protocol Version: " << protocol << endl;
-    } else {
-        errs << "Parsing error." << endl;
-        failure();
+        break;
+    }
+
+    valid = is_valid();
+    if (!valid) {
+        return;
     }
 
     /// Get rest.
     logs << "Headers {" << endl;
-    for (string line; getline(is, line);) {
-        if (line.size() == 0 || line == "\r") {
+    for (string line; get_line(is, line);) {
+        if (line.size() == 0) {
             break;
         }
 
         const regex header_pattern{
-            "^([^:]+): (.+)\r?$"
+            "^([^:]+): (.+)$"
         }; // HOLY SHIT FUCK YOU CARRIGE RETURN. FUCK YOU FUCK YOU FFUCK YOU.
         if (smatch matches;
             regex_match(line, matches, header_pattern) && matches.size() > 2) {
@@ -98,8 +138,13 @@ Request::deserialize(istream& is)
         }
     }
     logs << "}" << endl;
+    valid = is_valid();
+    if (!valid) {
+        return;
+    }
 
-    logs << "Request: Done parsing!" << endl;
+    valid = true;
+    logs << "[Request] Done parsing!" << endl;
 }
 
 Request::Method
