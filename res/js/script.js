@@ -63,7 +63,9 @@ function registerHima(value = document.getElementById("himado").value) {
             getHima();
             refresh_main();
         },
-        error: function (res, error, status) {
+            if (ignore_error) {
+                return;
+            }
             show_error(res, status)
         }
     });
