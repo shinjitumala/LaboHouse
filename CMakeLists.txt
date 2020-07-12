@@ -31,7 +31,7 @@ target_compile_features(LaboHouse PUBLIC cxx_std_17)
 target_include_directories(
   LaboHouse
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/json/single_include/)
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/extern/json/single_include/)
 target_link_libraries(
   LaboHouse
   # LLVM
