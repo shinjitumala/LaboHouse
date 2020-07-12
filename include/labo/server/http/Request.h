@@ -49,6 +49,9 @@ class Request
     /// body
     string body;
 
+    /// True if request is valid;
+    bool valid{ false };
+
   private:
     /// Method of the request
     Method method_tag;
