@@ -14,14 +14,14 @@ function registerName() {
             'name': document.getElementById("name").value,
         },
 
-        success: function (data, status, req) {
+        success: function (_data, _status, _req) {
             refresh_main();
 
             // Hide the registration page and show the main page.
             document.getElementById("page::register").style.display = "none";
             document.getElementById("page::main").style.display = "block";
         },
-        error: function (res, error, status) {
+        error: function (res, _error, status) {
             show_error(res, status)
         }
     });
@@ -32,7 +32,7 @@ function queryUser(callback = noop) {
         type: 'POST',
         url: "/name",
 
-        success: function (data, status, req) {
+        success: function (_data, _status, req) {
             var name = req.getResponseHeader("name");
             // Changing the name display.
             document.getElementById("block::name").innerText = "";
@@ -44,13 +44,13 @@ function queryUser(callback = noop) {
             document.getElementById("page::register").style.display = "none";
             document.getElementById("page::main").style.display = "block";
         },
-        error: function (res, error, status) {
+        error: function (_res, _error, _status) {
             // Do nothing 
         }
     });
 }
 
-function registerHima(value = document.getElementById("himado").value) {
+function registerHima(value = document.getElementById("himado").value, ignore_error = false) {
     document.getElementById("himado").value = value;
     $.ajax({
         type: 'POST',
@@ -59,10 +59,11 @@ function registerHima(value = document.getElementById("himado").value) {
             'Himado': value
         },
 
-        success: function (data, status, req) {
+        success: function (_data, _status, _req) {
             getHima();
             refresh_main();
         },
+        error: function (res, _error, status) {
             if (ignore_error) {
                 return;
             }
@@ -75,10 +76,10 @@ function getHima() {
     $.ajax({
         type: 'POST',
         url: '/gethimado',
-        success: function (data, status, req) {
+        success: function (_data, _status, req) {
             var himado = req.getResponseHeader("Himado");
         },
-        error: function (res, error, status) {
+        error: function (res, _error, status) {
             show_error(res, status)
         }
     });
@@ -114,12 +115,12 @@ function getNames() {
     $.ajax({
         type: 'POST',
         url: '/names',
-        success: function (data, status, req) {
+        success: function (data, _status, _req) {
             display_members(data);
 
             data_members = data;
         },
-        error: function (res, error, status) {
+        error: function (res, _error, status) {
             show_error(res, status)
         }
     });
@@ -147,11 +148,11 @@ function sendChat() {
         type: 'POST',
         url: '/chat_main',
         headers: { 'message': document.getElementById("chatbox").value },
-        success: function (data, status, req) {
+        success: function (_data, _status, _req) {
             document.getElementById("chatbox").value = "";
             getChat();
         },
-        error: function (r, e, s) {
+        error: function (r, _e, s) {
             show_error(r, s);
         }
     });
@@ -168,7 +169,7 @@ function getChat() {
     $.ajax({
         type: 'POST',
         url: '/chat_main_get',
-        success: function (data, status, req) {
+        success: function (data, _status, _req) {
             var chat = document.getElementById("block::chat_main");
             chat.innerText = ""; // Reset chat
 
@@ -181,7 +182,7 @@ function getChat() {
             }
             chat.innerText = text;
         },
-        error: function (r, e, s) {
+        error: function (r, _e, s) {
             show_error(r, s);
         }
     });
@@ -218,16 +219,13 @@ function init() {
 };
 
 function blur() {
-    if (!timer_on) {
-        return;
-    }
-    registerHima(2);
+    registerHima(2, true);
 }
 function focus() {
     if (!timer_on) {
         return;
     }
-    registerHima(0);
+    registerHima(0, true);
 }
 
 function goInactive() {
