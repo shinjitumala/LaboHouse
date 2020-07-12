@@ -39,7 +39,7 @@ Response::Response(Status status, Headers headers)
 void
 Response::print(ostream& os) const
 {
-    static const string http_protocol_ver{ "HTTP/1.1" };
+    static const string http_protocol_ver{ "HTTP/1.0" };
     os << http_protocol_ver << " " << static_cast<uint>(status) << " "
        << to_string(status) << endl;
     for (auto& [data, value] : headers) {
