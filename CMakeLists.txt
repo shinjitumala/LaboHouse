@@ -5,14 +5,8 @@ project(LaboHousePrototype)
 
 # C++ Requirements
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
-find_program(HAS_CLANG clang)
-if(HAS_CLANG)
-  set(CMAKE_C_COMPILER clang)
-endif()
-find_program(HAS_CLANG clang++)
-if(HAS_CLANG)
-  set(CMAKE_CXX_COMPILER clang++)
-endif()
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
 
 # OS Check
 if(NOT UNIX)
