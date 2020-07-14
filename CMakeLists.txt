@@ -17,7 +17,7 @@ endif()
 
 # Global flags
 add_compile_options(-Wall # enable all warnings, because why not?
-                    -g3 -fno-rtti -fno-exceptions)
+                    -g3 -fno-rtti)
 
 # List all sources here.
 add_executable(LaboHouse)
@@ -25,7 +25,8 @@ target_compile_features(LaboHouse PUBLIC cxx_std_17)
 target_include_directories(
   LaboHouse
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/extern/json/single_include/)
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/extern/json/single_include/
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/extern/websocketpp)
 target_link_libraries(
   LaboHouse
   # LLVM
