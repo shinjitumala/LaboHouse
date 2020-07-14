@@ -75,9 +75,12 @@ target_sources(
           src/house/Chat.cpp)
 
 # Configure HTML
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js JAVASCRIPT)
-string(PREPEND JAVASCRIPT "<script type=\"text/javascript\">")
-string(APPEND JAVASCRIPT "</script>")
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js JS)
+string(PREPEND JS "<script type=\"text/javascript\">")
+string(APPEND JS "</script>")
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/labohouse_api.js API_JS)
+string(PREPEND API_JS "<script type=\"text/javascript\">")
+string(APPEND API_JS "</script>")
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css CSS)
 string(PREPEND CSS "<style>")
 string(APPEND CSS "</style>")
@@ -93,6 +96,9 @@ set_property(
 set_property(
   DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
                             ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js)
+set_property(
+  DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+                            ${CMAKE_CURRENT_SOURCE_DIR}/res/js/labohouse_api.js)
 
 # Start server
 add_custom_target(start COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/start_server.sh)

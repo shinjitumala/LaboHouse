@@ -1,31 +1,8 @@
-/// Standard function used to display HTTP request errors.
-function show_error(res, status) {
-    window.alert(status + ": " + res.getResponseHeader("error"));
-}
+// The websocket
+var ws;
 
-function noop() { };
-
-function registerName() {
-    $.ajax({
-        type: 'POST',
-        url: "/register",
-        headers: {
-            'id': document.getElementById("id").value,
-            'name': document.getElementById("name").value,
-        },
-
-        success: function (_data, _status, _req) {
-            refresh_main();
-
-            // Hide the registration page and show the main page.
-            document.getElementById("page::register").style.display = "none";
-            document.getElementById("page::main").style.display = "block";
-        },
-        error: function (res, _error, status) {
-            show_error(res, status)
-        }
-    });
-}
+// Run on page load.
+window.onload = openSocket();
 
 function queryUser(callback = noop) {
     $.ajax({
@@ -213,24 +190,6 @@ function refresh_main() {
 
 var timer;
 var timer_on = false;
-// Run on page load.
-function init() {
-    queryUser(refresh_main);
-
-    addEventListener("mousemove", resetTimer, false);
-    addEventListener("mousedown", resetTimer, false);
-    addEventListener("keypress", resetTimer, false);
-    addEventListener("DOMMouseScroll", resetTimer, false);
-    addEventListener("mousewheel", resetTimer, false);
-    addEventListener("touchmove", resetTimer, false);
-    addEventListener("MSPointerMove", resetTimer, false);
-    addEventListener("blur", blur, false);
-    addEventListener("focus", focus, false);
-
-    document.getElementById("chatbox").addEventListener("keypress", chatOnEnter);
-
-    resetTimer();
-};
 
 function blur() {
     registerHima(2, true);
@@ -254,4 +213,3 @@ function resetTimer() {
     timer = window.setTimeout(goInactive, 2000); // Timeout is in ms
 }
 
-window.onload = init;
