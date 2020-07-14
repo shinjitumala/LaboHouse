@@ -5,6 +5,7 @@
 ///
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
+#include <nlohmann/json.hpp>
 #include <labo/debug/Log.h>
 #include <labo/house/User.h>
 
@@ -43,5 +44,12 @@ bool
 User::operator==(const User& rhs) const
 {
     return this == &rhs;
+}
+
+nlohmann::json User::to_json()const{
+    nlohmann::json j;
+    j["name"] = name;
+    j["id"] = id;
+    return j;
 }
 }

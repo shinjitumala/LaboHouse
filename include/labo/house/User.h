@@ -7,6 +7,7 @@
 /// See the licenses directory for details.
 #pragma once
 #include <mutex>
+#include <nlohmann/json.hpp>
 
 namespace labo {
 using namespace std;
@@ -57,6 +58,10 @@ class User
     /// @return true If this is the same instance as rhs.
     /// @return false
     bool operator==(const User& rhs) const;
+
+    /// Obtain this as json.
+    /// @return nlohmann::json
+    nlohmann::json to_json() const;
 
   private:
     /// Disallow copy because users are supposed to be unique.
