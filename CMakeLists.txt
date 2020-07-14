@@ -67,7 +67,8 @@ target_sources(
           src/server/http/Response.cpp
           src/server/http/Html.cpp
           src/server/http/ResponseHelper.cpp
-          src/server/Server.cpp
+          src/server/Html.cpp
+          src/server/WS.cpp
           src/LaboHouse.cpp
           src/house/User.cpp
           src/house/Users.cpp
@@ -82,6 +83,8 @@ string(PREPEND CSS "<style>")
 string(APPEND CSS "</style>")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/res/home.html
                ${CMAKE_CURRENT_BINARY_DIR}/res/home.html)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/res/not_found.html
+               ${CMAKE_CURRENT_BINARY_DIR}/res/not_found.html)
 set_property(
   DIRECTORY
   APPEND
