@@ -19,6 +19,7 @@
 #include <labo/server/http/ResponseHelper.h>
 #include <labo/util/fdstreambuf.h>
 #include <limits>
+#include <mutex>
 #include <ratio>
 #include <regex>
 #include <signal.h>
@@ -29,9 +30,12 @@ using namespace server;
 LaboHouse labohouse{};
 optional<Server*> the_server;
 
+mutex mtx;
+
 void
 action(int socket_fd)
 {
+    lock_guard lg{mtx};
     using namespace labo;
     using namespace http;
     socket::fdstreambuf stream{ socket_fd };
