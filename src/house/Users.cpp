@@ -69,7 +69,7 @@ Users::to_json()
         sorted[s] = nlohmann::json::array();
     }
     for_each(users.begin(), users.end(), [&](auto& u) {
-        sorted[u.status].push_back(u.name);
+        sorted[u.status].push_back(u.name + "#" + u.id);
     });
     for (auto [s, sj] : sorted) {
         j[User::to_string(s)] = sj;

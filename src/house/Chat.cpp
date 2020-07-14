@@ -33,7 +33,7 @@ Chat::Msg::to_json() const
     auto time_t{ system_clock::to_time_t(time) };
     oss << "[" << put_time(localtime(&time_t), "%Y-%m-%d_%X") << "] ";
     j["time"] = oss.str();
-    j["user"] = user->name;
+    j["user"] = user->to_json();
     j["msg"] = content;
     return j;
 }
