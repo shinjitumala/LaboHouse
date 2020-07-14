@@ -77,7 +77,6 @@ function getHima() {
         type: 'POST',
         url: '/gethimado',
         success: function (_data, _status, req) {
-            var himado = req.getResponseHeader("Himado");
         },
         error: function (res, _error, status) {
             show_error(res, status)
