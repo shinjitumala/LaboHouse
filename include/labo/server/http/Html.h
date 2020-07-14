@@ -28,7 +28,7 @@ class Html
     Html(path file);
 
     /// Creates a new ifstream for the file.
-    /// @return ifstream 
+    /// @return ifstream
     ifstream read() const;
 };
 

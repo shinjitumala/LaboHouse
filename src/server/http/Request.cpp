@@ -18,7 +18,6 @@ namespace labo::http {
 ofstream logs{ "requests.log" };
 mutex mtx;
 
-
 istream&
 get_line(istream& is, string& str)
 {
@@ -49,7 +48,7 @@ get_line(istream& is, string& str)
 void
 Request::deserialize(istream& is)
 {
-    lock_guard lg{mtx};
+    lock_guard lg{ mtx };
     auto is_valid = [&]() {
         if (is.bad() || is.eof()) {
             errs << "[Request] error." << endl;
