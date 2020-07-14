@@ -30,17 +30,27 @@
         <p style="text-align:center;">LaboHouse (alpha)</p>
     </div>
 
-    <div id="page::register" class="page">
-        <!-- Register Name -->
-        <center>
-            <form>
-                <label for="api-url">ID: </label>
-                <input class="form-control" type="text" id="id" value="">
-                <label for="api-url">Display name: </label>
-                <input class="form-control" type="text" id="name" value="">
-                <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
-            </form>
-        </center>
+    <div class="container">
+        <div class="jumbotron mx-auto mt-4 col-6">
+            <div id="page::register" class="page">
+                <!-- Register Name -->
+                <center>
+                    <form>
+                        <div class="py-2">
+                            <label for="api-url">ID: </label>
+                            <input class="form-control" type="text" id="id" value="">
+                        </div>
+                        <div class="py-2">
+                            <label for="api-url">Display name: </label>
+                            <input class="form-control" type="text" id="name" value="">
+                        </div>
+                        <div class="py-2">
+                        <button type="button" onclick="registerName()" class="btn btn-primary rounded-pill">Send</button>
+                        </div>
+                    </form>
+                </center>
+            </div>
+        </div>
     </div>
 
     <div id="page::main" class="page" style="display: none;">
