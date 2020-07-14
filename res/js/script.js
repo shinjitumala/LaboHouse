@@ -172,14 +172,29 @@ function getChat() {
             var chat = document.getElementById("block::chat_main");
             chat.innerText = ""; // Reset chat
 
-            var text = "";
             for (var i in data) {
                 var m = data[i];
-                text += m.time;
-                text += m.user + ": ";
-                text += m.msg + "\n";
+                var line = document.createElement("div");
+                var time = document.createElement("div");
+                time.className = "inline-div margin"
+                time.innerText = m.time;
+                var user = document.createElement("div");
+                user.innerText = m.user.name + ":";
+                user.className = "tooltip inline-div margin";
+                var user_hover = document.createElement("span");
+                user_hover.innerText = m.user.name + "#" + m.user.id;
+                user_hover.className = "tooltiptext";
+                user.appendChild(user_hover);
+
+                var msg = document.createElement("div");
+                msg.innerText = m.msg;
+                msg.className = "inline-div margin";
+
+                line.appendChild(time);
+                line.appendChild(user);
+                line.appendChild(msg);
+                chat.appendChild(line);
             }
-            chat.innerText = text;
         },
         error: function (r, _e, s) {
             show_error(r, s);
