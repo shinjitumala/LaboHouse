@@ -22,12 +22,14 @@ unauthorized(string error)
 };
 
 Response
-forbidden(string error){
+forbidden(string error)
+{
     return { Response::Status::FORBIDDEN, { { "error", error } } };
 }
 
 Response
-bad_request(string error){
+bad_request(string error)
+{
     return { Response::Status::BAD_REQUEST, { { "error", error } } };
 }
 };

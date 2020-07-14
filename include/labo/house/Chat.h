@@ -7,8 +7,8 @@
 /// See the licenses directory for details.
 #pragma once
 #include <chrono>
-#include <nlohmann/json.hpp>
 #include <list>
+#include <nlohmann/json.hpp>
 #include <string>
 
 namespace labo {

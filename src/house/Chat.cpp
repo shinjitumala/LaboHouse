@@ -9,8 +9,8 @@
 #include <iomanip>
 #include <labo/house/Chat.h>
 #include <labo/house/User.h>
-#include <nlohmann/json.hpp>
 #include <labo/util/stream.h>
+#include <nlohmann/json.hpp>
 #include <ostream>
 #include <sstream>
 
