@@ -79,3 +79,18 @@ textarea {
   width: 100%;
   box-sizing: border-box;
 }
+
+.jumbotron{
+    background-color: #C6E7E1;
+}
+
+.btn{
+    background-color: #2AC6AC;
+    color: #000000;
+}
+
+.btn:hover{
+    background-color: #22A08B;
+    color: #ffffff;
+
+}
