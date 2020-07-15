@@ -34,8 +34,8 @@ function registerUser(id, name, success = function () { }, fail = function () { 
 
 function ajax_error(res) {
     if (res.readyState == 4) {
-        window.alert(res.getResponseHeader("error"));
+        window.alert("[Error] " + res.getResponseHeader("error"));
     } else if (res.readyState == 0) {
-        window.alert("Network error");
+        window.alert("Network error.");
     }
 }
