@@ -18,6 +18,25 @@
 namespace labo {
 using namespace std;
 using ulong = unsigned long;
+using Json = nlohmann::json;
+
+/// Vector reference that disallows adding or removing elements.
+template<class T>
+struct VectorRef
+{
+    using Vector = vector<T>;
+
+  private:
+    Vector& t;
+
+  public:
+    VectorRef(Vector& t)
+      : t{ t }
+    {}
+
+    typename Vector::iterator begin() { return t.begin(); };
+    typename Vector::iterator end() { return t.end(); };
+};
 
 /// Dictionary of users.
 class Users
@@ -25,7 +44,7 @@ class Users
     /// Mutex used to avoid data corruption.
     shared_mutex mtx;
     /// All users. Owned by this.
-    unordered_set<User, User::hash> users;
+    vector<User> users;
     /// Used for id lookups.
     unordered_map<string, User*> ids;
     /// Used for cookie lookups.
@@ -48,10 +67,13 @@ class Users
     OptionalRef<User> by_cookie(string cookie);
 
     /// Convert Users into a json array.
-    /// @return nlohmann::json
-    nlohmann::json to_json();
+    /// @return Json
+    Json to_json();
 
-  private:
+    /// Implicit conversion to a VectorRef.
+    /// @return VectorRef<User> &
+    operator VectorRef<User>();
+
     /// Must be unique.
     Users(const Users&) = delete;
 };
