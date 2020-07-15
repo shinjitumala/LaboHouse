@@ -12,6 +12,7 @@
 namespace labo {
 using namespace std;
 using ulong = unsigned long;
+using Json = nlohmann::json;
 
 /// Holds the data relevant to the user.
 class User
@@ -61,8 +62,11 @@ class User
     bool operator==(const User& rhs) const;
 
     /// Obtain this as json.
-    /// @return nlohmann::json
-    nlohmann::json to_json() const;
+    /// @return Json
+    Json to_json() const;
+
+    /// Allow move.
+    User(User&&) = default;
 
   private:
     /// Disallow copy because users are supposed to be unique.
