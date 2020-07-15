@@ -17,14 +17,15 @@ using ulong = unsigned long;
 class User
 {
   public:
-    enum class Status : unsigned char
+    enum Status : unsigned char
     {
-        free, // Doing nothing
-        easy, // Working but available for some chit-chat
-        busy, // Do not disturb
-        offline,
-        last, // Final element
+        sFree,    // Doing nothing
+        sEasy,    // Working but available for some chit-chat
+        sBusy,    // Do not disturb
+        sOffline, // Offline. (For future use.)
+        sLast,    // Final element
     };
+
     /// Convert status to string.
     /// @param s
     /// @return string
