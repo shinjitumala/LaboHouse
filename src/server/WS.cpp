@@ -44,6 +44,7 @@ WebSocket::start(const int port)
     set_reuse_addr(true);
 
     listen(port);
+    logs << "[WebSocket] Started WebSocket at port: " << port << endl;
     start_accept();
     run();
 }
