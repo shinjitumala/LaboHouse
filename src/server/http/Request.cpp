@@ -15,7 +15,7 @@
 #include <sstream>
 
 namespace labo::http {
-ofstream logs{ "requests.log" };
+ofstream logs{ "http1_requests.log" };
 mutex mtx;
 
 istream&
