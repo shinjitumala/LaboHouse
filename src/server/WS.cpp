@@ -5,15 +5,22 @@
 ///
 /// Part of the SWORD tool. Proprietary and confidential.
 /// See the licenses directory for details.
+#include "labo/debug/Log.h"
+#include "nlohmann/json.hpp"
+#include "websocketpp/common/connection_hdl.hpp"
+#include "websocketpp/frame.hpp"
 #include <labo/server/WS.h>
+#include <mutex>
 
 namespace labo::server {
 using namespace websocketpp;
+using namespace std;
 
-WebSocket::WebSocket()
+WebSocket::WebSocket(decltype(msg_cb) msg_cb, decltype(close_cb) close_cb)
+  : msg_cb{ msg_cb }
+  , close_cb{ close_cb }
 {
-    using namespace log;
-    using namespace lib::placeholders;
+    using namespace websocketpp::log;
 
     /// Logger settings
     clear_error_channels(elevel::all);
@@ -24,8 +31,9 @@ WebSocket::WebSocket()
     set_access_channels(alevel::disconnect);
     set_access_channels(alevel::message_payload);
 
+    using namespace lib::placeholders;
     set_open_handler(bind(&WebSocket::on_open, this, _1));
-
+    set_close_handler(bind(&WebSocket::on_close, this, _1));
     set_message_handler(bind(&WebSocket::on_message, this, _1, _2));
 };
 
@@ -43,15 +51,21 @@ WebSocket::start(const int port)
 void
 WebSocket::on_open(connection_hdl h)
 {}
-
 void
 WebSocket::on_message(connection_hdl h, message_ptr m)
 {
-    std::cout << "MSG" << m->get_payload() << std::endl;
-    nlohmann::json j;
-    j["hage"] = "M";
-    send(h, j.dump(), frame::opcode::text);
-    close(h, close::status::normal, "A");
+    msg_cb(m->get_payload(), h);
 }
 
+void
+WebSocket::on_close(connection_hdl h)
+{
+    close_cb(h);
+}
+
+void
+WebSocket::send(string &s, connection_hdl h)
+{
+    Base::send(h, s, frame::opcode::text);
+}
 }
