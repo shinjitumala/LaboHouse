@@ -55,5 +55,8 @@ class WebSocket : public websocketpp::server<websocketpp::config::asio>
 
     /// Connection Close handler.
     void on_close(websocketpp::connection_hdl h);
+
+    /// No copy.
+    WebSocket(const WebSocket&) = delete;
 };
 };
