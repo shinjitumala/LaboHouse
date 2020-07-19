@@ -34,6 +34,7 @@ class LaboHouse
 
     mutex mtx_online;
     map<Connection, User*, owner_less<Connection>> online;
+    unordered_map<User*, Connection> ronline;
 
     Chat main_chat;
 
@@ -53,17 +54,25 @@ class LaboHouse
     void request(Json j, Connection c);
 
     /// Dump contents for debugging.
-    /// @param os
-    void print(ostream& os) const;
+    /// @param os void print(ostream& os) const;
 
-    /// Chat to the main chat.
-    /// @param user
-    /// @param msg
-    const Chat::Msg& chat(User& user, string msg);
+    /// Send a message to a user.
+    /// @param u
+    /// @param j
+    void send(User& u, Json j);
 
-    /// Obtain main chat for printing.
-    /// @return const Chat&
-    const Chat& get_main_chat() const;
+    /// Send message to users.
+    /// @param m
+    template<
+      class I,
+      enable_if_t<is_same_v<typename iterator_traits<I>::value_type, User*>,
+                  bool> = true>
+    void send_all(I begin, I end, Json j);
+    template<
+      class I,
+      enable_if_t<is_same_v<typename iterator_traits<I>::value_type, User>,
+                  bool> = true>
+    void send_all(I begin, I end, Json j);
 
   private:
     /// Send names to user.
@@ -73,4 +82,22 @@ class LaboHouse
     void log_in(User& u, Connection h);
     void log_out(Connection h);
 };
+
+template<
+  class I,
+  enable_if_t<is_same_v<typename iterator_traits<I>::value_type, User*>, bool>>
+void
+LaboHouse::send_all(I begin, I end, Json j)
+{
+    for_each(begin, end, [this, &j](auto u) { send(*u, j); });
+}
+
+template<
+  class I,
+  enable_if_t<is_same_v<typename iterator_traits<I>::value_type, User>, bool>>
+void
+LaboHouse::send_all(I begin, I end, Json j)
+{
+    for_each(begin, end, [this, &j](auto& u) { send(u, j); });
+}
 };
