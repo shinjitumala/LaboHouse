@@ -73,6 +73,8 @@ target_sources(
           src/house/User.cpp
           src/house/Users.cpp
           src/house/Chat.cpp)
+target_precompile_headers(LaboHouse PUBLIC include/labo/server/WS_Headers.h
+                          extern/json/single_include/nlohmann/json.hpp)
 
 # Configure HTML
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js JS)
