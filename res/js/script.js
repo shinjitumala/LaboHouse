@@ -89,9 +89,11 @@ function displayUsers(m) {
         return header;
     };
 
-    for (s in m) {
-        members.appendChild(create_list(s));
-    }
+    // Force the HIMADO order.
+    members.appendChild(create_list("Free"));
+    members.appendChild(create_list("Easy"));
+    members.appendChild(create_list("Busy"));
+    members.appendChild(create_list("Offline"));
 }
 
 // Called when sending a chat message.

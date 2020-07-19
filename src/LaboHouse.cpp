@@ -11,14 +11,15 @@
 #include <labo/LaboHouse.h>
 #include <labo/debug/Log.h>
 #include <labo/house/Users.h>
-#include <labo/util/keys.h>
 #include <mutex>
 #include <sstream>
 
 namespace labo {
+mutex mtx;
 void
 LaboHouse::request(Json j, Connection c)
 {
+    lock_guard lg{mtx};
     logs << "[LaboHouse] Request: " << j.dump(2) << endl;
     auto type{ j["type"] };
     if (type.is_null()) {
@@ -120,6 +121,7 @@ LaboHouse::log_in(User& u, Connection c)
         ronline.insert({ &u, c });
         logs << "[LaboHouse] User logged in :" << u.id << endl;
     }
+
     // Send all data on login.
     // Chat
     {
@@ -136,6 +138,8 @@ LaboHouse::log_in(User& u, Connection c)
         j["names"] = users.to_json();
         send(u, j);
     }
+
+    change_status(u, User::Status::sFree);
 }
 
 void
