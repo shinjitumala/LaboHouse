@@ -7,8 +7,6 @@
 /// See the licenses directory for details.
 #include "labo/debug/Log.h"
 #include "nlohmann/json.hpp"
-#include "websocketpp/common/connection_hdl.hpp"
-#include "websocketpp/frame.hpp"
 #include <labo/server/WS.h>
 #include <mutex>
 
@@ -23,9 +21,6 @@ WebSocket::WebSocket(decltype(msg_cb) msg_cb, decltype(close_cb) close_cb)
     using namespace websocketpp::log;
 
     /// Logger settings
-    clear_error_channels(elevel::all);
-    set_error_channels(elevel::warn);
-    set_error_channels(elevel::rerror);
     clear_access_channels(alevel::all);
     set_access_channels(alevel::connect);
     set_access_channels(alevel::disconnect);
@@ -65,7 +60,7 @@ WebSocket::on_close(connection_hdl h)
 }
 
 void
-WebSocket::send(string &s, connection_hdl h)
+WebSocket::send(string &&s, connection_hdl h)
 {
     Base::send(h, s, frame::opcode::text);
 }

@@ -11,13 +11,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <set>
-#include <websocketpp/close.hpp>
-#include <websocketpp/common/connection_hdl.hpp>
-#include <websocketpp/config/asio_no_tls.hpp>
-#include <websocketpp/frame.hpp>
-#include <websocketpp/logger/levels.hpp>
-#include <websocketpp/roles/server_endpoint.hpp>
-#include <websocketpp/server.hpp>
+#include <labo/server/WS_Headers.h>
 
 namespace labo::server {
 using namespace std;
@@ -41,7 +35,7 @@ class WebSocket : public websocketpp::server<websocketpp::config::asio>
     /// Send message to client.
     /// @param s
     /// @param h
-    void send(string& s, websocketpp::connection_hdl h);
+    void send(string&& s, websocketpp::connection_hdl h);
 
   private:
     /// Connection Open handler.
