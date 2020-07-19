@@ -22,6 +22,7 @@ add_compile_options(-Wall # enable all warnings, because why not?
 # List all sources here.
 add_executable(LaboHouse)
 target_compile_features(LaboHouse PUBLIC cxx_std_17)
+target_compile_options(LaboHouse PRIVATE -fsanitize=address)
 target_include_directories(
   LaboHouse
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -31,6 +32,7 @@ target_link_libraries(
   LaboHouse
   # LLVM
   pthread)
+target_link_options(LaboHouse PRIVATE -fsanitize=address)
 
 # documentation related
 add_custom_command(
