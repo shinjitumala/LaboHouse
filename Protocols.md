@@ -1,6 +1,6 @@
 # LaboHouse Protocols
 
-## Rules for all protocols
+## HTML: Rules
   * Any response that is not 'OK 200' is considered an error.
   * Any header parameters are required unless specified otherwise.
   * All error responses contain the error message in the header.
@@ -16,46 +16,35 @@
     * Set-Cookie: \<session cookie\>
     * name: \<display name\>
 
-### Query username
-  * Method: POST
-  * URL: /name
-    * Parameters
-      * Cookie: \<session cookie\>
-  * Response
-    * name: \<display name\>
+## WebSocket Commands
 
-### Change 'HIMADO'
-  * Method: POST
-  * URL: /sethimado
-    * Parameters:
-      * Himado: \<himado in integer\>
-      * Cookie: \<session cookie\>
-  * Response
+### Set 'HIMADO'
+  * type: set_himado
+  * args:
+    * himado: \<himado in integer\>
 
-### Get 'HIMADO'
-  * Method: POST
-  * URL: /gethimado
-    * Parameters:
-      * Cookie: \<session cookie\>
-  * Response
-    * Himado: \<your himado (string)\>
+### Chat
+  * type: chat
+  * args:
+    * chat: \<id of chat\>
+    * msg: \<message\>
 
-### Query list of users
-  * Method: POST
-  * URL: /names
-    * Parameters
-  * Response
-    * Json:  { 'Each HIMADO' { \<Users\> } }
+## WebSocket Messages
 
-### Chat to main
-  * Method: POST
-  * URL: /chat_main
-    * Parameters
-      * Cookie: \<session cookie\>
-  * Response
+### names
+  * type: names
+  * names: JSON
 
-### Refresh chat
-  * Method: POST
-  * URL: /chat_main_get
-    * Parameters
-  * Response
+### 'HIMADO' change
+  * type: himado
+  * name:
+  * himado:
+
+### chat
+  * type: chat
+  * chat: \<id of chat\>
+
+### new chat
+  * type: new_chat
+  * chat: \<id of chat\>
+  * msg: JSON
