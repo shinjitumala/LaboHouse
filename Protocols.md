@@ -18,13 +18,13 @@
 
 ## WebSocket Commands
 
-### Set 'HIMADO'
-  * type: set_himado
+### set_himado
+  * Description: Changes user's himado.
   * args:
     * himado: \<himado in integer\>
 
-### Chat
-  * type: chat
+### chat
+  * Description: Sends a new chat message.
   * args:
     * chat: \<id of chat\>
     * msg: \<message\>
@@ -32,19 +32,27 @@
 ## WebSocket Messages
 
 ### names
-  * type: names
+  * Description: Loads an entire user list.
   * names: JSON
 
-### 'HIMADO' change
-  * type: himado
+### name
+  * Description: Displays the user's name.
   * name:
+  * id:
+
+### himado
+  * Description: Update of a user's himado.
+  * name:
+  * id:
   * himado:
 
 ### chat
+  * Description: Loads an entire chat log.
   * type: chat
-  * chat: \<id of chat\>
+  * id: \<id of chat\>
+  * chat: JSON
 
-### new chat
-  * type: new_chat
+### new_chat
+  * Description: Append a new chat.
   * chat: \<id of chat\>
   * msg: JSON

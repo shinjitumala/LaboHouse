@@ -52,6 +52,7 @@ User::to_json() const
     nlohmann::json j;
     j["name"] = name;
     j["id"] = id;
+    j["himado"] = to_string(status);
     return j;
 }
 }

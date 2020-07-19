@@ -32,7 +32,7 @@ class LaboHouse
     /// Websocket API.
     server::WebSocket ws;
 
-    mutex mtx_online;
+    shared_mutex mtx_online;
     map<Connection, User*, owner_less<Connection>> online;
     unordered_map<User*, Connection> ronline;
 
@@ -74,6 +74,8 @@ class LaboHouse
                   bool> = true>
     void send_all(I begin, I end, Json j);
 
+    void send_online(Json j);
+
   private:
     /// Send names to user.
     /// @param u
@@ -81,6 +83,8 @@ class LaboHouse
 
     void log_in(User& u, Connection h);
     void log_out(Connection h);
+
+    void change_status(User&u, User::Status s);
 };
 
 template<

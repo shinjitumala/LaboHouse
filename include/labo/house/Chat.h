@@ -14,6 +14,7 @@
 namespace labo {
 using namespace std;
 
+class LaboHouse;
 class User;
 
 /// Basic chat functionality.
@@ -39,11 +40,22 @@ class Chat
     };
 
   private:
+    LaboHouse& lh;
+
+    long id;
+    string name;
+
     /// Maximum number of messages before we start discarding them.
     static const uint max{ 64 };
     list<Msg> messages;
 
   public:
+    /// Create a new chat.
+    /// @param lh 
+    /// @param id 
+    /// @param name 
+    Chat(decltype(lh) lh, decltype(id) id, decltype(name) name);
+
     /// Post a chat.
     /// @param user Who said it.
     /// @param msg The content.

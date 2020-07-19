@@ -1,31 +1,139 @@
-// The websocket
-var ws;
-
 // Run on page load.
-window.onload = openSocket();
+window.onload = function () { window.document.body.onload = init(); };
 
-function queryUser(callback = noop) {
-    $.ajax({
-        type: 'POST',
-        url: "/name",
+var g_name;
+var g_id;
 
-        success: function (_data, _status, req) {
-            var name = req.getResponseHeader("name");
-            // Changing the name display.
-            document.getElementById("block::name").innerText = "";
-            document.getElementById("block::name").innerText = name;
+function init() {
+    openSocket(); // Login attempt with current Cookie.
 
-            callback();
-
-            // Hide the registration page and show the main page.
-            document.getElementById("page::register").style.display = "none";
-            document.getElementById("page::main").style.display = "block";
-        },
-        error: function (_res, _error, _status) {
-            // Do nothing 
+    // Add event listener for chatbox.
+    document.getElementById("chatbox").addEventListener("keydown", function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            btnSendChat();
         }
+    }, false);
+
+};
+
+// Called when registering new user.
+function btnRegisterUser() {
+    g_name = document.getElementById("name").value;
+    g_id = document.getElementById("id").value;
+    registerUser(g_id, g_name, function () {
+        document.getElementById("block::name").innerText = g_name + "#" + g_id;
     });
+};
+
+// Called when going to the main page.
+function transMain() {
+    document.getElementById("page::register").style.display = "none";
+    document.getElementById("page::main").style.display = "block";
+};
+
+// Called when going to the register page.
+function transRegister() {
+    document.getElementById("page::main").style.display = "none";
+    document.getElementById("page::register").style.display = "block";
+};
+
+// Called when changing himado of user.
+function btnSetHimado() {
+    var h = document.getElementById("himado").value;
+    sendHimado(h);
 }
+
+// User list.
+var g_names;
+
+// Called when a user changes status.
+function changeUserStatus(m) {
+    for (s in g_names) {
+        var list = g_names[s];
+        var i = list.findIndex(u => u.name === m.name);
+        if (i !== undefined) {
+            list.splice(i, 1);
+        }
+    }
+
+    if (g_names[m.himado] == undefined) {
+        g_names[m.himado] = [];
+    }
+    g_names[m.himado].push({ "name": m.name, "id": m.id });
+    reloadUsers(g_names);
+};
+
+// Called when loading an entire user list
+function reloadUsers(m) {
+    g_names = m;
+    displayUsers(m);
+};
+
+// Called when updating the display for users
+function displayUsers(m) {
+    var members = document.getElementById("list::members");
+    members.innerText = ""; // Clear content
+
+    function create_list(himado) {
+        var header = document.createElement("h3");
+        header.innerText = himado;
+        var list = document.createElement("ul");
+        header.appendChild(list);
+        for (var i in m[himado]) {
+            var name = m[himado][i].name + "#" + m[himado][i].id;
+            var ml = document.createElement("li");
+            ml.innerText = name;
+            list.appendChild(ml);
+        }
+        return header;
+    };
+
+    for (s in m) {
+        members.appendChild(create_list(s));
+    }
+}
+
+// Called when sending a chat message.
+function btnSendChat() {
+    var m = document.getElementById("chatbox").value
+    sendChat(m);
+    document.getElementById("chatbox").value = "";
+};
+
+// Called when appending a line to the chat.
+function appendChat(m) {
+    var chat = document.getElementById("block::chat_main");
+
+    var line = document.createElement("div");
+    var time = document.createElement("div");
+    time.className = "inline-div margin"
+    time.innerText = m.time;
+    var user = document.createElement("div");
+    user.innerText = m.user.name + ":";
+    user.className = "tooltip inline-div margin";
+    var user_hover = document.createElement("span");
+    user_hover.innerText = m.user.name + "#" + m.user.id;
+    user_hover.className = "tooltiptext";
+    user.appendChild(user_hover);
+
+    var msg = document.createElement("div");
+    msg.innerText = m.msg;
+    msg.className = "inline-div margin";
+
+    line.appendChild(time);
+    line.appendChild(user);
+    line.appendChild(msg);
+
+    chat.appendChild(line);
+};
+
+function reloadChat(m) {
+    for (var i in m.chat) {
+        var l = m.chat[i];
+        appendChat(l);
+    }
+};
 
 function registerHima(value = document.getElementById("himado").value, ignore_error = false) {
     document.getElementById("himado").value = value;
@@ -49,136 +157,22 @@ function registerHima(value = document.getElementById("himado").value, ignore_er
     });
 }
 
-function getHima() {
-    $.ajax({
-        type: 'POST',
-        url: '/gethimado',
-        success: function (_data, _status, req) {
-        },
-        error: function (res, _error, status) {
-            show_error(res, status)
-        }
-    });
-}
-
-// list of members
-var data_members = {};
-
-function display_members(data) {
-    var members = document.getElementById("list::members");
-    members.innerText = ""; // Clear content
-
-    function create_list(himado) {
-        var header = document.createElement("h3");
-        header.innerText = himado;
-        var list = document.createElement("ul");
-        header.appendChild(list);
-        for (var i in data[himado]) {
-            var m = data[himado][i];
-            var ml = document.createElement("li");
-            ml.innerText = m;
-            list.appendChild(ml);
-        }
-        return header;
-    };
-
-    for (s in data) {
-        members.appendChild(create_list(s));
-    }
-}
-
-function getNames() {
-    $.ajax({
-        type: 'POST',
-        url: '/names',
-        success: function (data, _status, _req) {
-            display_members(data);
-
-            data_members = data;
-        },
-        error: function (res, _error, status) {
-            show_error(res, status)
-        }
-    });
-}
-
 function searchUser() {
     var query = document.getElementById("member_search").value;
     var filtered = {};
-    for (s in data_members) {
+    for (s in g_names) {
         var visible = [];
-        for (var i in data_members[s]) {
-            var m = data_members[s][i];
-            if (m.includes(query)) {
+        for (var i in g_names[s]) {
+            var m = g_names[s][i];
+            if (m.name.includes(query) || m.id.includes(query) || (m.name + "#" + m.id).includes(query)) {
                 visible.push(m);
             }
         }
         filtered[s] = visible;
     }
 
-    display_members(filtered);
+    displayUsers(filtered);
 };
-
-function sendChat() {
-    $.ajax({
-        type: 'POST',
-        url: '/chat_main',
-        headers: { 'message': document.getElementById("chatbox").value },
-        success: function (_data, _status, _req) {
-            document.getElementById("chatbox").value = "";
-            getChat();
-        },
-        error: function (r, _e, s) {
-            show_error(r, s);
-        }
-    });
-}
-
-function chatOnEnter(e) {
-    if (e.which === 13) {
-        e.preventDefault();
-        sendChat();
-    }
-};
-
-function getChat() {
-    $.ajax({
-        type: 'POST',
-        url: '/chat_main_get',
-        success: function (data, _status, _req) {
-            var chat = document.getElementById("block::chat_main");
-            chat.innerText = ""; // Reset chat
-
-            for (var i in data) {
-                var m = data[i];
-                var line = document.createElement("div");
-                var time = document.createElement("div");
-                time.className = "inline-div margin"
-                time.innerText = m.time;
-                var user = document.createElement("div");
-                user.innerText = m.user.name + ":";
-                user.className = "tooltip inline-div margin";
-                var user_hover = document.createElement("span");
-                user_hover.innerText = m.user.name + "#" + m.user.id;
-                user_hover.className = "tooltiptext";
-                user.appendChild(user_hover);
-
-                var msg = document.createElement("div");
-                msg.innerText = m.msg;
-                msg.className = "inline-div margin";
-
-                line.appendChild(time);
-                line.appendChild(user);
-                line.appendChild(msg);
-                chat.appendChild(line);
-            }
-        },
-        error: function (r, _e, s) {
-            show_error(r, s);
-        }
-    });
-};
-
 
 // Refreshes the entire main page.
 function refresh_main() {
