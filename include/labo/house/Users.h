@@ -41,6 +41,9 @@ struct VectorRef
 /// Dictionary of users.
 class Users
 {
+    using iterator = vector<User>::iterator;
+
+  private:
     /// Mutex used to avoid data corruption.
     shared_mutex mtx;
     /// All users. Owned by this.
@@ -76,5 +79,8 @@ class Users
 
     /// Must be unique.
     Users(const Users&) = delete;
+
+    iterator begin() { return users.begin(); };
+    iterator end() { return users.end(); };
 };
 };
