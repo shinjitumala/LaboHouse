@@ -9,7 +9,6 @@
 #include "labo/server/Html.h"
 #include "labo/server/WS.h"
 #include "nlohmann/json.hpp"
-#include "websocketpp/common/connection_hdl.hpp"
 #include <labo/house/Chat.h>
 #include <labo/house/Users.h>
 #include <mutex>
