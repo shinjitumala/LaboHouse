@@ -9,6 +9,7 @@
 
 #include <labo/house/User.h>
 #include <labo/util/OptionalRef.h>
+#include <list>
 #include <mutex>
 #include <nlohmann/json.hpp>
 #include <shared_mutex>
@@ -24,7 +25,7 @@ using Json = nlohmann::json;
 template<class T>
 struct VectorRef
 {
-    using Vector = vector<T>;
+    using Vector = list<T>;
 
   private:
     Vector& t;
@@ -41,13 +42,13 @@ struct VectorRef
 /// Dictionary of users.
 class Users
 {
-    using iterator = vector<User>::iterator;
+    using iterator = list<User>::iterator;
 
   private:
     /// Mutex used to avoid data corruption.
     shared_mutex mtx;
     /// All users. Owned by this.
-    vector<User> users;
+    list<User> users;
     /// Used for id lookups.
     unordered_map<string, User*> ids;
     /// Used for cookie lookups.
