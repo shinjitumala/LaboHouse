@@ -1,12 +1,23 @@
 // The websocket
-var ws;
+var ws = undefined;
+var dbg_mode = false;
+
+function dbg(m) {
+    if (dbg_mode) {
+        console.log(m);
+    }
+}
+
+function err(m) {
+    console.error(m);
+}
 
 function openSocket() {
     if (ws != undefined) {
-        console.error("WS: Still open");
+        err("WS: Still open");
         return;
     }
-    console.log("WS: Try Open.");
+    dbg("WS: Try Open.");
     ws = new WebSocket("ws:funnypigrun.dns-cloud.net:12273");
     ws.onmessage = function (e) {
         wsEventHandler(JSON.parse(e.data));
@@ -14,22 +25,22 @@ function openSocket() {
     ws.onopen = function () {
         var j = { "type": "cookie", "args": { "Cookie": document.cookie } }
         ws.send(JSON.stringify(j));
-        console.log("WS: Opened.");
+        dbg("WS: Opened.");
         transMain();
     };
     ws.onclose = function (e) {
-        console.log("WS: Closed. Code: " + e.code + ", Reason: " + e.reason);
+        dbg("WS: Closed. Code: " + e.code + ", Reason: " + e.reason);
         ws = undefined;
         transRegister();
     };
     ws.onerror = function (e) {
-        console.error(e);
+        err(e);
     }
 };
 
 function wsEventHandler(m) {
-    console.log("WS: Message.");
-    console.log(m);
+    dbg("WS: Message.");
+    dbg(m);
 
     var type = m.type;
     if (type == null) {
@@ -99,6 +110,8 @@ function sendHimado(h) {
     var j = {};
     j["type"] = "set_himado";
     j["args"] = { "himado": parseInt(h) };
+
+    g_himado = j.args.himado;
 
     ws.send(JSON.stringify(j));
 }

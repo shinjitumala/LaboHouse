@@ -1,12 +1,23 @@
 // Run on page load.
-window.onload = function () { window.document.body.onload = init(); };
-
-var g_name;
-var g_id;
-
-function init() {
+window.onload = function () {
+    // Initializations before the body loads.
     openSocket(); // Login attempt with current Cookie.
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("blur", onBlur);
 
+    // Initializations that run after loading the body.
+    window.document.body.onload = init();
+};
+
+// Store user's name
+var g_name;
+// Store user's id
+var g_id;
+// User's himado
+var g_himado;
+
+// Initializations after the body loads.
+function init() {
     // Add event listener for chatbox.
     document.getElementById("chatbox").addEventListener("keydown", function (e) {
         if (e.which === 13) {
@@ -15,19 +26,23 @@ function init() {
         }
     }, false);
 
+    // Request notification permission    
+    if (Notification.permission !== "granted") {
+        // Not working =(
+        Notification.requestPermission().then(p => { console.log(p); });
+    }
 };
 
 // Called when registering new user.
 function btnRegisterUser() {
     g_name = document.getElementById("name").value;
     g_id = document.getElementById("id").value;
-    registerUser(g_id, g_name, function () {
-        document.getElementById("block::name").innerText = g_name + "#" + g_id;
-    });
+    registerUser(g_id, g_name);
 };
 
 // Called when going to the main page.
 function transMain() {
+    document.getElementById("block::name").innerText = g_name + "#" + g_id;
     document.getElementById("page::register").style.display = "none";
     document.getElementById("page::main").style.display = "block";
 };
@@ -44,7 +59,7 @@ function btnSetHimado() {
     sendHimado(h);
 }
 
-// User list.
+// Store list of all known users.
 var g_names;
 
 // Called when a user changes status.
@@ -137,28 +152,6 @@ function reloadChat(m) {
     }
 };
 
-function registerHima(value = document.getElementById("himado").value, ignore_error = false) {
-    document.getElementById("himado").value = value;
-    $.ajax({
-        type: 'POST',
-        url: "/sethimado",
-        headers: {
-            'Himado': value
-        },
-
-        success: function (_data, _status, _req) {
-            getHima();
-            refresh_main();
-        },
-        error: function (res, _error, status) {
-            if (ignore_error) {
-                return;
-            }
-            show_error(res, status)
-        }
-    });
-}
-
 function searchUser() {
     var query = document.getElementById("member_search").value;
     var filtered = {};
@@ -176,6 +169,14 @@ function searchUser() {
     displayUsers(filtered);
 };
 
+function showNotification() {
+    alert("I notify you.");
+};
+
+function resetNotification() {
+    alert("I don't notify you no more.");
+};
+
 // Refreshes the entire main page.
 function refresh_main() {
     getNames();
@@ -184,28 +185,48 @@ function refresh_main() {
     timer_on = true;
 };
 
-var timer;
-var timer_on = false;
+var g_busyTimer;
+var g_AFKTimer;
 
-function blur() {
-    registerHima(2, true);
-}
-function focus() {
-    if (!timer_on) {
+function onBlur() {
+    if (ws == undefined) {
         return;
     }
-    registerHima(0, true);
-}
-
-function goInactive() {
-    registerHima(2);
+    sendHimado(1);
+    resetBusyTimer();
+};
+function onFocus() {
+    if (ws == undefined) {
+        return;
+    }
+    window.clearTimeout(g_busyTimer);
+    if (g_himado !== 0) {
+        sendHimado(0);
+    }
+    resetAFKTimer();
 };
 
-function resetTimer() {
-    if (!timer_on) {
+function goInactive() {
+    if (ws == undefined || g_himado == 2) {
         return;
     }
-    window.clearTimeout(timer);
-    timer = window.setTimeout(goInactive, 2000); // Timeout is in ms
-}
+    sendHimado(2);
+};
+function goAFK() {
+    if (ws == undefined || g_himado == 3) {
+        return;
+    }
+    sendHimado(2);
+};
+
+function resetBusyTimer() {
+    window.clearTimeout(g_busyTimer);
+    g_busyTimer = window.setTimeout(goInactive, 2000); // Timeout is in ms
+};
+
+
+function resetAFKTimer() {
+    window.clearTimeout(g_AFKTimer);
+    g_AFKTimer = window.setTimeout(goAFK, 10000);
+};
 
