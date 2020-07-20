@@ -19,7 +19,7 @@ mutex mtx;
 void
 LaboHouse::request(Json j, Connection c)
 {
-    lock_guard lg{mtx};
+    lock_guard lg{ mtx };
     logs << "[LaboHouse] Request: " << j.dump(2) << endl;
     auto type{ j["type"] };
     if (type.is_null()) {
@@ -140,6 +140,7 @@ LaboHouse::log_in(User& u, Connection c)
     }
 
     change_status(u, User::Status::sFree);
+    main_chat.chat(u, "has logged in.");
 }
 
 void
@@ -148,13 +149,16 @@ LaboHouse::log_out(Connection c)
     unique_lock lg{ mtx_online };
     auto itr{ online.find(c) };
     if (itr == online.end()) {
-        logs << "[LaboHouse] : Closed connection with UNKNOWN>" << endl;
+        logs << "[LaboHouse] : Closed connection with UNKNOWN." << endl;
         return;
     }
-    itr->second->status = User::Status::sOffline;
-    logs << "[LaboHouse] User logged out: " << itr->second->id << endl;
+    auto& u{ *itr->second };
     ronline.erase(itr->second);
     online.erase(itr);
+    lg.unlock();
+    u.status = User::Status::sOffline;
+    main_chat.chat(u, "has logged out.");
+    logs << "[LaboHouse] User logged out: " << u.id << endl;
 }
 
 void
@@ -192,7 +196,6 @@ LaboHouse::change_status(User& u, User::Status s)
 void
 LaboHouse::send_online(Json j)
 {
-    shared_lock lg{ mtx_online };
     for (auto [c, u] : online) {
         send(*u, j);
     }

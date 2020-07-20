@@ -135,6 +135,7 @@ Html::start(const int port)
             }
 
             auto& u{ lh.users.add(oid.get()) };
+            lh.main_chat.chat(u, "has joined! Say hello =)");
             u.name = oname.get();
 
             out << Response{ Response::Status::OK,

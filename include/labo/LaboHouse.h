@@ -36,9 +36,9 @@ class LaboHouse
     map<Connection, User*, owner_less<Connection>> online;
     unordered_map<User*, Connection> ronline;
 
+  public:
     Chat main_chat;
 
-  public:
     /// All known users.
     Users users;
 
@@ -84,7 +84,7 @@ class LaboHouse
     void log_in(User& u, Connection h);
     void log_out(Connection h);
 
-    void change_status(User&u, User::Status s);
+    void change_status(User& u, User::Status s);
 };
 
 template<
