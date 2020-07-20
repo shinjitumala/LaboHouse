@@ -32,6 +32,9 @@
 ### `add_watchlist`: Add new user to watchlist.
   * `id`: id of User to be added to watchlist.
 
+### `remove_watchlist`: Remove new user from watchlist.
+  * `id`: id of User to be removed from watchlist.
+
 ## WebSocket Messages
   * The name of the command is the `type`.
 
