@@ -68,9 +68,4 @@ Users::to_json()
     });
     return j;
 }
-
-Users::operator VectorRef<User>()
-{
-    return users;
-};
 };

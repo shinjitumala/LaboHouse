@@ -21,24 +21,6 @@ using namespace std;
 using ulong = unsigned long;
 using Json = nlohmann::json;
 
-/// Vector reference that disallows adding or removing elements.
-template<class T>
-struct VectorRef
-{
-    using Vector = list<T>;
-
-  private:
-    Vector& t;
-
-  public:
-    VectorRef(Vector& t)
-      : t{ t }
-    {}
-
-    typename Vector::iterator begin() { return t.begin(); };
-    typename Vector::iterator end() { return t.end(); };
-};
-
 /// Dictionary of users.
 class Users
 {
@@ -73,10 +55,6 @@ class Users
     /// Convert Users into a json array.
     /// @return Json
     Json to_json();
-
-    /// Implicit conversion to a VectorRef.
-    /// @return VectorRef<User> &
-    operator VectorRef<User>();
 
     /// Must be unique.
     Users(const Users&) = delete;
