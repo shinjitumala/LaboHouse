@@ -23,7 +23,7 @@ function openSocket() {
         wsEventHandler(JSON.parse(e.data));
     };
     ws.onopen = function () {
-        var j = { "type": "cookie", "args": { "Cookie": document.cookie } }
+        var j = { "type": "cookie", "cookie": document.cookie };
         ws.send(JSON.stringify(j));
         dbg("WS: Opened.");
         transMain();
@@ -68,6 +68,11 @@ function wsEventHandler(m) {
         return;
     }
 
+    if (type == "notification") {
+        err("NOT IMPLEMENTED: " + m);
+        return;
+    }
+
     console.error("Unhandled: " + type);
 }
 
@@ -101,17 +106,17 @@ function ajax_error(res) {
 function sendChat(m) {
     var j = {};
     j["type"] = "chat";
-    j["args"] = { "msg": m };
+    j["msg"] = m;
 
     ws.send(JSON.stringify(j));
 }
 
 function sendHimado(h) {
     var j = {};
-    j["type"] = "set_himado";
-    j["args"] = { "himado": parseInt(h) };
+    j["type"] = "himado";
+    j["himado"] = parseInt(h);
 
-    g_himado = j.args.himado;
+    g_himado = j.himado;
 
     ws.send(JSON.stringify(j));
 }

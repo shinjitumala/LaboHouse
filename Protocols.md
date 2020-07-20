@@ -4,55 +4,57 @@
   * Any response that is not 'OK 200' is considered an error.
   * Any header parameters are required unless specified otherwise.
   * All error responses contain the error message in the header.
-    * error: \<error reason\>
+    * `error`: error reason
 
 ### Register a new User
-  * Method: POST
-  * URL: /register
+  * Method: `POST`
+  * URL: `/register`
   * Header Parameters:
-    * id: \<requested id\>
-    * name: \<requested display name\>
+    * `id`: requested id
+    * `name`: requested display name
   * Response:
-    * Set-Cookie: \<session cookie\>
-    * name: \<display name\>
+    * `Set-Cookie`: session cookie
+    * `name`: display name
 
 ## WebSocket Commands
+  * The name of the command is the `type`
 
-### set_himado
-  * Description: Changes user's himado.
-  * args:
-    * himado: \<himado in integer\>
+### `cookie`: Sends the users cookie.
+  * `cookie`: User's cookie. Connection will be closed if this is invalid.
 
-### chat
-  * Description: Sends a new chat message.
-  * args:
-    * chat: \<id of chat\>
-    * msg: \<message\>
+### `himado`: Changes user's himado.
+  * `himado`: himado in integer
+
+### `chat`: Sends a new chat message.
+  * `chat`: id of chat
+  * `msg`: message
+
+### `add_watchlist`: Add new user to watchlist.
+  * `id`: id of User to be added to watchlist.
 
 ## WebSocket Messages
+  * The name of the command is the `type`.
 
-### names
-  * Description: Loads an entire user list.
-  * names: JSON
+### `names`: Loads an entire user list.
+  * `names`: JSON
 
-### name
-  * Description: Displays the user's name.
-  * name:
-  * id:
+### `name`: Displays the user's name.
+  * `name`:
+  * `id`:
 
-### himado
-  * Description: Update of a user's himado.
-  * name:
-  * id:
-  * himado:
+### `himado`: Update of a user's himado.
+  * `name`:
+  * `id`:
+  * `himado`:
 
-### chat
-  * Description: Loads an entire chat log.
-  * type: chat
-  * id: \<id of chat\>
-  * chat: JSON
+### `chat`: Loads an entire chat log.
+  * `type`: chat
+  * `id`: id of chat
+  * `chat`: JSON
 
-### new_chat
-  * Description: Append a new chat.
-  * chat: \<id of chat\>
-  * msg: JSON
+### `new_chat`: Append a new chat.
+  * `chat`: id of chat
+  * `msg`: JSON
+
+### `notification`: Notification from server.
+  * `msg`: Content of notification.

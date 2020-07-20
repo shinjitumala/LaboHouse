@@ -15,6 +15,7 @@
 #include <sstream>
 
 namespace labo {
+using namespace websocketpp::close;
 mutex mtx;
 void
 LaboHouse::request(Json j, Connection c)
@@ -26,24 +27,18 @@ LaboHouse::request(Json j, Connection c)
         logs << "Request type missing." << endl;
         return;
     }
-    auto args{ j["args"] };
 
     if (type == "cookie") {
-        if (args.is_null()) {
-            logs << "Args missing." << endl;
-            return;
-        }
-
-        auto cookie{ args["Cookie"] };
+        auto cookie{ j["cookie"] };
         if (cookie.is_null() || !cookie.is_string()) {
+            ws.close(c, status::normal, "Unknown Cookie.");
             logs << "Invalid Cookie." << endl;
             return;
         }
 
         auto ousr{ users.by_cookie(cookie) };
         if (!ousr) {
-            ws.pause_reading(c);
-            ws.close(c, websocketpp::close::status::normal, "Unknown Cookie.");
+            ws.close(c, status::normal, "Unknown Cookie.");
             logs << "Unknown Cookie." << endl;
             return;
         }
@@ -55,21 +50,18 @@ LaboHouse::request(Json j, Connection c)
     auto itr{ online.find(c) };
     if (itr == online.end()) {
         // If user not found.
-        ws.close(c, websocketpp::close::status::normal, "Unknown handle.");
+        ws.close(c, status::normal, "Unknown handle.");
         logs << "Unknown handle." << endl;
         return;
     }
     // User is known
     auto& usr{ *itr->second };
+    logs << "[User: " << usr.id << "] " << flush;
 
-    if (type == "set_himado") {
-        if (args.is_null()) {
-            logs << "Args missing." << endl;
-            return;
-        }
-        auto himado{ args["himado"] };
+    if (type == "himado") {
+        auto himado{ j["himado"] };
         if (himado.is_null() || !himado.is_number_unsigned()) {
-            logs << "Invalid Himado." << endl;
+            logs << "Invalid Himado: " << himado << endl;
             return;
         }
 
@@ -78,13 +70,9 @@ LaboHouse::request(Json j, Connection c)
         return;
     }
     if (type == "chat") {
-        if (args.is_null()) {
-            logs << "Args missing." << endl;
-            return;
-        }
-        auto msg{ args["msg"] };
+        auto msg{ j["msg"] };
         if (msg.is_null()) {
-            logs << "Invalid msg." << endl;
+            logs << "Invalid msg: " << msg << endl;
             return;
         }
 
@@ -102,7 +90,7 @@ LaboHouse::LaboHouse()
            Json j;
            try {
                iss >> j;
-           } catch (nlohmann::json::parse_error e) {
+           } catch (Json::parse_error e) {
                logs << "JSON parsing error: " << e.what() << endl;
                return;
            }
