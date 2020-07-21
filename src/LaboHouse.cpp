@@ -297,6 +297,7 @@ LaboHouse::change_status(User& u, User::Status s)
 void
 LaboHouse::send_online(Json j)
 {
+    shared_lock sl{mtx_online};
     for (auto [c, u] : online) {
         send(*u, j);
     }
