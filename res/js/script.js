@@ -167,6 +167,27 @@ function btnSendChat() {
     document.getElementById("chatbox").value = "";
 };
 
+function btnSendChatFree() {
+    var x = document.getElementById("chatbox");
+    var y = x.value;
+    x.value = "@Free " + y;
+    btnSendChat();
+}
+
+function btnSendChatEasy() {
+    var x = document.getElementById("chatbox");
+    var y = x.value;
+    x.value = "@Easy " + y;
+    btnSendChat();
+}
+
+function btnSendChatBusy() {
+    var x = document.getElementById("chatbox");
+    var y = x.value;
+    x.value = "@Busy " + y;
+    btnSendChat();
+}
+
 // Called when appending a line to the chat.
 function appendChat(m) {
     var chat = document.getElementById("block::chat_main");
