@@ -35,6 +35,15 @@
 ### `remove_watchlist`: Remove new user from watchlist.
   * `id`: id of User to be removed from watchlist.
 
+### `add_timerange`: Add a new timerange.
+  * `start`: `hh:mm`
+  * `end`: `hh:mm`
+  * `himado`: Himado set during that time.
+
+### `remove_timerange`: Remove an existing timerange.
+  * `start`: `hh:mm`
+  * `end`: `hh:mm`
+
 ## WebSocket Messages
   * The name of the command is the `type`.
 

@@ -5,9 +5,11 @@
 ///
 /// Part of the LaboHouse tool. Proprietary and confidential.
 /// See the licenses directory for details.
+#include <labo/LaboHouse.h>
 #include <labo/debug/Log.h>
 #include <labo/house/User.h>
 #include <nlohmann/json.hpp>
+#include <regex>
 
 namespace labo {
 User::User(const string id, const string cookie)
@@ -78,4 +80,72 @@ User::watchlist_remove(const User& u)
     }
     watchlist.erase(itr);
 };
+
+auto parse_time = [](string time) -> optional<User::Time> {
+    static const regex r{ "(dd):(dd)" };
+    smatch m;
+    if (!regex_match(time, m, r) || m.size() != 2) {
+        logs << "Failed to match regex: " << time << endl;
+        return {};
+    }
+    return User::Time{ hours{ stoi(m[1]) }, hours{ stoi(m[2]) } };
+};
+auto get_timerange = [](string start, string end) -> optional<User::TimeRange> {
+    auto tstart{ parse_time(start) };
+    auto tend{ parse_time(end) };
+    if (!tstart || !tend) {
+        return {};
+    }
+
+    return User::TimeRange{ *tstart, *tend };
+};
+
+string
+User::timerange_add(string start, string end, User::Status s)
+{
+    auto tr{ get_timerange(start, end) };
+    if (!tr || !*tr) {
+        return "Invalid timerange.";
+    }
+    tr->status = s;
+    timeranges.push_back(*tr);
+    return "";
+};
+
+string
+User::timerange_remove(string start, string end)
+{
+    auto tr{ get_timerange(start, end) };
+    if (!tr || !*tr) {
+        return "Invalid timerange.";
+    }
+    auto itr{ find_if(timeranges.begin(), timeranges.end(), [&](auto otr) {
+        return otr == *tr;
+    }) };
+    if (itr == timeranges.end()) {
+        return "No such TimeRange.";
+    }
+    timeranges.erase(itr);
+    return "";
+};
+
+optional<User::Status>
+User::timerange_query(Time t)
+{
+    for (auto tr : timeranges) {
+        if (tr.start <= t && t <= tr.end) {
+            return tr.status;
+        }
+    }
+    return {};
+};
+
+User::Time
+User::Time::now()
+{
+    auto tp{ time(nullptr) };
+    auto time{ *localtime(&tp) };
+    return { hours{ time.tm_hour }, minutes{ time.tm_min } };
+}
+
 }

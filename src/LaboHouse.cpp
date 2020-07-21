@@ -8,6 +8,7 @@
 #include "labo/house/Quotes.h"
 #include "labo/server/WS.h"
 #include "nlohmann/json.hpp"
+#include <chrono>
 #include <future>
 #include <labo/LaboHouse.h>
 #include <labo/debug/Log.h>
@@ -206,6 +207,23 @@ void
 LaboHouse::start()
 {
     thread t{ [&]() { ws.start(42069); } };
+    // 1 minute loop.
+    thread t2{ [&]() {
+        while (true) {
+            this_thread::sleep_for(1min);
+            logs << "[LaboHouse] Checking for timeranges..." << endl;
+            shared_lock sl{ mtx_online };
+            auto now{ User::Time::now() };
+            for (auto [c, u] : online) {
+                auto s{ u->timerange_query(now) };
+                if (!s) {
+                    continue;
+                }
+                change_status(*u, *s);
+            }
+            logs << "[LaboHouse] Done!" << endl;
+        };
+    } };
     html.start(12345);
 }
 

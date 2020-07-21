@@ -133,3 +133,22 @@ function addWatchlist(id) {
 
     ws.send(JSON.stringify(j));
 }
+
+function addTimeRange(start, end, himado) {
+    var j = {};
+    j["type"] = "add_timerange";
+    j["start"] = start;
+    j["end"] = end;
+    j["himado"] = himado;
+
+    ws.send(JSON.stringify(j));
+}
+
+function removeTimeRange(start, end) {
+    var j = {};
+    j["type"] = "remove_timerange";
+    j["start"] = start;
+    j["end"] = end;
+
+    ws.send(JSON.stringify(j));
+}
