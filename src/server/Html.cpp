@@ -92,7 +92,7 @@ Html::start(const int port)
         in >> req;
         if (!req.valid) {
             logs << "[Html] Invalid Request." << endl;
-            return;
+            continue;
         } else if (req.method() == Request::Method::GET && req.path() == "/") {
             map<string, string> headers{
                 { "Content-Security-Policy",
@@ -125,19 +125,19 @@ Html::start(const int port)
             if (!oname) {
                 out << bad_request("Missing name.");
                 logs << "[Html] Bad request: Missing name." << endl;
-                return;
+                continue;
             }
             if (!oid) {
                 out << bad_request("Missing id.");
                 logs << "[Html] Bad request: Missing id." << endl;
-                return;
+                continue;
             }
 
             if (lh.users.by_id(oid.get())) {
                 out << unauthorized("ID already taken: " + oid.get());
                 logs << "[Html] Bad request: ID already taken: " << oid.get()
                      << "." << endl;
-                return;
+                continue;
             }
 
             auto& u{ lh.users.add(oid.get()) };
