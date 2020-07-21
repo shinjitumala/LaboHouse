@@ -22,97 +22,129 @@ mutex mtx;
 void
 LaboHouse::request(Json j, Connection c)
 {
-    lock_guard lg{ mtx };
-    logs << "[LaboHouse] Request: " << j.dump(2) << endl;
-    auto type{ j["type"] };
-    if (type.is_null() || !type.is_string()) {
-        logs << "Request type invalid: " << type << endl;
-        return;
-    }
+    try {
+        lock_guard lg{ mtx };
+        auto type{ j["type"] };
+        if (type == "cookie") {
+            auto cookie{ j["cookie"] };
+            if (cookie.is_null() || !cookie.is_string()) {
+                ws.close(c, status::normal, "Unknown Cookie.");
+                logs << "Invalid Cookie." << endl;
+                return;
+            }
 
-    if (type == "cookie") {
-        auto cookie{ j["cookie"] };
-        if (cookie.is_null() || !cookie.is_string()) {
-            ws.close(c, status::normal, "Unknown Cookie.");
-            logs << "Invalid Cookie." << endl;
+            auto ousr{ users.by_cookie(cookie) };
+            if (!ousr) {
+                ws.close(c, status::normal, "Unknown Cookie.");
+                logs << "Unknown Cookie." << endl;
+                return;
+            }
+
+            log_in(ousr.get(), c);
             return;
         }
 
-        auto ousr{ users.by_cookie(cookie) };
-        if (!ousr) {
-            ws.close(c, status::normal, "Unknown Cookie.");
-            logs << "Unknown Cookie." << endl;
+        auto itr{ online.find(c) };
+        if (itr == online.end()) {
+            // If user not found.
+            ws.close(c, status::normal, "Unknown handle.");
+            logs << "Unknown handle." << endl;
+            return;
+        }
+        // User is known
+        auto& usr{ *itr->second };
+        logs << "[User: " << usr.id << "] " << flush;
+
+        if (type == "himado") {
+            auto himado{ j["himado"] };
+            if (himado.is_null() || !himado.is_number_unsigned()) {
+                logs << "Invalid Himado: " << himado << endl;
+                return;
+            }
+
+            change_status(usr,
+                          static_cast<User::Status>(static_cast<uint>(himado)));
+            return;
+        }
+        if (type == "chat") {
+            auto msg{ j["msg"] };
+            if (msg.is_null() || !msg.is_string()) {
+                logs << "Invalid msg: " << msg << endl;
+                return;
+            }
+
+            main_chat.chat(usr, msg);
             return;
         }
 
-        log_in(ousr.get(), c);
-        return;
-    }
+        if (type == "add_watchlist" || type == "remove_watchlist") {
+            auto id{ j["id"] };
+            if (id.is_null() || !id.is_string()) {
+                logs << "Invalid id: " << id << endl;
+                return;
+            }
+            auto ouser{ users.by_id(id) };
+            if (!ouser) {
+                logs << "User not found: " << id << endl;
+                return;
+            }
+            if (&ouser.get() == &usr) {
+                logs << "Cannot add self to watchlist." << endl;
+                notify(usr, "Cannot add self to watchlist.");
+                return;
+            }
 
-    auto itr{ online.find(c) };
-    if (itr == online.end()) {
-        // If user not found.
-        ws.close(c, status::normal, "Unknown handle.");
-        logs << "Unknown handle." << endl;
-        return;
-    }
-    // User is known
-    auto& usr{ *itr->second };
-    logs << "[User: " << usr.id << "] " << flush;
+            if (type == "add_watchlist") {
+                usr.watchlist_add(ouser.get());
+                logs << "[User:" << usr.id
+                     << "] Added user to watchlist: " << ouser.get().id << endl;
+                return;
+            } else if (type == "remove_watchlist") {
+                usr.watchlist_remove(ouser.get());
+                logs << "[User:" << usr.id
+                     << "] Removed user from watchlist: " << ouser.get().id
+                     << endl;
+                return;
+            }
+        }
 
-    if (type == "himado") {
-        auto himado{ j["himado"] };
-        if (himado.is_null() || !himado.is_number_unsigned()) {
-            logs << "Invalid Himado: " << himado << endl;
+        if (type == "add_timerange") {
+            string status;
+            status =
+              usr.timerange_add(j["start"],
+                                j["end"],
+                                static_cast<User::Status>(
+                                  static_cast<unsigned char>(j["himado"])));
+            if (status.size()) {
+                notify(usr, status);
+            }
+            return;
+        }
+        if (type == "remove_timerange") {
+            string status;
+            status = usr.timerange_remove(j["start"], j["end"]);
+            if (status.size()) {
+                notify(usr, status);
+            }
+            return;
+        }
+        if (type == "add_timer") {
+            usr.timer = { minutes{ static_cast<uint>(j["duration"]) },
+                          static_cast<User::Status>(
+                            static_cast<unsigned char>(j["himado"])) };
+            return;
+        }
+        if (type == "remove_timer") {
+            usr.timer = {};
             return;
         }
 
-        change_status(usr,
-                      static_cast<User::Status>(static_cast<uint>(himado)));
-        return;
-    }
-    if (type == "chat") {
-        auto msg{ j["msg"] };
-        if (msg.is_null() || !msg.is_string()) {
-            logs << "Invalid msg: " << msg << endl;
-            return;
-        }
-
-        main_chat.chat(usr, msg);
-        return;
-    }
-
-    if (type == "add_watchlist" || type == "remove_watchlist") {
-        auto id{ j["id"] };
-        if (id.is_null() || !id.is_string()) {
-            logs << "Invalid id: " << id << endl;
-            return;
-        }
-        auto ouser{ users.by_id(id) };
-        if (!ouser) {
-            logs << "User not found: " << id << endl;
-            return;
-        }
-        if (&ouser.get() == &usr) {
-            logs << "Cannot add self to watchlist." << endl;
-            notify(usr, "Cannot add self to watchlist.");
-            return;
-        }
-
-        if (type == "add_watchlist") {
-            usr.watchlist_add(ouser.get());
-            logs << "[User:" << usr.id
-                 << "] Added user to watchlist: " << ouser.get().id << endl;
-            return;
-        } else if (type == "remove_watchlist") {
-            usr.watchlist_remove(ouser.get());
-            logs << "[User:" << usr.id
-                 << "] Removed user from watchlist: " << ouser.get().id << endl;
-            return;
-        }
-    }
-
-    errs << "[LaboHouse][User:" << usr.id << "] Unknown type: " << type << endl;
+        errs << "[LaboHouse][User:" << usr.id << "] Unknown type: " << type
+             << endl;
+    } catch (Json::exception e) {
+        logs << "Json error: " << e.what() << endl;
+        logs << "Message: " << j.dump() << endl;
+    };
     return;
 }
 

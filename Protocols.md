@@ -80,3 +80,6 @@
 ### `quote`: Today's quote.
   * `author`: Who said it.
   * `quote`: What was said.
+
+### `timeranges`: Your timeranges.
+  * `trs`: JSON timeranges.
