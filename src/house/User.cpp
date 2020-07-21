@@ -82,9 +82,9 @@ User::watchlist_remove(const User& u)
 };
 
 auto parse_time = [](string time) -> optional<User::Time> {
-    static const regex r{ "(dd):(dd)" };
+    static const regex r{ "([0-9][0-9]):([0-9][0-9])" };
     smatch m;
-    if (!regex_match(time, m, r) || m.size() != 2) {
+    if (!regex_match(time, m, r) || m.size() != 3) {
         logs << "Failed to match regex: " << time << endl;
         return {};
     }
