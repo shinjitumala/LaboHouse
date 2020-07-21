@@ -33,6 +33,14 @@ function init() {
     }
 };
 
+// Called when add user whom you wanna watch.
+function btnAddWatchList() {
+    id = document.getElementById("watchID").value;
+    addWatchlist(id);
+}
+
+
+
 // Called when registering new user.
 function btnRegisterUser() {
     g_name = document.getElementById("name").value;
