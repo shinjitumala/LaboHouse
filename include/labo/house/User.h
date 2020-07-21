@@ -7,6 +7,8 @@
 /// See the licenses directory for details.
 #pragma once
 #include <chrono>
+#include <iomanip>
+#include <labo/util/stream.h>
 #include <mutex>
 #include <nlohmann/json.hpp>
 #include <unordered_set>
@@ -42,6 +44,12 @@ class User
         }
 
         static Time now();
+
+        void print(ostream& os) const
+        {
+            os << setfill('0') << setw(2) << h.count() << ":" << setw(2)
+               << m.count();
+        }
     };
     enum Status : unsigned char
     {
