@@ -11,7 +11,9 @@
 #include <thread>
 #include <unordered_set>
 
-namespace labo::server {
+namespace labo {
+class LaboHouse;
+namespace server {
 using namespace std;
 
 /// Abstraction of a http server that returns a html page.
@@ -21,9 +23,12 @@ class Html
     /// the listening socket
     int sfd;
 
+    /// Reference to LaboHouse
+    LaboHouse& lh;
+
   public:
     /// Default constructor.
-    Html() = default;
+    Html(LaboHouse &lh);
 
     /// Start the server.
     /// WARNING: This function will not return until the server is killed. Call
@@ -36,5 +41,6 @@ class Html
   private:
     /// Disallow copy because we own resources.
     Html(const Html&) = delete;
+};
 };
 };

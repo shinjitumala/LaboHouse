@@ -9,6 +9,7 @@
 
 #include <labo/house/User.h>
 #include <labo/util/OptionalRef.h>
+#include <list>
 #include <mutex>
 #include <nlohmann/json.hpp>
 #include <shared_mutex>
@@ -18,14 +19,18 @@
 namespace labo {
 using namespace std;
 using ulong = unsigned long;
+using Json = nlohmann::json;
 
 /// Dictionary of users.
 class Users
 {
+    using iterator = list<User>::iterator;
+
+  private:
     /// Mutex used to avoid data corruption.
     shared_mutex mtx;
     /// All users. Owned by this.
-    unordered_set<User, User::hash> users;
+    list<User> users;
     /// Used for id lookups.
     unordered_map<string, User*> ids;
     /// Used for cookie lookups.
@@ -48,11 +53,13 @@ class Users
     OptionalRef<User> by_cookie(string cookie);
 
     /// Convert Users into a json array.
-    /// @return nlohmann::json
-    nlohmann::json to_json();
+    /// @return Json
+    Json to_json();
 
-  private:
     /// Must be unique.
     Users(const Users&) = delete;
+
+    iterator begin() { return users.begin(); };
+    iterator end() { return users.end(); };
 };
 };

@@ -13,21 +13,21 @@ namespace labo {
 User::User(const string id, const string cookie)
   : id{ id }
   , cookie{ cookie }
-  , status{ Status::free }
+  , status{ sFree }
 {}
 
 string
 User::to_string(Status s)
 {
     switch (s) {
-        case Status::free:
-            return "free";
-        case Status::easy:
-            return "easy";
-        case Status::busy:
-            return "busy";
-        case Status::offline:
-            return "offline";
+        case sFree:
+            return "Free";
+        case sEasy:
+            return "Easy";
+        case sBusy:
+            return "Busy";
+        case sOffline:
+            return "Offline";
         default:
             errs << "Invalid 'HIMADO': " << static_cast<uint>(s) << endl;
             failure();
@@ -52,6 +52,30 @@ User::to_json() const
     nlohmann::json j;
     j["name"] = name;
     j["id"] = id;
+    j["himado"] = to_string(status);
     return j;
 }
+
+bool
+User::in_watchlist(const User& u) const
+{
+    return watchlist.count(&u);
+};
+
+void
+User::watchlist_add(const User& u)
+{
+    watchlist.insert(&u);
+};
+
+void
+User::watchlist_remove(const User& u)
+{
+    auto itr{ watchlist.find(&u) };
+    if (itr == watchlist.end()) {
+        logs << "[Uesr:" << id << "] Not in watchlist: " << u.id << endl;
+        return;
+    }
+    watchlist.erase(itr);
+};
 }
