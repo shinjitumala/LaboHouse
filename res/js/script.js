@@ -169,12 +169,16 @@ function searchUser() {
     displayUsers(filtered);
 };
 
-function showNotification() {
-    alert("I notify you.");
+function showNotification(m) {
+    alert(m);
 };
 
 function resetNotification() {
-    alert("I don't notify you no more.");
+    alert("I notify you no more.");
+};
+
+function showQuote(author, quote){
+    alert(quote + " - " + author);
 };
 
 // Refreshes the entire main page.

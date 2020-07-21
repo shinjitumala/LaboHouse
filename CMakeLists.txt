@@ -74,7 +74,8 @@ target_sources(
           src/LaboHouse.cpp
           src/house/User.cpp
           src/house/Users.cpp
-          src/house/Chat.cpp)
+          src/house/Chat.cpp
+          src/house/Quote.cpp)
 target_precompile_headers(LaboHouse PUBLIC include/labo/server/WS_Headers.h
                           extern/json/single_include/nlohmann/json.hpp)
 

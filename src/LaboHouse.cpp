@@ -5,6 +5,7 @@
 ///
 /// Part of the Users tool. Proprietary and confidential.
 /// See the licenses directory for details.
+#include "labo/house/Quotes.h"
 #include "labo/server/WS.h"
 #include "nlohmann/json.hpp"
 #include <future>
@@ -128,6 +129,7 @@ LaboHouse::LaboHouse()
            request(j, c);
        },
         [&](auto c) { log_out(c); } }
+  , quote{ Quotes::get() }
   , main_chat{ *this, 0, "main" }
 {}
 
@@ -158,6 +160,15 @@ LaboHouse::log_in(User& u, Connection c)
         send(u, j);
     }
 
+    // Quote
+    {
+        Json j;
+        j["type"] = "quote";
+        j["author"] = quote.first;
+        j["quote"] = quote.second;
+        send(u, j);
+    }
+
     change_status(u, User::Status::sFree);
     main_chat.chat(u, "has logged in.");
 
@@ -165,6 +176,10 @@ LaboHouse::log_in(User& u, Connection c)
     for (auto& ou : users) {
         if (ou.in_watchlist(u)) {
             notify(ou, u.name + " is online!.");
+        }
+        if (ou.status == User::Status::sEasy) {
+            // Notify if on easy mode.
+            notify(ou, u.name + "is online!.");
         }
     }
 }

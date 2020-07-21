@@ -69,7 +69,12 @@ function wsEventHandler(m) {
     }
 
     if (type == "notification") {
-        window.alert(m.msg);
+        showNotification(m.msg);
+        return;
+    }
+
+    if (type == "quote") {
+        showQuote(m.author, m.quote);
         return;
     }
 
@@ -121,7 +126,7 @@ function sendHimado(h) {
     ws.send(JSON.stringify(j));
 }
 
-function addWatchlist(id){
+function addWatchlist(id) {
     var j = {};
     j["type"] = "add_watchlist";
     j["id"] = id;

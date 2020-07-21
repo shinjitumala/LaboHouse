@@ -36,6 +36,8 @@ class LaboHouse
     map<Connection, User*, owner_less<Connection>> online;
     unordered_map<User*, Connection> ronline;
 
+    pair<string, string> quote;
+
   public:
     Chat main_chat;
 

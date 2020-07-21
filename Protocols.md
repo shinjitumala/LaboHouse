@@ -61,3 +61,7 @@
 
 ### `notification`: Notification from server.
   * `msg`: Content of notification.
+
+### `quote`: Today's quote.
+  * `author`: Who said it.
+  * `quote`: What was said.
