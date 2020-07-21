@@ -59,6 +59,21 @@ Chat::chat(User& user, string msg)
     j["type"] = "new_chat";
     lh.send_online(j);
 
+    // Look for mentions
+    for (auto s{ User::Status::sFree }; s < User::Status::sLast;
+         s = static_cast<User::Status>(s + 1)) {
+        string msg{ j["msg"] };
+        if (msg.find("@" + User::to_string(s)) == string::npos) {
+            continue;
+        };
+        for (auto& u : lh.users) {
+            if (u.status != s) {
+                continue;
+            }
+            lh.notify(u, "You mave been mentioned: @" + User::to_string(s));
+        }
+    }
+
     return messages.back();
 };
 
