@@ -4,6 +4,8 @@ window.onload = function () {
     openSocket(); // Login attempt with current Cookie.
     window.addEventListener("focus", onFocus);
     window.addEventListener("blur", onBlur);
+    window.addEventListener("mousemove", resetAFKTimer);
+    window.addEventListener("keypress", resetAFKTimer);
 
     // Initializations that run after loading the body.
     window.document.body.onload = init();
@@ -250,12 +252,12 @@ function goAFK() {
 
 function resetBusyTimer() {
     window.clearTimeout(g_busyTimer);
-    g_busyTimer = window.setTimeout(goInactive, 2000); // Timeout is in ms
+    g_busyTimer = window.setTimeout(goInactive, 120000); // Timeout is in ms
 };
 
 
 function resetAFKTimer() {
     window.clearTimeout(g_AFKTimer);
-    g_AFKTimer = window.setTimeout(goAFK, 10000);
+    g_AFKTimer = window.setTimeout(goAFK, 300000);
 };
 

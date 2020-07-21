@@ -115,7 +115,9 @@ Html::start(const int port)
                 /// reply with home page
                 out << Response{ Response::Status::OK,
                                  http::Html{ "res/home.html" },
-                                 headers };
+                                 headers }
+                    << endl
+                    << endl;
                 logs << "[Html] Homepage access." << endl;
             } else if (req.method() == http::Request::Method::POST &&
                        req.path() == "/register") {
@@ -146,7 +148,9 @@ Html::start(const int port)
 
                 out << Response{ Response::Status::OK,
                                  { { "Set-Cookie",
-                                     u.cookie + "; SameSite=Strict" } } };
+                                     u.cookie + "; SameSite=Strict" } } }
+                    << endl
+                    << endl;
             } else {
                 out << Response{ Response::Status::NOT_FOUND,
                                  http::Html{ "res/not_found.html" } };
