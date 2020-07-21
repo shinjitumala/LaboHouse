@@ -177,8 +177,8 @@ function resetNotification() {
     alert("I notify you no more.");
 };
 
-function showQuote(author, quote){
-    alert(quote + " - " + author);
+function showQuote(author, quote) {
+    alert("\"" + quote + "\" - " + author);
 };
 
 // Refreshes the entire main page.
