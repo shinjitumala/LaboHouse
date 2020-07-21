@@ -281,6 +281,7 @@ function onFocus() {
     if (g_himado !== 0) {
         sendHimado(0);
     }
+    resetNotification();
     resetAFKTimer();
 };
 
