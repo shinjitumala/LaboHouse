@@ -27,8 +27,8 @@ Users::add(string id)
     auto cookie{ random_string(256) };
     for (; cookies.count(cookie); cookie = random_string(256)) {
     }
-    auto [uitr, b]{ users.emplace(id, cookie) };
-    auto& user{ const_cast<User&>(*uitr) };
+    users.emplace_back(id, cookie);
+    auto& user{ const_cast<User&>(users.back()) };
     ids.insert({ id, &user });
     cookies.insert({ cookie, &user });
     logs << "[Users] New user: { id = " << id << " }" << endl;
@@ -57,24 +57,15 @@ Users::by_cookie(string cookie)
     }
 }
 
-nlohmann::json
+Json
 Users::to_json()
 {
     shared_lock lg{ mtx };
-    nlohmann::json j;
-    unordered_map<User::Status, nlohmann::json> sorted;
-    for (auto s{ User::Status::free };
-         static_cast<char>(s) < static_cast<char>(User::Status::last);
-         s = static_cast<User::Status>(static_cast<char>(s) + 1)) {
-        sorted[s] = nlohmann::json::array();
-    }
+    Json j;
     for_each(users.begin(), users.end(), [&](auto& u) {
-        sorted[u.status].push_back(u.name + "#" + u.id);
+        j[User::to_string(u.status)].push_back(
+          Json{ { "name", u.name }, { "id", u.id } });
     });
-    for (auto [s, sj] : sorted) {
-        j[User::to_string(s)] = sj;
-    };
-
     return j;
 }
 };

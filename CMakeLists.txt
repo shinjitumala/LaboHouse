@@ -22,6 +22,7 @@ add_compile_options(-Wall # enable all warnings, because why not?
 # List all sources here.
 add_executable(LaboHouse)
 target_compile_features(LaboHouse PUBLIC cxx_std_17)
+target_compile_options(LaboHouse PRIVATE -fsanitize=address)
 target_include_directories(
   LaboHouse
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -31,6 +32,7 @@ target_link_libraries(
   LaboHouse
   # LLVM
   pthread)
+target_link_options(LaboHouse PRIVATE -fsanitize=address)
 
 # documentation related
 add_custom_command(
@@ -72,12 +74,18 @@ target_sources(
           src/LaboHouse.cpp
           src/house/User.cpp
           src/house/Users.cpp
-          src/house/Chat.cpp)
+          src/house/Chat.cpp
+          src/house/Quote.cpp)
+target_precompile_headers(LaboHouse PUBLIC include/labo/server/WS_Headers.h
+                          extern/json/single_include/nlohmann/json.hpp)
 
 # Configure HTML
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js JAVASCRIPT)
-string(PREPEND JAVASCRIPT "<script type=\"text/javascript\">")
-string(APPEND JAVASCRIPT "</script>")
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js JS)
+string(PREPEND JS "<script type=\"text/javascript\">")
+string(APPEND JS "</script>")
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/js/labohouse_api.js API_JS)
+string(PREPEND API_JS "<script type=\"text/javascript\">")
+string(APPEND API_JS "</script>")
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/res/css/style.css CSS)
 string(PREPEND CSS "<style>")
 string(APPEND CSS "</style>")
@@ -93,6 +101,9 @@ set_property(
 set_property(
   DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
                             ${CMAKE_CURRENT_SOURCE_DIR}/res/js/script.js)
+set_property(
+  DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+                            ${CMAKE_CURRENT_SOURCE_DIR}/res/js/labohouse_api.js)
 
 # Start server
 add_custom_target(start COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/start_server.sh)
