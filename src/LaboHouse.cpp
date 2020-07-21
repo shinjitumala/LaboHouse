@@ -23,8 +23,8 @@ LaboHouse::request(Json j, Connection c)
     lock_guard lg{ mtx };
     logs << "[LaboHouse] Request: " << j.dump(2) << endl;
     auto type{ j["type"] };
-    if (type.is_null()) {
-        logs << "Request type missing." << endl;
+    if (type.is_null() || !type.is_string()) {
+        logs << "Request type invalid: " << type << endl;
         return;
     }
 
@@ -71,7 +71,7 @@ LaboHouse::request(Json j, Connection c)
     }
     if (type == "chat") {
         auto msg{ j["msg"] };
-        if (msg.is_null()) {
+        if (msg.is_null() || !msg.is_string()) {
             logs << "Invalid msg: " << msg << endl;
             return;
         }
@@ -80,6 +80,37 @@ LaboHouse::request(Json j, Connection c)
         return;
     }
 
+    if (type == "add_watchlist" || type == "remove_watchlist") {
+        auto id{ j["id"] };
+        if (id.is_null() || !id.is_string()) {
+            logs << "Invalid id: " << id << endl;
+            return;
+        }
+        auto ouser{ users.by_id(id) };
+        if (!ouser) {
+            logs << "User not found: " << id << endl;
+            return;
+        }
+        if (&ouser.get() == &usr) {
+            logs << "Cannot add self to watchlist." << endl;
+            notify(usr, "Cannot add self to watchlist.");
+            return;
+        }
+
+        if (type == "add_watchlist") {
+            usr.watchlist_add(ouser.get());
+            logs << "[User:" << usr.id
+                 << "] Added user to watchlist: " << ouser.get().id << endl;
+            return;
+        } else if (type == "remove_watchlist") {
+            usr.watchlist_remove(ouser.get());
+            logs << "[User:" << usr.id
+                 << "] Removed user from watchlist: " << ouser.get().id << endl;
+            return;
+        }
+    }
+
+    errs << "[LaboHouse][User:" << usr.id << "] Unknown type: " << type << endl;
     return;
 }
 
@@ -129,6 +160,13 @@ LaboHouse::log_in(User& u, Connection c)
 
     change_status(u, User::Status::sFree);
     main_chat.chat(u, "has logged in.");
+
+    // Send notification
+    for (auto& ou : users) {
+        if (ou.in_watchlist(u)) {
+            notify(ou, u.name + " is online!.");
+        }
+    }
 }
 
 void
@@ -161,7 +199,7 @@ LaboHouse::send(User& u, Json j)
 {
     auto itr{ ronline.find(&u) };
     if (itr == ronline.end()) {
-        errs << "Missing user: " << u.id << endl;
+        errs << "User offline: " << u.id << endl;
         return;
     }
     try {
@@ -187,5 +225,14 @@ LaboHouse::send_online(Json j)
     for (auto [c, u] : online) {
         send(*u, j);
     }
+}
+
+void
+LaboHouse::notify(User& u, string m)
+{
+    Json j;
+    j["type"] = "notification";
+    j["msg"] = m;
+    send(u, j);
 }
 };

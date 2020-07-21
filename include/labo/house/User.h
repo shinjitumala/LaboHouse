@@ -8,6 +8,7 @@
 #pragma once
 #include <mutex>
 #include <nlohmann/json.hpp>
+#include <unordered_set>
 
 namespace labo {
 using namespace std;
@@ -42,6 +43,9 @@ class User
     /// level for freeness (is that a word?)
     Status status;
 
+    /// Receive notification when users here become online.
+    unordered_set<const User*> watchlist;
+
   public:
     /// A user must have an id and a name.
     /// @param id
@@ -67,6 +71,10 @@ class User
 
     /// Allow move.
     User(User&&) = default;
+
+    bool in_watchlist(const User& u) const;
+    void watchlist_add(const User& u);
+    void watchlist_remove(const User& u);
 
   private:
     /// Disallow copy because users are supposed to be unique.

@@ -55,4 +55,27 @@ User::to_json() const
     j["himado"] = to_string(status);
     return j;
 }
+
+bool
+User::in_watchlist(const User& u) const
+{
+    return watchlist.count(&u);
+};
+
+void
+User::watchlist_add(const User& u)
+{
+    watchlist.insert(&u);
+};
+
+void
+User::watchlist_remove(const User& u)
+{
+    auto itr{ watchlist.find(&u) };
+    if (itr == watchlist.end()) {
+        logs << "[Uesr:" << id << "] Not in watchlist: " << u.id << endl;
+        return;
+    }
+    watchlist.erase(itr);
+};
 }

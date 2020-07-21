@@ -69,7 +69,7 @@ function wsEventHandler(m) {
     }
 
     if (type == "notification") {
-        err("NOT IMPLEMENTED: " + m);
+        window.alert(m.msg);
         return;
     }
 
@@ -117,6 +117,14 @@ function sendHimado(h) {
     j["himado"] = parseInt(h);
 
     g_himado = j.himado;
+
+    ws.send(JSON.stringify(j));
+}
+
+function addWatchlist(id){
+    var j = {};
+    j["type"] = "add_watchlist";
+    j["id"] = id;
 
     ws.send(JSON.stringify(j));
 }

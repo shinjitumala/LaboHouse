@@ -61,6 +61,11 @@ class LaboHouse
     /// @param j
     void send(User& u, Json j);
 
+    /// Notify user with message.
+    /// @param u 
+    /// @param m 
+    void notify(User&u, string m);
+
     /// Send message to users.
     /// @param m
     template<
@@ -74,6 +79,8 @@ class LaboHouse
                   bool> = true>
     void send_all(I begin, I end, Json j);
 
+    /// Send message to all online users.
+    /// @param j 
     void send_online(Json j);
 
   private:
