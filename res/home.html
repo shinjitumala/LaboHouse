@@ -8,22 +8,19 @@
     <!-- for bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    ${JAVASCRIPT}
+    ${API_JS}
+    ${JS}
     ${CSS}
-</head>
-
-<body>
-
     <!-- for bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+</head>
+
+<body>
 
     <!-- Page Header -->
     <div id="header" class="header text-center shadow">
@@ -33,9 +30,9 @@
 
 
     <!-- Loing Page -->
-    <div class="container" style="display: none;">
+    <div id="page::register" class="container">
         <div class="jumbotron mx-auto mt-4 col-6 text-center">
-            <div id="page::register" class="page">
+            <div class="page">
                 <!-- Register Name -->
                 <form>
                     <div class="py-2">
@@ -47,7 +44,7 @@
                         <input class="form-control" type="text" id="name" value="">
                     </div>
                     <div class="py-2">
-                        <button type="button" onclick="registerName()"
+                        <button type="button" onclick="btnRegisterUser()"
                             class="btn btn-primary rounded-pill">Send</button>
                     </div>
                 </form>
@@ -57,7 +54,7 @@
 
 
     <!-- index page -->
-    <div class="container-fluid w-100 h-100">
+    <div id="page::main" class="container-fluid w-100 h-100" style="display: none;">
         <div class="row pt-3 h-100">
 
             <!-- ひま度変更 -->
@@ -68,7 +65,7 @@
                         <!-- Change 'HIMADO' -->
                         <div class="form-row">
                             <label class="mt-3 col-3 col-form-label">You: </label>
-                            <select id="himado" onchange="registerHima()" class="form-control col-8 mr-4 mt-3">
+                            <select id="himado" onchange="btnSetHimado()" class="form-control col-8 mr-4 mt-3">
                                 <option value="0">free</option>
                                 <option value="1">easy</option>
                                 <option value="2">busy</option>
@@ -76,11 +73,12 @@
                             </select>
                         </div>
 
-                            <!-- watch list -->
-                        <div class="form-row mt-5">                            
+                        <!-- watch list -->
+                        <div class="form-row mt-5">
                             <label class="mt-3 col-3 col-form-label">watch: </label>
-                                <input type="text" class="form-control col-6 mr-2 mt-3" id="watchID">
-                                <button type="button" class="btn btn-outline-primary col-2" onclick="btnAddWatchList()">add</button>
+                            <input type="text" class="form-control col-6 mr-2 mt-3" id="watchID">
+                            <button type="button" class="btn btn-outline-primary col-2"
+                                onclick="btnAddWatchList()">add</button>
                         </div>
 
 

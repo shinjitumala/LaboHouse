@@ -78,87 +78,84 @@ Html::start(const int port)
             continue;
         }
 
-        threads.push_back(new thread([client_address, fd, &lh = lh] {
-            logs << "[Html] Accepted connection from: "
-                 << client_address.sin_addr.s_addr << ":"
-                 << client_address.sin_port << endl;
+        logs << "[Html] Accepted connection from: "
+             << client_address.sin_addr.s_addr << ":" << client_address.sin_port
+             << endl;
 
-            using namespace labo;
-            using namespace http;
-            socket::fdstreambuf stream{ fd };
-            istream in{ &stream };
-            ostream out{ &stream };
+        using namespace labo;
+        using namespace http;
+        socket::fdstreambuf stream{ fd };
+        istream in{ &stream };
+        ostream out{ &stream };
 
-            Request req;
-            in >> req;
-            if (!req.valid) {
-                logs << "[Html] Invalid Request." << endl;
-                return;
-            } else if (req.method() == Request::Method::GET &&
-                       req.path() == "/") {
-                map<string, string> headers{
-                    { "Content-Security-Policy",
-                      "connect-src 'self' "
-                      "ws://funnypigrun.dns-cloud.net:12273" },
-                    { "Known", "no" },
-                };
-                auto ocookie{ req.header_value("Cookie") };
-                if (ocookie) {
-                    auto ouser{ lh.users.by_cookie(ocookie.get()) };
-                    if (ouser) {
-                        headers.at("Known") = "yes";
-                        logs << "[Html] User is known. ID: " << ouser.get().id
-                             << "." << endl;
-                    }
+        Request req;
+        in >> req;
+        if (!req.valid) {
+            logs << "[Html] Invalid Request." << endl;
+            return;
+        } else if (req.method() == Request::Method::GET && req.path() == "/") {
+            map<string, string> headers{
+                { "Content-Security-Policy",
+                  "connect-src 'self' "
+                  "ws://funnypigrun.dns-cloud.net:12273" },
+                { "Known", "no" },
+            };
+            auto ocookie{ req.header_value("Cookie") };
+            if (ocookie) {
+                auto ouser{ lh.users.by_cookie(ocookie.get()) };
+                if (ouser) {
+                    headers.at("Known") = "yes";
+                    logs << "[Html] User is known. ID: " << ouser.get().id
+                         << "." << endl;
                 }
-
-                /// reply with home page
-                out << Response{ Response::Status::OK,
-                                 http::Html{ "res/home.html" },
-                                 headers }
-                    << endl
-                    << endl;
-                logs << "[Html] Homepage access." << endl;
-            } else if (req.method() == http::Request::Method::POST &&
-                       req.path() == "/register") {
-                auto oname{ req.header_value("name") };
-                auto oid{ req.header_value("id") };
-
-                if (!oname) {
-                    out << bad_request("Missing name.");
-                    logs << "[Html] Bad request: Missing name." << endl;
-                    return;
-                }
-                if (!oid) {
-                    out << bad_request("Missing id.");
-                    logs << "[Html] Bad request: Missing id." << endl;
-                    return;
-                }
-
-                if (lh.users.by_id(oid.get())) {
-                    out << unauthorized("ID already taken: " + oid.get());
-                    logs << "[Html] Bad request: ID already taken: "
-                         << oid.get() << "." << endl;
-                    return;
-                }
-
-                auto& u{ lh.users.add(oid.get()) };
-                lh.main_chat.chat(u, "has joined! Say hello =)");
-                u.name = oname.get();
-
-                out << Response{ Response::Status::OK,
-                                 { { "Set-Cookie",
-                                     u.cookie + "; SameSite=Strict" } } }
-                    << endl
-                    << endl;
-            } else {
-                out << Response{ Response::Status::NOT_FOUND,
-                                 http::Html{ "res/not_found.html" } };
-                errs << "[Html] Unknown request." << endl;
             }
 
-            ::close(fd);
-        }));
+            /// reply with home page
+            out << Response{ Response::Status::OK,
+                             http::Html{ "res/home.html" },
+                             headers }
+                << endl
+                << endl;
+            logs << "[Html] Homepage access." << endl;
+        } else if (req.method() == http::Request::Method::POST &&
+                   req.path() == "/register") {
+            auto oname{ req.header_value("name") };
+            auto oid{ req.header_value("id") };
+
+            if (!oname) {
+                out << bad_request("Missing name.");
+                logs << "[Html] Bad request: Missing name." << endl;
+                return;
+            }
+            if (!oid) {
+                out << bad_request("Missing id.");
+                logs << "[Html] Bad request: Missing id." << endl;
+                return;
+            }
+
+            if (lh.users.by_id(oid.get())) {
+                out << unauthorized("ID already taken: " + oid.get());
+                logs << "[Html] Bad request: ID already taken: " << oid.get()
+                     << "." << endl;
+                return;
+            }
+
+            auto& u{ lh.users.add(oid.get()) };
+            lh.main_chat.chat(u, "has joined! Say hello =)");
+            u.name = oname.get();
+
+            out << Response{ Response::Status::OK,
+                             { { "Set-Cookie",
+                                 u.cookie + "; SameSite=Strict" } } }
+                << endl
+                << endl;
+        } else {
+            out << Response{ Response::Status::NOT_FOUND,
+                             http::Html{ "res/not_found.html" } };
+            errs << "[Html] Unknown request." << endl;
+        }
+
+        ::close(fd);
     }
 }
 
