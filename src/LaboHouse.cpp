@@ -198,6 +198,7 @@ LaboHouse::log_in(User& u, Connection c)
     // Quote
     {
         Json j;
+        auto quote{ Quotes::get() };
         j["type"] = "quote";
         j["author"] = quote.first;
         j["quote"] = quote.second;
