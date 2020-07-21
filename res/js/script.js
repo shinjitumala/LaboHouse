@@ -241,10 +241,11 @@ function searchUser() {
 
 function showNotification(m) {
     alert(m);
+    document.title = "\* LaboHouse";
 };
 
 function resetNotification() {
-    alert("I notify you no more.");
+    document.title = "LaboHouse";
 };
 
 function showQuote(author, quote) {
