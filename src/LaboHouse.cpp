@@ -239,7 +239,7 @@ LaboHouse::log_out(Connection c)
     ronline.erase(itr->second);
     online.erase(itr);
     lg.unlock();
-    u.status = User::Status::sOffline;
+    change_status(u, User::Status::sOffline);
     main_chat.chat(u, "has logged out.");
     logs << "[LaboHouse] User logged out: " << u.id << endl;
 }
