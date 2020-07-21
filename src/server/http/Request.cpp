@@ -18,33 +18,6 @@ namespace labo::http {
 ofstream logs{ "http1_requests.log" };
 mutex mtx;
 
-istream&
-get_line(istream& is, string& str)
-{
-    str.clear();
-    istream::sentry s{ is, true };
-    auto buf{ is.rdbuf() };
-    while (true) {
-        auto c{ buf->sbumpc() };
-        switch (c) {
-            case '\r':
-                if (buf->sgetc() == '\n') {
-                    buf->sbumpc();
-                } else {
-                    is.setstate(ios::eofbit);
-                    errs << "Unexpected '\\r': " << str << endl;
-                }
-                return is;
-            case std::streambuf::traits_type::eof():
-                is.setstate(std::ios::eofbit);
-                errs << "Line has no end: " << str << endl;
-                return is;
-            default:
-                str += static_cast<char>(c);
-        }
-    }
-}
-
 void
 Request::deserialize(istream& is)
 {
@@ -61,7 +34,7 @@ Request::deserialize(istream& is)
     valid = false;
 
     /// Get first line
-    for (string line; get_line(is, line);) {
+    for (string line; getline(is, line);) {
         if (!line.size()) {
             continue;
         }
@@ -83,7 +56,7 @@ Request::deserialize(istream& is)
         if (smatch matches; regex_match(raw_path, matches, query_pattern)) {
             raw_path = matches[1];
             string values{ matches[2] };
-            static const regex value_pattern{ "([^&]+)=([^&]+)" };
+            static const regex value_pattern{ "([^&]+)=([^&\r]+)" };
             for (sregex_iterator itr{
                    values.begin(), values.end(), value_pattern };
                  itr != sregex_iterator{};
@@ -119,13 +92,13 @@ Request::deserialize(istream& is)
 
     /// Get rest.
     logs << "Headers {" << endl;
-    for (string line; get_line(is, line);) {
-        if (line.size() == 0) {
+    for (string line; getline(is, line);) {
+        if (line.size() < 2) {
             break;
         }
 
         const regex header_pattern{
-            "^([^:]+): (.+)$"
+            "^([^:]+): (.+)\r$"
         }; // HOLY SHIT FUCK YOU CARRIGE RETURN. FUCK YOU FUCK YOU FFUCK YOU.
         if (smatch matches;
             regex_match(line, matches, header_pattern) && matches.size() > 2) {
