@@ -67,7 +67,7 @@ class User
         Status status;
         bool operator==(const TimeRange& rhs) const
         {
-            return start == rhs.start && end == rhs.start;
+            return start == rhs.start && end == rhs.end;
         };
         operator bool() const
         {
