@@ -55,6 +55,7 @@ User::to_json() const
     j["name"] = name;
     j["id"] = id;
     j["himado"] = to_string(status);
+    j["subhimado"] = substatus;
     return j;
 }
 
@@ -136,6 +137,7 @@ User::timerange_query(Time t)
 {
     for (auto tr : timeranges) {
         if (tr.start <= t && t <= tr.end) {
+            logs << tag() << " In Timerange: " << tr << endl;
             return tr.status;
         }
     }

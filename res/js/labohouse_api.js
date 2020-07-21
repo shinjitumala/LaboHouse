@@ -56,6 +56,10 @@ function wsEventHandler(m) {
         reloadUsers(m.names);
         return;
     }
+    if(type == "name"){
+        displayName(m);
+        return;
+    }
 
     if (type == "new_chat") {
         // New chat message
@@ -123,6 +127,13 @@ function sendHimado(h) {
 
     g_himado = j.himado;
 
+    ws.send(JSON.stringify(j));
+}
+
+function sendSubhimado(s){
+    var j = {};
+    j["type"] = "subhimado";
+    j["subhimado"] = s;
     ws.send(JSON.stringify(j));
 }
 

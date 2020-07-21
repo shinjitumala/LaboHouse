@@ -19,24 +19,26 @@
 namespace labo {
 using namespace websocketpp::close;
 mutex mtx;
+const string lh_tag{ "[LaboHouse]" };
 void
 LaboHouse::request(Json j, Connection c)
 {
     try {
+        auto tag{ lh_tag };
         lock_guard lg{ mtx };
         auto type{ j["type"] };
         if (type == "cookie") {
             auto cookie{ j["cookie"] };
             if (cookie.is_null() || !cookie.is_string()) {
                 ws.close(c, status::normal, "Unknown Cookie.");
-                logs << "Invalid Cookie." << endl;
+                logs << tag << " Invalid Cookie." << endl;
                 return;
             }
 
             auto ousr{ users.by_cookie(cookie) };
             if (!ousr) {
                 ws.close(c, status::normal, "Unknown Cookie.");
-                logs << "Unknown Cookie." << endl;
+                logs << tag << " Unknown Cookie." << endl;
                 return;
             }
 
@@ -48,28 +50,25 @@ LaboHouse::request(Json j, Connection c)
         if (itr == online.end()) {
             // If user not found.
             ws.close(c, status::normal, "Unknown handle.");
-            logs << "Unknown handle." << endl;
+            logs << tag << " Unknown handle." << endl;
             return;
         }
         // User is known
         auto& usr{ *itr->second };
-        logs << "[User: " << usr.id << "] " << flush;
-
+        tag += usr.tag();
         if (type == "himado") {
-            auto himado{ j["himado"] };
-            if (himado.is_null() || !himado.is_number_unsigned()) {
-                logs << "Invalid Himado: " << himado << endl;
-                return;
-            }
-
-            change_status(usr,
-                          static_cast<User::Status>(static_cast<uint>(himado)));
+            change_status(
+              usr, static_cast<User::Status>(static_cast<uint>(j["himado"])));
+            return;
+        }
+        if (type == "subhimado") {
+            change_status(usr, static_cast<string>(j["subhimado"]));
             return;
         }
         if (type == "chat") {
             auto msg{ j["msg"] };
             if (msg.is_null() || !msg.is_string()) {
-                logs << "Invalid msg: " << msg << endl;
+                logs << tag << "Invalid msg: " << msg << endl;
                 return;
             }
 
@@ -79,52 +78,48 @@ LaboHouse::request(Json j, Connection c)
 
         if (type == "add_watchlist" || type == "remove_watchlist") {
             auto id{ j["id"] };
-            if (id.is_null() || !id.is_string()) {
-                logs << "Invalid id: " << id << endl;
-                return;
-            }
             auto ouser{ users.by_id(id) };
             if (!ouser) {
-                logs << "User not found: " << id << endl;
+                logs << tag << "User not found: " << id << endl;
                 return;
             }
             if (&ouser.get() == &usr) {
-                logs << "Cannot add self to watchlist." << endl;
+                logs << tag << "Cannot add self to watchlist." << endl;
                 notify(usr, "Cannot add self to watchlist.");
                 return;
             }
 
             if (type == "add_watchlist") {
                 usr.watchlist_add(ouser.get());
-                logs << "[User:" << usr.id
-                     << "] Added user to watchlist: " << ouser.get().id << endl;
+                logs << tag << " Added user to watchlist: " << ouser.get().id
+                     << endl;
                 return;
             } else if (type == "remove_watchlist") {
                 usr.watchlist_remove(ouser.get());
-                logs << "[User:" << usr.id
-                     << "] Removed user from watchlist: " << ouser.get().id
+                logs << tag
+                     << " Removed user from watchlist: " << ouser.get().id
                      << endl;
                 return;
             }
         }
 
         if (type == "add_timerange") {
-            string status;
-            status =
-              usr.timerange_add(j["start"],
-                                j["end"],
-                                static_cast<User::Status>(
-                                  static_cast<unsigned char>(j["himado"])));
-            if (status.size()) {
+            if (string status{ usr.timerange_add(
+                  j["start"],
+                  j["end"],
+                  static_cast<User::Status>(
+                    static_cast<unsigned char>(j["himado"]))) };
+                status.size()) {
                 notify(usr, status);
+                logs << tag << " " << status;
             }
             return;
         }
         if (type == "remove_timerange") {
-            string status;
-            status = usr.timerange_remove(j["start"], j["end"]);
-            if (status.size()) {
+            if (string status{ usr.timerange_remove(j["start"], j["end"]) };
+                status.size()) {
                 notify(usr, status);
+                logs << tag << " " << status;
             }
             return;
         }
@@ -132,18 +127,19 @@ LaboHouse::request(Json j, Connection c)
             usr.timer = { minutes{ static_cast<uint>(j["duration"]) },
                           static_cast<User::Status>(
                             static_cast<unsigned char>(j["himado"])) };
+            logs << tag << " Added timer: " << *usr.timer << "." << endl;
             return;
         }
         if (type == "remove_timer") {
+            logs << tag << " Removed timer." << endl;
             usr.timer = {};
             return;
         }
 
-        errs << "[LaboHouse][User:" << usr.id << "] Unknown type: " << type
-             << endl;
+        errs << tag << " Unknown type: " << type << endl;
     } catch (Json::exception e) {
-        logs << "Json error: " << e.what() << endl;
-        logs << "Message: " << j.dump() << endl;
+        logs << lh_tag << "Json error: " << e.what() << endl;
+        logs << lh_tag << "Message: " << j.dump() << endl;
     };
     return;
 }
@@ -177,6 +173,12 @@ LaboHouse::log_in(User& u, Connection c)
     }
 
     // Send all data on login.
+    // Name
+    {
+        Json j{ u.to_json() };
+        j["type"] = "name";
+        send(u, j);
+    }
     // Chat
     {
         Json j;
@@ -260,6 +262,8 @@ LaboHouse::start()
                 if (!u->timer->expired(now)) {
                     continue;
                 }
+                logs << lh_tag << u->tag() << "Timer expired: " << *u->timer
+                     << endl;
                 change_status(*u, u->timer->s);
                 u->timer = {};
             }
@@ -291,13 +295,26 @@ LaboHouse::change_status(User& u, User::Status s)
     u.status = s;
     auto j{ u.to_json() };
     j["type"] = "himado";
+    logs << lh_tag << u.tag() << " Status changed: " << User::to_string(s)
+         << endl;
+    send_online(j);
+}
+
+void
+LaboHouse::change_status(User& u, string subhimado)
+{
+    u.substatus = subhimado;
+    auto j{ u.to_json() };
+    j["type"] = "himado";
+    logs << lh_tag << u.tag() << " Status changed (sub): " << u.substatus
+         << endl;
     send_online(j);
 }
 
 void
 LaboHouse::send_online(Json j)
 {
-    shared_lock sl{mtx_online};
+    shared_lock sl{ mtx_online };
     for (auto [c, u] : online) {
         send(*u, j);
     }

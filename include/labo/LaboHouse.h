@@ -94,6 +94,7 @@ class LaboHouse
     void log_out(Connection h);
 
     void change_status(User& u, User::Status s);
+    void change_status(User&u, string subhimado);
 };
 
 template<

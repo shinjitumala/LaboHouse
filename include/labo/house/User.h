@@ -72,7 +72,7 @@ class User
         operator bool() const
         {
             // If start is greater than end, invalid.
-            return start < end;
+            return end < start;
         };
 
         void print(ostream& os) const
@@ -85,6 +85,12 @@ class User
         Status s;
         Timer(minutes m, Status s);
         bool expired(Time t);
+
+        void print(ostream& os) const
+        {
+            os << "{" << static_cast<const Time&>(*this) << ", " << to_string(s)
+               << "}";
+        };
     };
 
     /// Convert status to string.
@@ -109,6 +115,8 @@ class User
     vector<TimeRange> timeranges;
 
   public:
+    /// Sub status.
+    string substatus;
     optional<Timer> timer;
 
     /// A user must have an id and a name.
@@ -146,6 +154,8 @@ class User
     /// @param t
     /// @return optional<Status>
     optional<Status> timerange_query(Time t);
+
+    string tag() const { return "[User:" + id + "]"; };
 
   private:
     /// Disallow copy because users are supposed to be unique.

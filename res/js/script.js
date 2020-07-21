@@ -42,9 +42,15 @@ function btnRegisterUser() {
 
 // Called when going to the main page.
 function transMain() {
-    document.getElementById("block::name").innerText = g_name + "#" + g_id;
     document.getElementById("page::register").style.display = "none";
     document.getElementById("page::main").style.display = "block";
+};
+
+// Called when the server sends us our information.
+function displayName(user) {
+    g_name = user.name;
+    g_id = user.id;
+    document.getElementById("block::name").innerText = g_name + "#" + g_id;
 };
 
 // Called when going to the register page.
@@ -64,6 +70,22 @@ var g_names;
 
 // Called when a user changes status.
 function changeUserStatus(m) {
+    if (m.id == g_id) {
+        document.getElementById("himado").selectedIndex = function () {       // If self.
+            if (m.himado == "Free") {
+                return 0;
+            }
+            if (m.himado == "Easy") {
+                return 1;
+            }
+            if (m.himado == "Busy") {
+                return 2;
+            }
+            if (m.himado == "Offline") {
+                return 3;
+            }
+        }();
+    }
     for (s in g_names) {
         var list = g_names[s];
         var i = list.findIndex(u => u.name === m.name);
@@ -192,15 +214,18 @@ function refresh_main() {
 var g_busyTimer;
 var g_AFKTimer;
 
+// Set this to false if you want to stop auto focus and afk detection.
+var g_autoChangeOff = false;
+
 function onBlur() {
-    if (ws == undefined) {
+    if (ws == undefined || g_autoChangeOff) {
         return;
     }
     sendHimado(1);
     resetBusyTimer();
 };
 function onFocus() {
-    if (ws == undefined) {
+    if (ws == undefined || g_autoChangeOff) {
         return;
     }
     window.clearTimeout(g_busyTimer);
@@ -211,13 +236,13 @@ function onFocus() {
 };
 
 function goInactive() {
-    if (ws == undefined || g_himado == 2) {
+    if (ws == undefined || g_himado == 2 || g_autoChangeOff) {
         return;
     }
     sendHimado(2);
 };
 function goAFK() {
-    if (ws == undefined || g_himado == 3) {
+    if (ws == undefined || g_himado == 3 || g_autoChangeOff) {
         return;
     }
     sendHimado(2);

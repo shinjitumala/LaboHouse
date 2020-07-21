@@ -48,6 +48,9 @@
   * `duration`: in minutes.
   * `himado`: himado to set when timer expires.
 
+### `subhimado`: Change substatus.
+  * `subhimado`:
+
 ### `remove_timer`: Removes the currently running timer.
 
 ## WebSocket Messages
@@ -64,6 +67,7 @@
   * `name`:
   * `id`:
   * `himado`:
+  * `subhimado`:
 
 ### `chat`: Loads an entire chat log.
   * `type`: chat
