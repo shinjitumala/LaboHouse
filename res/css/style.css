@@ -68,7 +68,6 @@ body {
 .panel {
   box-sizing: border-box;
   float: center;
-  overflow-y: scroll;
   height: 100%;
 }
 
