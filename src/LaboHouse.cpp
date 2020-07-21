@@ -221,6 +221,16 @@ LaboHouse::start()
                 }
                 change_status(*u, *s);
             }
+            for (auto [c, u] : online) {
+                if (!u->timer) {
+                    continue;
+                }
+                if (!u->timer->expired(now)) {
+                    continue;
+                }
+                change_status(*u, u->timer->s);
+                u->timer = {};
+            }
             logs << "[LaboHouse] Done!" << endl;
         };
     } };

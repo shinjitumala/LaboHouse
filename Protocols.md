@@ -44,6 +44,12 @@
   * `start`: `hh:mm`
   * `end`: `hh:mm`
 
+### `add_timer`: Add a timed himado setting.
+  * `duration`: in minutes.
+  * `himado`: himado to set when timer expires.
+
+### `remove_timer`: Removes the currently running timer.
+
 ## WebSocket Messages
   * The name of the command is the `type`.
 

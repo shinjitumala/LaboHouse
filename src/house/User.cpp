@@ -148,4 +148,21 @@ User::Time::now()
     return { hours{ time.tm_hour }, minutes{ time.tm_min } };
 }
 
+User::Timer::Timer(minutes m, Status s)
+  : Time{ [&] {
+      auto now{ Time::now() };
+      if (now.m.count() + m.count() > 60) {
+          now.h++;
+      }
+      now.m += m;
+      return now;
+  }() }
+  , s{ s }
+{}
+
+bool
+User::Timer::expired(Time t)
+{
+    return *this < t;
+}
 }

@@ -152,3 +152,18 @@ function removeTimeRange(start, end) {
 
     ws.send(JSON.stringify(j));
 }
+
+function addTimer(mins, himado) {
+    var j = {};
+    j["type"] = "add_timer";
+    j["duration"] = mins;
+    j["himado"] = himado;
+
+    ws.send(JSON.stringify(j));
+}
+
+function removeTimer() {
+    var j = {};
+    j["type"] = "remove_timer";
+    ws.send(JSON.stringify(j));
+}

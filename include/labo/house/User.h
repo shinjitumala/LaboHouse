@@ -67,6 +67,12 @@ class User
             return start < end;
         };
     };
+    struct Timer : Time
+    {
+        Status s;
+        Timer(minutes m, Status s);
+        bool expired(Time t);
+    };
 
     /// Convert status to string.
     /// @param s
@@ -90,6 +96,8 @@ class User
     vector<TimeRange> timeranges;
 
   public:
+    optional<Timer> timer;
+
     /// A user must have an id and a name.
     /// @param id
     /// @param cookie
