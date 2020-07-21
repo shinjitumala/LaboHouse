@@ -86,11 +86,11 @@ function changeUserStatus(m) {
             }
         }();
     }
+
     for (s in g_names) {
-        var list = g_names[s];
-        var i = list.findIndex(u => u.name === m.name);
-        if (i !== undefined) {
-            list.splice(i, 1);
+        var i = g_names[s].findIndex(u => u.id === m.id);
+        if (i > -1) {
+            g_names[s].splice(i, 1);
         }
     }
 

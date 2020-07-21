@@ -215,8 +215,8 @@ void
 LaboHouse::notify_watchers(User& u, string msg)
 {
     for (auto& ou : users) {
-        if (ou.in_watchlist(u)) {
-            notify(ou, msg);
+        if (!ou.in_watchlist(u)) {
+            continue;
         }
         if (ou.status < User::Status::sBusy) {
             // Notify if not busy.
