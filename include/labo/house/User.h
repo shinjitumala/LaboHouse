@@ -74,6 +74,11 @@ class User
             // If start is greater than end, invalid.
             return start < end;
         };
+
+        void print(ostream& os) const
+        {
+            os << start << " ~ " << end << " (" << to_string(status) << ")";
+        }
     };
     struct Timer : Time
     {
