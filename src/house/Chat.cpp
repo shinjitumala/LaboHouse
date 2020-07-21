@@ -70,7 +70,7 @@ Chat::chat(User& user, string msg)
             if (u.status != s) {
                 continue;
             }
-            lh.notify(u, "You mave been mentioned: @" + User::to_string(s));
+            lh.notify(u, msg);
         }
     }
 
