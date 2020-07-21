@@ -4,7 +4,7 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    
+
     <!-- for bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -16,59 +16,59 @@
 
     <!-- for bootstrap -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
     <!-- Page Header -->
-    <div id="header" class="header">
-        <p style="text-align:center;">LaboHouse (alpha)</p>
+    <div id="header" class="header text-center shadow">
+        <p>LaboHouse (alpha)</p>
     </div>
 
+
+
+    <!-- Loing Page -->
     <div class="container" style="display: none;">
-        <div class="jumbotron mx-auto mt-4 col-6">
+        <div class="jumbotron mx-auto mt-4 col-6 text-center">
             <div id="page::register" class="page">
                 <!-- Register Name -->
-                
-                    <form>
-                        <div>
-                            <p>Please input your ID and name</p>
-                        </div>
-                        <div class="py-2">
-                            <label for="api-url">ID: </label>
-                            <input class="form-control" type="text" id="id" value="">
-                        </div>
-                        <div class="py-2">
-                            <label for="api-url">Display name: </label>
-                            <input class="form-control" type="text" id="name" value="">
-                        </div>
-                        <div class="py-2">
-                        <button type="button" onclick="registerName()" class="btn rounded-pill">Send</button>
-                        </div>
-                    </form>
-                
+                <form>
+                    <div class="py-2">
+                        <label for="api-url">ID: </label>
+                        <input class="form-control" type="text" id="id" value="">
+                    </div>
+                    <div class="py-2">
+                        <label for="api-url">Display name: </label>
+                        <input class="form-control" type="text" id="name" value="">
+                    </div>
+                    <div class="py-2">
+                        <button type="button" onclick="registerName()"
+                            class="btn btn-primary rounded-pill">Send</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
 
-    <div id="page::main" class="page" >
-        <div class="container">
-            <div class="row">
-                <div class = "col-2">
-                    <div id="panel::control" class="panel">
-                        <h2 id="block::name"></h2>
-                        <div id="block::himado">
-                            <!-- Change 'HIMADO' -->
-                            <label><b>Himado: </b></label>
-                    
-                    
-                            <select id="himado" onchange="registerHima()">
+    <!-- index page -->
+    <div class="container-fluid w-100 h-100">
+        <div class="row pt-3 h-100">
+
+            <!-- ひま度変更 -->
+            <div class="col-2 mx-0 px-0 text-center border-right">
+                <div id="panel::control" class="panel">
+                    <h3 class="border-bottom py-2">Himado</h3>
+                    <div id="block::himado">
+                        <!-- Change 'HIMADO' -->
+                        <div class="form-row">
+                            <label class="mt-3 col-3 col-form-label">You: </label>
+                            <select id="himado" onchange="registerHima()" class="form-control col-8 mr-4 mt-3">
                                 <option value="0">free</option>
                                 <option value="1">easy</option>
                                 <option value="2">busy</option>
@@ -77,35 +77,42 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-8">
-                    <div id="panel::main" class="panel">
-                        <h2 style="text-align: center;"><b>Chat</b></h2>
-                        <div style="display: flex; flex-wrap: wrap; ">
-                            <div id="block::chat_main" class="chat" style="width: 100%; align-self: flex-start;"></div>
-                            <div style="align-self: flex-end;">
-                                <form action="noop" id="form_chat">
-                                    <textarea id="chatbox" cols="999" rows="1" name="chat"
-                                        form="form_chat">Say something...</textarea>
-                                    <button type="button" onclick="sendChat()">Chat</button>
-                                </form>
-                            </div>
+
+
+            <!-- chat and log -->
+            <div class="col-8 mx-0 px-0 text-center">
+                <div id="panel::main" class="panel">
+                    <h3 class="border-bottom py-2"><b>Chat</b></h3>
+                    <div style="display: flex; flex-wrap: wrap; height: 85%;">
+                        <div id="block::chat_main" class="chat" style="width: 100%; align-self: flex-start;"></div>
+                        <div style="align-self: flex-end;">
+                            <form action="noop" id="form_chat">
+                                <textarea id="chatbox" cols="999" rows="1" name="chat"
+                                    form="form_chat">Say something...</textarea>
+                                <button type="button" onclick="sendChat()">Chat</button>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-2">
-                    <div id="panel::members" class="panel">
-                        
-                            <h3>Members</h3>
-                            <label>Search: </label>
-                            <input type="text" id="member_search" onchange="searchUser()">
-                            <div id="list::members" style="text-align: left;">
-                            </div>
-                       
+            <!-- members -->
+            <div class="col-2 mx-0 px-0 text-center border-left">
+                <div id="panel::members" class="panel">
+                    <h3 class="border-bottom py-2">Members</h3>
+                    <div class="form-row">
+                        <label class="mt-3 col-3 col-form-label">Search: </label>
+                        <input type="text" id="member_search" onchange="searchUser()"
+                            class="form-control col-8 mr-4 mt-3">
+                        <div id="list::members" style="text-align: left;"></div>
                     </div>
                 </div>
             </div>
+
+
+
         </div>
     </div>
 </body>

@@ -59,7 +59,6 @@ body {
   height: 60px;
   font-size: 36px;
   color: #ffffff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
 }
 
 .page {
@@ -68,9 +67,7 @@ body {
 
 .panel {
   box-sizing: border-box;
-  border-style: dotted;
-  border-width: thin;
-  float: left;
+  float: center;
   overflow-y: scroll;
   height: 100%;
 }
@@ -78,19 +75,4 @@ body {
 textarea {
   width: 100%;
   box-sizing: border-box;
-}
-
-.jumbotron{
-    background-color: #C6E7E1;
-}
-
-.btn{
-    background-color: #2AC6AC;
-    color: #000000;
-}
-
-.btn:hover{
-    background-color: #22A08B;
-    color: #ffffff;
-
 }
