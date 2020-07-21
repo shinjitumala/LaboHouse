@@ -85,6 +85,11 @@ class LaboHouse
     /// @param j 
     void send_online(Json j);
 
+    /// Send notifications to online watchers for user 'u'.
+    /// @param u 
+    /// @param msg 
+    void notify_watchers(User &u, string msg);
+
   private:
     /// Send names to user.
     /// @param u

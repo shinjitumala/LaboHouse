@@ -208,13 +208,19 @@ LaboHouse::log_in(User& u, Connection c)
     main_chat.chat(u, "has logged in.");
 
     // Send notification
+    notify_watchers(u, u.name + " is online!.");
+}
+
+void
+LaboHouse::notify_watchers(User& u, string msg)
+{
     for (auto& ou : users) {
         if (ou.in_watchlist(u)) {
-            notify(ou, u.name + " is online!.");
+            notify(ou, msg);
         }
-        if (ou.status == User::Status::sEasy) {
-            // Notify if on easy mode.
-            notify(ou, u.name + "is online!.");
+        if (ou.status < User::Status::sBusy) {
+            // Notify if not busy.
+            notify(ou, msg);
         }
     }
 }
@@ -298,6 +304,11 @@ LaboHouse::change_status(User& u, User::Status s)
     logs << lh_tag << u.tag() << " Status changed: " << User::to_string(s)
          << endl;
     send_online(j);
+
+    // Send notification to watcher.
+    if (s == User::Status::sFree) {
+        notify_watchers(u, u.name + " is '" + User::to_string(s) + "'.");
+    }
 }
 
 void
