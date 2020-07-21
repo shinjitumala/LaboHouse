@@ -119,6 +119,7 @@ function reloadUsers(m) {
 
 // Called when updating the display for users
 function displayUsers(m) {
+    // Member lists.
     var members = document.getElementById("list::members");
     members.innerText = ""; // Clear content
 
@@ -141,6 +142,22 @@ function displayUsers(m) {
     members.appendChild(create_list("Easy"));
     members.appendChild(create_list("Busy"));
     members.appendChild(create_list("Offline"));
+
+    // Setup dropdown menu.
+    var dropdown = document.getElementById("watchID");
+    dropdown.innerText = "";
+    for (var himado in m) {
+        for (var i in m[himado]) {
+            if (m[himado][i].id == g_id) {
+                // Skip self.
+                continue;
+            }
+            var e = document.createElement("option");
+            e.value = m[himado][i].id;
+            e.innerText = m[himado][i].name + "#" + m[himado][i].id;
+            dropdown.appendChild(e);
+        }
+    }
 }
 
 // Called when sending a chat message.
