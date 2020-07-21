@@ -32,6 +32,9 @@ function openSocket() {
         dbg("WS: Closed. Code: " + e.code + ", Reason: " + e.reason);
         ws = undefined;
         transRegister();
+        if(e.code == 1006){
+            window.alert("Server died.");
+        }
     };
     ws.onerror = function (e) {
         err(e);
