@@ -109,6 +109,7 @@ User::timerange_add(string start, string end, User::Status s)
     }
     tr->status = s;
     timeranges.push_back(*tr);
+    logs << "[User:" << id << "] New timerage: " << *tr << endl;
     return "";
 };
 
@@ -125,6 +126,7 @@ User::timerange_remove(string start, string end)
     if (itr == timeranges.end()) {
         return "No such TimeRange.";
     }
+    logs << "[User:" << id << "] Removed timerage: " << *itr << endl;
     timeranges.erase(itr);
     return "";
 };
