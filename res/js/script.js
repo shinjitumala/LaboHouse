@@ -98,7 +98,7 @@ function changeUserStatus(m) {
         g_names[m.himado] = [];
     }
     g_names[m.himado].push({ "name": m.name, "id": m.id });
-    reloadUsers(g_names);
+    displayUsers(g_names);
 };
 
 // Called when loading an entire user list
