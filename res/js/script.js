@@ -1,5 +1,13 @@
+// Macro
+var E = function (id) { return document.getElementById(id); };
+var hide = function (id) { E(id).classList.add("hidden"); };
+var show = function (id) { E(id).classList.remove("hidden"); };
+
 // Run on page load.
 window.onload = function () {
+    // Hide main page.
+    hide("P#main");
+
     // Initializations before the body loads.
     openSocket(); // Login attempt with current Cookie.
     window.addEventListener("focus", onFocus);
@@ -9,6 +17,7 @@ window.onload = function () {
 
     // Initializations that run after loading the body.
     window.document.body.onload = init();
+
 };
 
 // Store user's name
@@ -21,7 +30,7 @@ var g_himado;
 // Initializations after the body loads.
 function init() {
     // Add event listener for chatbox.
-    document.getElementById("chatbox").addEventListener("keydown", function (e) {
+    E("chatbox").addEventListener("keydown", function (e) {
         if (e.which === 13) {
             e.preventDefault();
             btnSendChat();
@@ -37,7 +46,7 @@ function init() {
 
 // Called when add user whom you wanna watch.
 function btnAddWatchList() {
-    id = document.getElementById("watchID").value;
+    id = E("watchID").value;
     addWatchlist(id);
 }
 
@@ -45,33 +54,33 @@ function btnAddWatchList() {
 
 // Called when registering new user.
 function btnRegisterUser() {
-    g_name = document.getElementById("name").value;
-    g_id = document.getElementById("id").value;
+    g_name = E("name").value;
+    g_id = E("id").value;
     registerUser(g_id, g_name);
 };
 
 // Called when going to the main page.
 function transMain() {
-    document.getElementById("page::register").style.display = "none";
-    document.getElementById("page::main").style.display = "block";
+    hide("P#register");
+    show("P#main");
 };
 
 // Called when the server sends us our information.
 function displayName(user) {
     g_name = user.name;
     g_id = user.id;
-    document.getElementById("block::name").innerText = g_name + "#" + g_id;
+    E("block::name").innerText = g_name + "#" + g_id;
 };
 
 // Called when going to the register page.
 function transRegister() {
-    document.getElementById("page::main").style.display = "none";
-    document.getElementById("page::register").style.display = "block";
+    show("P#register");
+    hide("P#main");
 };
 
 // Called when changing himado of user.
 function btnSetHimado() {
-    var h = document.getElementById("himado").value;
+    var h = E("himado").value;
     sendHimado(h);
 }
 
@@ -81,7 +90,7 @@ var g_names;
 // Called when a user changes status.
 function changeUserStatus(m) {
     if (m.id == g_id) {
-        document.getElementById("himado").selectedIndex = function () {       // If self.
+        E("himado").selectedIndex = function () {       // If self.
             if (m.himado == "Free") {
                 return 0;
             }
@@ -120,7 +129,7 @@ function reloadUsers(m) {
 // Called when updating the display for users
 function displayUsers(m) {
     // Member lists.
-    var members = document.getElementById("list::members");
+    var members = E("list::members");
     members.innerText = ""; // Clear content
 
     function create_list(himado) {
@@ -144,7 +153,7 @@ function displayUsers(m) {
     members.appendChild(create_list("Offline"));
 
     // Setup dropdown menu.
-    var dropdown = document.getElementById("watchID");
+    var dropdown = E("watchID");
     dropdown.innerText = "";
     for (var himado in m) {
         for (var i in m[himado]) {
@@ -162,27 +171,27 @@ function displayUsers(m) {
 
 // Called when sending a chat message.
 function btnSendChat() {
-    var m = document.getElementById("chatbox").value
+    var m = E("chatbox").value
     sendChat(m);
-    document.getElementById("chatbox").value = "";
+    E("chatbox").value = "";
 };
 
 function btnSendChatFree() {
-    var x = document.getElementById("chatbox");
+    var x = E("chatbox");
     var y = x.value;
     x.value = "@Free " + y;
     btnSendChat();
 }
 
 function btnSendChatEasy() {
-    var x = document.getElementById("chatbox");
+    var x = E("chatbox");
     var y = x.value;
     x.value = "@Easy " + y;
     btnSendChat();
 }
 
 function btnSendChatBusy() {
-    var x = document.getElementById("chatbox");
+    var x = E("chatbox");
     var y = x.value;
     x.value = "@Busy " + y;
     btnSendChat();
@@ -190,7 +199,7 @@ function btnSendChatBusy() {
 
 // Called when appending a line to the chat.
 function appendChat(m) {
-    var chat = document.getElementById("block::chat_main");
+    var chat = E("block::chat_main");
 
     var line = document.createElement("div");
     var time = document.createElement("div");
@@ -223,7 +232,7 @@ function reloadChat(m) {
 };
 
 function searchUser() {
-    var query = document.getElementById("member_search").value;
+    var query = E("member_search").value;
     var filtered = {};
     for (s in g_names) {
         var visible = [];

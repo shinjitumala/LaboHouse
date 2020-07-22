@@ -1,77 +1,17 @@
-* {
-  margin: 0;
-}
-
-.margin {
-  margin-right: 10px;
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-
-  /* Position the tooltip */
-  position: absolute;
-  z-index: 1;
-  top: 100%;
-  left: 50%;
-  margin-left: -60px;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
-
-.inline-div {
-  display: inline-block;
-  *display: inline;
-}
-
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-html,
-body {
-  font-family: Meiryo;
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-}
-
-.header {
+.LH_header {
   background-color: #46a495;
-  height: 60px;
-  font-size: 36px;
   color: #ffffff;
+  text-shadow: black;
+  text-align: center;
 }
 
-.page {
-  height: 50%;
+.hidden {
+    max-width: 0;
+    max-height: 0;
+    visibility: hidden !important; 
 }
 
-.panel {
-  box-sizing: border-box;
-  float: center;
-  height: 100%;
-}
-
-textarea {
-  width: 100%;
-  box-sizing: border-box;
+body, html {
+    height: 100%;
+    overflow: hidden;
 }
