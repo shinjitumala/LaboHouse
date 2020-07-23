@@ -39,7 +39,7 @@ class LaboHouse
     pair<string, string> quote;
 
   public:
-    Chat main_chat;
+    Chats chats;
 
     /// All known users.
     Users users;

@@ -57,6 +57,7 @@ Chat::chat(User& user, string msg)
 
     auto j{ messages.back().to_json() };
     j["type"] = "new_chat";
+    j["name"] = name;
     lh.send_online(j);
 
     // Look for mentions
@@ -88,10 +89,13 @@ Chat::print(ostream& os) const
 nlohmann::json
 Chat::to_json() const
 {
-    nlohmann::json j{ nlohmann::json::array() };
+    Json j{};
+    Json c{ Json::array() };
     for (auto m : messages) {
-        j.push_back(m.to_json());
+        c.push_back(m.to_json());
     }
+    j["chat"] = c;
+    j["name"] = name;
     return j;
 };
 };

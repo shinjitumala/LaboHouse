@@ -44,7 +44,6 @@ window.onload = function () {
 
     // Initializations that run after loading the body.
     window.document.body.onload = init();
-
 };
 
 // Store user's name
@@ -63,12 +62,6 @@ function init() {
             btnSendChat();
         }
     }, false);
-
-    // Request notification permission    
-    if (Notification.permission !== "granted") {
-        // Not working =(
-        Notification.requestPermission().then(p => { console.log(p); });
-    }
 };
 
 // Called when add user whom you wanna watch.
@@ -134,9 +127,6 @@ function transMain() {
 
 // Called when the server sends us our information.
 function displayName(user) {
-    g_name = user.name;
-    g_id = user.id;
-    g_himado = user.himado;
     var x = E("block::name");
     x.innerText = " " + g_name + "#" + g_id;
     var y = tooltip("", user.substatus)
@@ -178,8 +168,10 @@ function to_int(himado) {
 
 // Called when a user changes status.
 function changeUserStatus(m) {
-    if (m.id == g_id) {
+    if (m.self) {
         E("himado").selectedIndex = to_int(m.himado);
+        g_id = m.id;
+        g_name = m.name;
         g_himado = m.himado;
         displayName(m);
     }
@@ -196,7 +188,7 @@ function changeUserStatus(m) {
     }
     g_names[m.himado].push(m);
     displayUsers(g_names);
-    refreshChat("main");
+    chatChange();
 };
 
 // Called when loading an entire user list
@@ -226,7 +218,6 @@ function displayUsers(m) {
             var name = m[himado][i].name + "#" + m[himado][i].id;
             var ml = C("li");
             ml.appendChild(tooltip(m[himado][i].name, name + ": " + m[himado][i].substatus));
-            console.log(m[himado][i]);
             list.appendChild(ml);
         }
         return header;
@@ -258,7 +249,8 @@ function displayUsers(m) {
 // Called when sending a chat message.
 function btnSendChat() {
     var m = E("chatbox").value
-    sendChat(m);
+    var c = E("chat_type").value
+    sendChat(c, m);
     E("chatbox").value = "";
 };
 
@@ -283,7 +275,7 @@ function btnSendChatBusy() {
     btnSendChat();
 }
 
-var g_chat = { "main": [] };
+var g_chat = { "All": [], "Free": [], "Easy": [], "Busy": [] };
 
 function refreshChat(chat) {
     var c = E("block::chat_main");
@@ -307,9 +299,8 @@ function getHimado(id) {
 }
 
 // Called when appending a line to the chat.
-function appendChat(m) {
-    g_chat["main"].push(m);
-    printChatLine(m);
+function appendChat(c, m) {
+    g_chat[c].push(m);
 };
 
 function printChatLine(m) {
@@ -318,7 +309,7 @@ function printChatLine(m) {
     var line = C("div");
     var time = C("i");
     time.innerText = m.time;
-    var user = tooltip(" " + m.user.name, m.user.name + "#" + m.user.id + ": " + m.usr.substatus)
+    var user = tooltip(" " + m.user.name, m.user.name + "#" + m.user.id + ": " + m.user.substatus)
     var h = to_int(getHimado(m.user.id));
     user.prepend(icons[h]());
     var msg = C("i");
@@ -336,10 +327,8 @@ function printChatLine(m) {
 };
 
 function reloadChat(m) {
-    for (var i in m.chat) {
-        var l = m.chat[i];
-        appendChat(l);
-    }
+    var c = m.name;
+    g_chat[c] = m.chat;
 };
 
 function searchUser() {
@@ -430,11 +419,20 @@ function resetAFKTimer() {
 };
 
 function btnRename() {
-    rename(E("rename").value);
+    var x = E("rename");
+    rename(x.value);
+    x.value = "";
 }
 
 function btnSubstatus() {
-    substatus(E("substatus").value);
+    var x = E("substatus");
+    substatus(x.value);
+    x.value = "";
+}
+
+function chatChange() {
+    var ct = E("chat_type").value;
+    refreshChat(ct);
 }
 
 // Timepickers

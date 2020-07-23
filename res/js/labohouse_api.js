@@ -49,7 +49,8 @@ function wsEventHandler(m) {
 
     var type = m.type;
     if (type == null) {
-        console.error("'type' missing: " + type);
+        err("'type' missing: " + type);
+        err(m);
         return;
     }
 
@@ -64,7 +65,8 @@ function wsEventHandler(m) {
 
     if (type == "new_chat") {
         // New chat message
-        appendChat(m);
+        appendChat(m.name, m);
+        chatChange();
         return;
     }
     if (type == "chat") {
@@ -83,7 +85,7 @@ function wsEventHandler(m) {
         return;
     }
 
-    console.error("Unhandled: " + type);
+    err("Unhandled: " + type);
 }
 
 function registerUser(id, name, success = function () { }, fail = function () { }) {
@@ -113,9 +115,10 @@ function ajax_error(res) {
     }
 }
 
-function sendChat(m) {
+function sendChat(c, m) {
     var j = {};
     j["type"] = "chat";
+    j["chat"] = c;
     j["msg"] = m;
 
     ws.send(JSON.stringify(j));

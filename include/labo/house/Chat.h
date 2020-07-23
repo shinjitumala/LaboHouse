@@ -10,6 +10,8 @@
 #include <list>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <unordered_map>
+#include <utility>
 
 namespace labo {
 using namespace std;
@@ -51,9 +53,9 @@ class Chat
 
   public:
     /// Create a new chat.
-    /// @param lh 
-    /// @param id 
-    /// @param name 
+    /// @param lh
+    /// @param id
+    /// @param name
     Chat(decltype(lh) lh, decltype(id) id, decltype(name) name);
 
     /// Post a chat.
@@ -68,5 +70,40 @@ class Chat
 
     /// Convert to json.
     nlohmann::json to_json() const;
+
+  private:
+    Chat(const Chat&) = delete;
+};
+
+class Chats : protected unordered_map<string, Chat>
+{
+    using Base = unordered_map<string, Chat>;
+
+    LaboHouse& lh;
+    ulong id;
+
+  public:
+    Chats(LaboHouse& lh)
+      : lh{ lh }
+      , id{ 0UL } {};
+
+    void add(string name)
+    {
+        emplace(
+          piecewise_construct, make_tuple(name), make_tuple(ref(lh), id, name));
+        id++;
+    }
+
+    Chat* get(string name)
+    {
+        auto itr{ find(name) };
+        if (itr == end()) {
+            return {};
+        }
+        return &itr->second;
+    };
+
+    using Base::begin;
+    using Base::end;
 };
 };

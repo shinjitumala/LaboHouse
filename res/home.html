@@ -175,7 +175,17 @@
 
             <!-- chat and log -->
             <div class="align-self-center flex-fill d-flex flex-column justify-content-between h-100 flex-nowrap">
-                <h3 class="border-bottom text-center p-2">Chat</h3>
+                <div class="border-bottom d-flex p-2">
+                    <h3 class="text-center flex-fill border-right p-2">Chat</h3>
+                    <div class="p-2 w-25">
+                        <select class="custom-select" id="chat_type" onchange="chatChange()">
+                            <option selected id="chat_type_All" value="All">All</option>
+                            <option id="chat_type_Free" value="Free"><i class="fa fa-check-circle"></i> Free</option>
+                            <option id="chat_type_Easy" value="Easy"> Easy</option>
+                            <option id="chat_type_Busy" value="Busy"> Busy</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="flex-fill d-flex flex-column justify-content-end w-100"
                     style="overflow-y: auto; position: relative;" id="B#chat">
                     <div id="block::chat_main" style="position: absolute;" class="h-100 w-100"></div>

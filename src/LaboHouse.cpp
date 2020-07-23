@@ -72,7 +72,11 @@ LaboHouse::request(Json j, Connection c)
                 return;
             }
 
-            main_chat.chat(usr, msg);
+            if (auto c{ chats.get(j["chat"]) }) {
+                c->chat(usr, msg);
+            } else {
+                logs << tag << "Unknown chat: " << j["chat"] << endl;
+            }
             return;
         }
 
@@ -143,9 +147,10 @@ LaboHouse::request(Json j, Connection c)
             return;
         }
 
-        if(type == "substatus"){
+        if (type == "substatus") {
             usr.substatus = j["substatus"];
-            logs << tag << "User's substatus was changed to: " << j["substatus"] << endl;
+            logs << tag << "User's substatus was changed to: " << j["substatus"]
+                 << endl;
             broadcast_status(usr);
             return;
         }
@@ -173,8 +178,13 @@ LaboHouse::LaboHouse()
        },
         [&](auto c) { log_out(c); } }
   , quote{ Quotes::get() }
-  , main_chat{ *this, 0, "main" }
-{}
+  , chats{ *this }
+{
+    chats.add("All");
+    chats.add("Free");
+    chats.add("Easy");
+    chats.add("Busy");
+}
 
 void
 LaboHouse::log_in(User& u, Connection c)
@@ -195,10 +205,9 @@ LaboHouse::log_in(User& u, Connection c)
     }
 
     // Chat
-    {
-        Json j;
+    for (auto& [name, c] : chats) {
+        auto j{ c.to_json() };
         j["type"] = "chat";
-        j["chat"] = main_chat.to_json();
         send(u, j);
     }
 
@@ -213,7 +222,7 @@ LaboHouse::log_in(User& u, Connection c)
     }
 
     change_status(u, User::Status::sFree);
-    main_chat.chat(u, "has logged in.");
+    chats.get("All")->chat(u, "has logged in.");
 
     // Send notification
     notify_watchers(u, u.name + " logged in!.");
@@ -247,7 +256,7 @@ LaboHouse::log_out(Connection c)
     online.erase(itr);
     lg.unlock();
     change_status(u, User::Status::sOffline);
-    main_chat.chat(u, "has logged out.");
+    chats.get("All")->chat(u, "has logged out.");
     logs << "[LaboHouse] User logged out: " << u.id << endl;
 }
 
@@ -319,7 +328,10 @@ LaboHouse::broadcast_status(User& u)
 {
     auto j{ u.to_json() };
     j["type"] = "himado";
+    j["self"] = false;
     send_online(j);
+    j["self"] = true;
+    send(u, j);
 }
 
 void
