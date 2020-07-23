@@ -123,6 +123,47 @@ function btnRegisterUser() {
     registerUser(g_id, g_name);
 };
 
+var g_toast_count = 0;
+
+function createToast(body, header) {
+    var p = C("div");
+    p.classList = "toast fade show border-danger align-self-end";
+    p.setAttribute("style", "border-width: 3px !important");
+    p.setAttribute("data-autohide", "false");
+    var h = C("div");
+    h.classList = "border-bottom p-2 bg-warning"
+    var ht = C("strong");
+    ht.classList = "mr-auto m-1 text-white font-weight-bolder";
+    ht.innerText = header;
+    var btn = C("button");
+    btn.setAttribute("type", "button");
+    btn.classList = "mr-auto close";
+    btn.setAttribute("data-dismiss", "toast");
+    btn.innerText = "x";
+    btn.setAttribute("onclick", "clearToast()");
+    h.appendChild(ht);
+    h.appendChild(btn);
+    var b = C("div");
+    b.classList = "toast-body";
+    b.innerText = body;
+    p.appendChild(h);
+    p.appendChild(b);
+    $(p).toast("show");
+    g_toast_count++;
+    return p;
+};
+
+function clearToast(){
+    g_toast_count--;
+    if(g_toast_count == 0){
+        var ts = document.getElementsByClassName("toast");
+        for(var i = 0; i < ts.length; i++){
+            $(ts[i]).remove();
+        }
+        resetNotification();
+    }
+};
+
 function enableJoinButton() {
     var b = E("btn_join");
     b.disabled = false;
@@ -176,6 +217,8 @@ function to_int(himado) {
     return undefined;
 }
 
+var g_notify_free = true;
+
 // Called when a user changes status.
 function changeUserStatus(m) {
     if (m.self) {
@@ -184,6 +227,9 @@ function changeUserStatus(m) {
         g_name = m.name;
         g_himado = m.himado;
         displayName(m);
+    }
+    if (!m.self && g_notify_free && m.himado == "Free" && g_himado == "Free") {
+        showNotification("Someone is 'Free': " + m.name);
     }
 
     for (s in g_names) {
@@ -370,7 +416,9 @@ function searchUser() {
 
 function showNotification(m) {
     document.title = "\* LaboHouse";
-    alert(m);
+    var n = new Date;
+    E("toast").appendChild(createToast(m, "Notification [" + n.getHours() + ":" + n.getMinutes() +
+        "]"));
 };
 
 function resetNotification() {
@@ -399,7 +447,9 @@ function onBlur() {
     if (ws == undefined || g_autoChangeOff) {
         return;
     }
-    sendHimado(1);
+    if (g_himado !== "Easy") {
+        sendHimado(1);
+    }
     resetBusyTimer();
 };
 function onFocus() {
@@ -407,7 +457,7 @@ function onFocus() {
         return;
     }
     window.clearTimeout(g_busyTimer);
-    if (g_himado !== 0) {
+    if (g_himado !== "Free") {
         sendHimado(0);
     }
     resetNotification();
@@ -415,13 +465,13 @@ function onFocus() {
 };
 
 function goInactive() {
-    if (ws == undefined || g_himado == 2 || g_autoChangeOff) {
+    if (ws == undefined || g_himado == "Busy" || g_autoChangeOff) {
         return;
     }
     sendHimado(2);
 };
 function goAFK() {
-    if (ws == undefined || g_himado == 3 || g_autoChangeOff) {
+    if (ws == undefined || g_himado == "Offline" || g_autoChangeOff) {
         return;
     }
     sendHimado(2);

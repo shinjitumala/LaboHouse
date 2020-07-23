@@ -90,7 +90,7 @@ function wsEventHandler(m) {
     err("Unhandled: " + type);
 }
 
-function registerUser(id, name, success = function () { }, fail = function () { }) {
+function registerUser(id, name) {
     $.ajax({
         type: 'POST',
         url: "/register",
@@ -99,12 +99,10 @@ function registerUser(id, name, success = function () { }, fail = function () { 
             "name": name,
         },
         success: function () {
-            success();
             openSocket();
         },
         error: function (res) {
             ajax_error(res);
-            fail();
             enableJoinButton();
         },
     });
