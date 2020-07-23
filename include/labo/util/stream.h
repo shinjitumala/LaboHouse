@@ -8,6 +8,7 @@
 #pragma once
 #include <istream>
 #include <ostream>
+#include <sstream>
 
 namespace labo {
 using namespace std;
@@ -68,5 +69,14 @@ operator>>(istream& is, I& i)
 {
     i.deserialize(is);
     return is;
+}
+
+template<class O, enable_if_t<is_printable<O>::value, bool> = true>
+string
+to_string(O&& o)
+{
+    ostringstream oss;
+    oss << o;
+    return oss.str();
 }
 }

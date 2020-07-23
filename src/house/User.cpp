@@ -10,6 +10,7 @@
 #include <labo/house/User.h>
 #include <nlohmann/json.hpp>
 #include <regex>
+#include <sstream>
 
 namespace labo {
 User::User(const string id, const string cookie)
@@ -89,7 +90,7 @@ auto parse_time = [](string time) -> optional<User::Time> {
         logs << "Failed to match regex: " << time << endl;
         return {};
     }
-    return User::Time{ hours{ stoi(m[1]) }, hours{ stoi(m[2]) } };
+    return User::Time{ hours{ stoi(m[1]) }, minutes{ stoi(m[2]) } };
 };
 auto get_timerange = [](string start, string end) -> optional<User::TimeRange> {
     auto tstart{ parse_time(start) };
@@ -106,8 +107,16 @@ User::timerange_add(string start, string end, User::Status s)
 {
     auto tr{ get_timerange(start, end) };
     if (!tr || !*tr) {
-        return "Invalid timerange.";
+        return "Invalid timerange: start must be earlier than the end.";
     }
+
+    for (auto otr : timeranges) {
+        if (!((tr->end <= otr.start && tr->start <= otr.start) ||
+              (otr.end <= tr->start && otr.start <= tr->start))) {
+            return "Conflicts with existing timerange: " + labo::to_string(otr);
+        }
+    }
+
     tr->status = s;
     timeranges.push_back(*tr);
     logs << "[User:" << id << "] New timerage: " << *tr << endl;

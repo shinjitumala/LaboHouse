@@ -50,7 +50,23 @@ function btnAddWatchList() {
     addWatchlist(id);
 }
 
+function btnRemoveWatchList() {
+    id = E("watchID").value;
+    addWatchlist(id);
+}
 
+function btnAddTimerange() {
+    var start = $("#tp_timerange_start").datetimepicker("viewDate").format("HH:mm");
+    var end = $("#tp_timerange_end").datetimepicker("viewDate").format("HH:mm");
+    var himado = E("timerange_himado").value;
+    addTimerange(start, end, himado);
+}
+
+function btnRemoveTimerange() {
+    var start = $("#tp_timerange_start").datetimepicker("viewDate").format("HH:mm");
+    var end = $("#tp_timerange_end").datetimepicker("viewDate").format("HH:mm");
+    removeTimerange(start, end);
+}
 
 // Called when registering new user.
 function btnRegisterUser() {
@@ -202,26 +218,21 @@ function appendChat(m) {
     var chat = E("block::chat_main");
 
     var line = document.createElement("div");
-    var time = document.createElement("div");
-    time.className = "inline-div margin"
+    var time = document.createElement("i");
     time.innerText = m.time;
-    var user = document.createElement("div");
-    user.innerText = m.user.name + ":";
-    user.className = "tooltip inline-div margin";
-    var user_hover = document.createElement("span");
-    user_hover.innerText = m.user.name + "#" + m.user.id;
-    user_hover.className = "tooltiptext";
-    user.appendChild(user_hover);
-
-    var msg = document.createElement("div");
-    msg.innerText = m.msg;
-    msg.className = "inline-div margin";
+    var user = document.createElement("i");
+    user.innerText = m.user.name;
+    var msg = document.createElement("i");
+    msg.innerText = ": " + m.msg;
 
     line.appendChild(time);
     line.appendChild(user);
     line.appendChild(msg);
 
     chat.appendChild(line);
+
+    var s =E("B#chat");
+    s.scrollTop = s.scrollHeight;
 };
 
 function reloadChat(m) {
@@ -318,3 +329,15 @@ function resetAFKTimer() {
     g_AFKTimer = window.setTimeout(goAFK, 300000);
 };
 
+
+// Timepickers
+$(function () {
+    $('#tp_timerange_start').datetimepicker({
+        format: 'LT'
+    });
+});
+$(function () {
+    $('#tp_timerange_end').datetimepicker({
+        format: 'LT'
+    });
+});

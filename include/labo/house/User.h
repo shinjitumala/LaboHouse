@@ -36,7 +36,7 @@ class User
         };
         bool operator<(const Time& rhs) const
         {
-            return h < rhs.h || m < rhs.h;
+            return h < rhs.h || m < rhs.m;
         };
         bool operator<=(const Time& rhs) const
         {
@@ -72,7 +72,7 @@ class User
         operator bool() const
         {
             // If start is greater than end, invalid.
-            return end < start;
+            return start < end;
         };
 
         void print(ostream& os) const

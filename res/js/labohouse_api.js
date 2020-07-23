@@ -32,7 +32,7 @@ function openSocket() {
         dbg("WS: Closed. Code: " + e.code + ", Reason: " + e.reason);
         ws = undefined;
         transRegister();
-        if(e.code == 1006){
+        if (e.code == 1006) {
             window.alert("Server died.");
         }
     };
@@ -59,7 +59,7 @@ function wsEventHandler(m) {
         reloadUsers(m.names);
         return;
     }
-    if(type == "name"){
+    if (type == "name") {
         displayName(m);
         return;
     }
@@ -133,7 +133,7 @@ function sendHimado(h) {
     ws.send(JSON.stringify(j));
 }
 
-function sendSubhimado(s){
+function sendSubhimado(s) {
     var j = {};
     j["type"] = "subhimado";
     j["subhimado"] = s;
@@ -148,17 +148,17 @@ function addWatchlist(id) {
     ws.send(JSON.stringify(j));
 }
 
-function addTimeRange(start, end, himado) {
+function addTimerange(start, end, himado) {
     var j = {};
     j["type"] = "add_timerange";
     j["start"] = start;
     j["end"] = end;
-    j["himado"] = himado;
+    j["himado"] = parseInt(himado);
 
     ws.send(JSON.stringify(j));
 }
 
-function removeTimeRange(start, end) {
+function removeTimerange(start, end) {
     var j = {};
     j["type"] = "remove_timerange";
     j["start"] = start;

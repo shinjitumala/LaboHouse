@@ -16,7 +16,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
-
+    <!-- date time -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- code -->
     ${API_JS}
@@ -36,66 +42,107 @@
             <!-- Register Name -->
             <div class="d-flex flex-column align-self-center w-100">
                 <div class="jumbotron align-self-center">
-                    <label for="api-url">ID: </label><input class="form-control" type="text" id="id" value="">
-                    <label for="api-url">Display name: </label><input class="form-control" type="text" id="name"
-                        value="">
-                    <button type="button" onclick="btnRegisterUser()" class="btn btn-primary rounded-pill">Send</button>
+                    <div class="text-center display-4 p-4">Welcome!</div>
+                    <div class="py-2">
+                        <input class="form-control" type="text" id="id" placeholder="ID (Unique)">
+                    </div>
+                    <div class="py-2">
+                        <input class="form-control" type="text" id="name" placeholder="Display Name">
+                    </div>
+                    <div class="py-2">
+                        <button type="button" onclick="btnRegisterUser()" class="btn btn-primary rounded-pill">Join
+                            now!</button>
+                    </div>
                 </div>
             </div>
         </div>
 
 
         <!-- index page -->
-        <div id="P#main" class="flex-grow-1 d-flex">
+        <div id="P#main" class="flex-grow-1 d-flex justify-content-between">
             <!-- ひま度変更 -->
             <div class="border-right align-self-start h-100">
-                <h3 class="border-bottom" id="block::name"></h3>
-                <div id="block::himado">
-                    <!-- Change 'HIMADO' -->
-                    <div class="form-row">
-                        <label class="mt-3 col-3 col-form-label">Himado: </label>
-                        <select id="himado" onchange="btnSetHimado()" class="form-control col-8 mr-4 mt-3">
-                            <option value="0">free</option>
-                            <option value="1">easy</option>
-                            <option value="2">busy</option>
-                            <option value="3">offline</option>
-                        </select>
-                    </div>
+                <h3 class="border-bottom display-4 p-4" id="block::name"></h3>
 
-                    <!-- watch list -->
-                    <div class="form-row mt-5">
-                        <label class="mt-3 col-3 col-form-label">watch: </label>
-                        <select class="form-control col-6 mr-2 mt-3" id="watchID">
-                        </select>
-                        <button type="button" class="btn btn-outline-primary col-2"
-                            onclick="btnAddWatchList()">add</button>
-                    </div>
-
-                    <label>Set timerange:</label>
-                    <form>
-                        <label>Start:</label>
-                        <input type="text" id="timerange_start" placeholder="Time">
-                        <label>End:</label>
-                        <input type="text" id="timerange_end" placeholder="Time">
-                        <label>Himado:</label>
-                        <select id="timerange_himado" class="form-control col-8 mr-4 mt-3">
-                            <option value="0">free</option>
-                            <option value="1">easy</option>
-                            <option value="2">busy</option>
-                            <option value="3">offline</option>
-                        </select>
-                    </form>
+                <!-- Change 'HIMADO' -->
+                <div class="border-bottom d-flex p-3">
+                    <div class="align-middle flex-fill text-center px-1">Himado: </div>
+                    <select id="himado" onchange="btnSetHimado()" class="form-control flex-fill">
+                        <option value="0">free</option>
+                        <option value="1">easy</option>
+                        <option value="2">busy</option>
+                        <option value="3">offline</option>
+                    </select>
                 </div>
+
+                <!-- watch list -->
+                <button type="button" class="btn btn-outline-primary w-100" data-toggle="collapse"
+                    data-target="#watchlist">
+                    Watchlist <i class="fa fa-caret-square-o-down" aria-hidden="true"></i>
+                </button>
+                <div id="watchlist" class="collapse">
+                    <div class="input-group p-3">
+                        <select class="form-control" id="watchID">
+                        </select>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-primary"
+                                onclick="btnAddWatchList()">Add</button>
+                            <button type="button" class="btn btn-outline-danger"
+                                onclick="btnRemoveWatchList()">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <button type="button" class="btn btn-outline-primary w-100" data-toggle="collapse"
+                    data-target="#timerange">
+                    Timerange <i class="fa fa-caret-square-o-down" aria-hidden="true"></i>
+                </button>
+                <div id="timerange" class="collapse">
+                    <div class="input-group date px-3 pt-3" id="tp_timerange_start" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#tp_timerange_start"
+                            placeholder="Start" />
+                        <div class="input-group-append" data-target="#tp_timerange_start" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                        </div>
+                    </div>
+                    <div class="input-group date px-3" id="tp_timerange_end" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#tp_timerange_end"
+                            placeholder="End" />
+                        <div class="input-group-append" data-target="#tp_timerange_end" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                        </div>
+                    </div>
+                    <div class="d-flex px-3">
+                        <div class="align-middle flex-fill text-center px-1">Himado: </div>
+                        <select id="timerange_himado" class="form-control flex-fill">
+                            <option value="0">free</option>
+                            <option value="1">easy</option>
+                            <option value="2">busy</option>
+                            <option value="3">offline</option>
+                        </select>
+                    </div>
+                    <div class="d-flex px-3">
+                        <button type="button" class="btn btn-outline-primary flex-fill"
+                            onclick="btnAddTimerange()">Add</button>
+                        <button type="button" class="btn btn-outline-danger flex-fill"
+                            onclick="btnRemoveTimerange()">Remove</button>
+                    </div>
+                </div>
+
             </div>
 
 
             <!-- chat and log -->
-            <div class="align-self-center flex-fill d-flex flex-column justify-content-between h-100">
-                <h3 class="border-bottom"><b>Chat</b></h3>
-                <div id="block::chat_main" class="flex-fill d-flex flex-column justify-content-end"></div>
+            <div class="align-self-center flex-fill d-flex flex-column justify-content-between h-100 flex-nowrap">
+                <h3 class="border-bottom text-center p-2">Chat</h3>
+                <div class="flex-fill d-flex flex-column justify-content-end w-100"
+                    style="overflow-y: auto; position: relative;" id="B#chat">
+                    <div id="block::chat_main" style="position: absolute;" class="h-100 w-100"></div>
+                </div>
                 <div>
-                    <textarea id="chatbox" class="w-100" rows="1"></textarea>
-                    <div class="justify-content-end">
+                    <textarea id="chatbox" class="form-control" rows="0" placeholder="Say something nice..."></textarea>
+                    <div class="d-flex justify-content-end">
                         <button type="button" onclick="btnSendChat()">Chat</button>
                         <button type="button" onclick="btnSendChatFree()">Chat: @Free</button>
                         <button type="button" onclick="btnSendChatEasy()">Chat: @Easy</button>
@@ -105,11 +152,13 @@
             </div>
 
             <!-- members -->
-            <div class="col-2 align-items-start border-left h-100">
-                <h3 class="border-bottom py-2">Members</h3>
-                <label class="">Search: </label>
-                <input type="text" id="member_search" onchange="searchUser()" class="form-control col-8 mr-4 mt-3">
-                <div id="list::members" style="text-align: left;"></div>
+            <div class="border-left align-self-end h-100">
+                <h3 class="border-bottom p-2 text-center">Members</h3>
+                <div class="d-flex p-3">
+                    <label class="px-3 pl-3">Search: </label>
+                    <input type="text" id="member_search" onchange="searchUser()" class="px-3 pr-3">
+                </div>
+                <div id="list::members" class="text-left"></div>
             </div>
 
 
