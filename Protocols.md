@@ -59,10 +59,6 @@
 ### `names`: Loads an entire user list.
   * `names`: JSON
 
-### `name`: Displays the user's name.
-  * `name`:
-  * `id`:
-
 ### `himado`: Update of a user's himado.
   * `name`:
   * `id`:
@@ -87,3 +83,9 @@
 
 ### `timeranges`: Your timeranges.
   * `trs`: JSON timeranges.
+
+### `rename`: Change display name.
+  * `name`: The new name
+
+### `substatus`: Change substatus.
+  * `substatus`: The new substatus.

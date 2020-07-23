@@ -63,8 +63,7 @@ Users::to_json()
     shared_lock lg{ mtx };
     Json j;
     for_each(users.begin(), users.end(), [&](auto& u) {
-        j[User::to_string(u.status)].push_back(
-          Json{ { "name", u.name }, { "id", u.id } });
+        j[User::to_string(u.status)].push_back(u.to_json());
     });
     return j;
 }

@@ -64,9 +64,9 @@ class LaboHouse
     void send(User& u, Json j);
 
     /// Notify user with message.
-    /// @param u 
-    /// @param m 
-    void notify(User&u, string m);
+    /// @param u
+    /// @param m
+    void notify(User& u, string m);
 
     /// Send message to users.
     /// @param m
@@ -82,13 +82,13 @@ class LaboHouse
     void send_all(I begin, I end, Json j);
 
     /// Send message to all online users.
-    /// @param j 
+    /// @param j
     void send_online(Json j);
 
     /// Send notifications to online watchers for user 'u'.
-    /// @param u 
-    /// @param msg 
-    void notify_watchers(User &u, string msg);
+    /// @param u
+    /// @param msg
+    void notify_watchers(User& u, string msg);
 
   private:
     /// Send names to user.
@@ -99,7 +99,8 @@ class LaboHouse
     void log_out(Connection h);
 
     void change_status(User& u, User::Status s);
-    void change_status(User&u, string subhimado);
+    void change_status(User& u, string subhimado);
+    void broadcast_status(User& u);
 };
 
 template<

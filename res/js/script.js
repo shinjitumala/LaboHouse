@@ -120,7 +120,7 @@ function btnRegisterUser() {
     registerUser(g_id, g_name);
 };
 
-function enableJoinButton(){
+function enableJoinButton() {
     var b = E("btn_join");
     b.disabled = false;
     b.innerText = "Join now!";
@@ -134,14 +134,14 @@ function transMain() {
 
 // Called when the server sends us our information.
 function displayName(user) {
-    if (user != undefined) {
-        g_name = user.name;
-        g_id = user.id;
-        g_himado = user.himado;
-    }
+    g_name = user.name;
+    g_id = user.id;
+    g_himado = user.himado;
     var x = E("block::name");
     x.innerText = " " + g_name + "#" + g_id;
-    x.prepend(icons[to_int(g_himado)]());
+    var y = tooltip("", user.substatus)
+    y.appendChild(icons[to_int(g_himado)]());
+    x.prepend(y);
 };
 
 // Called when going to the register page.
@@ -181,7 +181,7 @@ function changeUserStatus(m) {
     if (m.id == g_id) {
         E("himado").selectedIndex = to_int(m.himado);
         g_himado = m.himado;
-        displayName();
+        displayName(m);
     }
 
     for (s in g_names) {
@@ -194,7 +194,7 @@ function changeUserStatus(m) {
     if (g_names[m.himado] == undefined) {
         g_names[m.himado] = [];
     }
-    g_names[m.himado].push({ "name": m.name, "id": m.id });
+    g_names[m.himado].push(m);
     displayUsers(g_names);
     refreshChat("main");
 };
@@ -225,7 +225,8 @@ function displayUsers(m) {
         for (var i in m[himado]) {
             var name = m[himado][i].name + "#" + m[himado][i].id;
             var ml = C("li");
-            ml.innerText = name;
+            ml.appendChild(tooltip(m[himado][i].name, name + ": " + m[himado][i].substatus));
+            console.log(m[himado][i]);
             list.appendChild(ml);
         }
         return header;
@@ -317,7 +318,7 @@ function printChatLine(m) {
     var line = C("div");
     var time = C("i");
     time.innerText = m.time;
-    var user = tooltip(" " + m.user.name, m.user.name + "#" + m.user.id)
+    var user = tooltip(" " + m.user.name, m.user.name + "#" + m.user.id + ": " + m.usr.substatus)
     var h = to_int(getHimado(m.user.id));
     user.prepend(icons[h]());
     var msg = C("i");
@@ -427,6 +428,14 @@ function resetAFKTimer() {
     window.clearTimeout(g_AFKTimer);
     g_AFKTimer = window.setTimeout(goAFK, 300000);
 };
+
+function btnRename() {
+    rename(E("rename").value);
+}
+
+function btnSubstatus() {
+    substatus(E("substatus").value);
+}
 
 // Timepickers
 $(function () {

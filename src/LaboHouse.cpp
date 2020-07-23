@@ -136,6 +136,20 @@ LaboHouse::request(Json j, Connection c)
             return;
         }
 
+        if (type == "rename") {
+            usr.name = j["name"];
+            logs << tag << "User was renamed to " << j["name"] << endl;
+            broadcast_status(usr);
+            return;
+        }
+
+        if(type == "substatus"){
+            usr.substatus = j["substatus"];
+            logs << tag << "User's substatus was changed to: " << j["substatus"] << endl;
+            broadcast_status(usr);
+            return;
+        }
+
         errs << tag << " Unknown type: " << type << endl;
     } catch (Json::exception e) {
         logs << lh_tag << "Json error: " << e.what() << endl;
@@ -172,14 +186,6 @@ LaboHouse::log_in(User& u, Connection c)
         logs << "[LaboHouse] User logged in :" << u.id << endl;
     }
 
-    // Send all data on login.
-    // Name
-    {
-        Json j{ u.to_json() };
-        j["type"] = "name";
-        send(u, j);
-    }
-
     // Users
     {
         Json j;
@@ -210,7 +216,7 @@ LaboHouse::log_in(User& u, Connection c)
     main_chat.chat(u, "has logged in.");
 
     // Send notification
-    notify_watchers(u, u.name + " is online!.");
+    notify_watchers(u, u.name + " logged in!.");
 }
 
 void
@@ -301,27 +307,28 @@ void
 LaboHouse::change_status(User& u, User::Status s)
 {
     u.status = s;
-    auto j{ u.to_json() };
-    j["type"] = "himado";
-    logs << lh_tag << u.tag() << " Status changed: " << User::to_string(s)
-         << endl;
-    send_online(j);
-
     // Send notification to watcher.
     if (s == User::Status::sFree) {
         notify_watchers(u, u.name + " is '" + User::to_string(s) + "'.");
     }
+    broadcast_status(u);
+}
+
+void
+LaboHouse::broadcast_status(User& u)
+{
+    auto j{ u.to_json() };
+    j["type"] = "himado";
+    send_online(j);
 }
 
 void
 LaboHouse::change_status(User& u, string subhimado)
 {
     u.substatus = subhimado;
-    auto j{ u.to_json() };
-    j["type"] = "himado";
     logs << lh_tag << u.tag() << " Status changed (sub): " << u.substatus
          << endl;
-    send_online(j);
+    broadcast_status(u);
 }
 
 void

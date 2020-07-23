@@ -61,10 +61,6 @@ function wsEventHandler(m) {
         reloadUsers(m.names);
         return;
     }
-    if (type == "name") {
-        displayName(m);
-        return;
-    }
 
     if (type == "new_chat") {
         // New chat message
@@ -181,5 +177,19 @@ function addTimer(mins, himado) {
 function removeTimer() {
     var j = {};
     j["type"] = "remove_timer";
+    ws.send(JSON.stringify(j));
+}
+
+function rename(name) {
+    var j = {};
+    j["type"] = "rename";
+    j["name"] = name;
+    ws.send(JSON.stringify(j));
+}
+
+function substatus(s){
+    var j = {};
+    j["type"] = "substatus";
+    j["substatus"] = s;
     ws.send(JSON.stringify(j));
 }

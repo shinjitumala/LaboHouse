@@ -51,7 +51,8 @@
                         <input class="form-control" type="text" id="name" placeholder="Display Name">
                     </div>
                     <div class="py-2">
-                        <button type="button" id="btn_join" onclick="btnRegisterUser()" class="btn btn-primary rounded-pill">Join
+                        <button type="button" id="btn_join" onclick="btnRegisterUser()"
+                            class="btn btn-primary rounded-pill">Join
                             now!</button>
                     </div>
                 </div>
@@ -151,6 +152,24 @@
                     </div>
                 </div>
 
+                <button type="button" class="btn btn-primary w-100 my-1" data-toggle="collapse" data-target="#account">
+                    Account <i class="fa fa-caret-square-o-down" aria-hidden="true"></i>
+                </button>
+                <div id="account" class="collapse">
+                    <div class="input-group d-flex px-3 pt-3">
+                        <input type="text" class="form-control flex-fill" placeholder="New name" id="rename">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-info flex-fill" onclick="btnRename()">Rename</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group d-flex px-3">
+                        <input type="text" class="form-control flex-fill" placeholder="Sub-status" id="substatus">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-info flex-fill" onclick="btnSubstatus()">Set</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
