@@ -26,12 +26,14 @@ function openSocket() {
         var j = { "type": "cookie", "cookie": document.cookie };
         ws.send(JSON.stringify(j));
         dbg("WS: Opened.");
+        enableEventListeners();
         transMain();
         enableJoinButton();
     };
     ws.onclose = function (e) {
         dbg("WS: Closed. Code: " + e.code + ", Reason: " + e.reason);
         ws = undefined;
+        disableEventListeners();
         transRegister();
         if (e.code == 1006) {
             window.alert("Server died.");
@@ -190,7 +192,7 @@ function rename(name) {
     ws.send(JSON.stringify(j));
 }
 
-function substatus(s){
+function substatus(s) {
     var j = {};
     j["type"] = "substatus";
     j["substatus"] = s;

@@ -37,13 +37,23 @@ window.onload = function () {
 
     // Initializations before the body loads.
     openSocket(); // Login attempt with current Cookie.
+
+    // Initializations that run after loading the body.
+    window.document.body.onload = init();
+};
+
+function enableEventListeners() {
     window.addEventListener("focus", onFocus);
     window.addEventListener("blur", onBlur);
     window.addEventListener("mousemove", resetAFKTimer);
     window.addEventListener("keypress", resetAFKTimer);
+};
 
-    // Initializations that run after loading the body.
-    window.document.body.onload = init();
+function disableEventListeners() {
+    window.removeEventListener("focus", onFocus);
+    window.removeEventListener("blur", onBlur);
+    window.removeEventListener("mousemove", resetAFKTimer);
+    window.removeEventListener("keypress", resetAFKTimer);
 };
 
 // Store user's name
