@@ -1,7 +1,34 @@
 // Macro
 var E = function (id) { return document.getElementById(id); };
+var C = function (e) { return document.createElement(e); };
 var hide = function (id) { E(id).classList.add("hidden"); };
 var show = function (id) { E(id).classList.remove("hidden"); };
+function create_icon(cl) {
+    var i = C("i");
+    i.classList = cl;
+    return i;
+};
+function free_icon() {
+    return create_icon("fa fa-check-circle");
+}
+function easy_icon() {
+    return create_icon("fa fa-exclamation-circle");
+}
+function busy_icon() {
+    return create_icon("fa fa-minus-circle");
+}
+function offline_icon() {
+    return create_icon("fa fa-power-off");
+}
+var icons = [free_icon, easy_icon, busy_icon, offline_icon];
+function tooltip(value, tip) {
+    var x = C("a");
+    x.setAttribute("data-toggle", "tooltip");
+    x.setAttribute("title", tip);
+    x.innerText = value;
+    $(x).tooltip();
+    return x;
+}
 
 // Run on page load.
 window.onload = function () {
@@ -68,12 +95,36 @@ function btnRemoveTimerange() {
     removeTimerange(start, end);
 }
 
+function btnAddTimer() {
+    addTimer(parseInt(E("timer_min").value), parseInt(E("timer_himado").value));
+}
+
+function btnRemoveTimer() {
+    removeTimer();
+}
+
 // Called when registering new user.
 function btnRegisterUser() {
     g_name = E("name").value;
     g_id = E("id").value;
+
+    // Show loading
+    var b = E("btn_join");
+    b.innerText = "";
+    var s = C("div");
+    s.classList.add("spinner-border");
+    s.classList.add("text-light");
+    b.appendChild(s);
+    b.disabled = true;
+
     registerUser(g_id, g_name);
 };
+
+function enableJoinButton(){
+    var b = E("btn_join");
+    b.disabled = false;
+    b.innerText = "Join now!";
+}
 
 // Called when going to the main page.
 function transMain() {
@@ -83,9 +134,14 @@ function transMain() {
 
 // Called when the server sends us our information.
 function displayName(user) {
-    g_name = user.name;
-    g_id = user.id;
-    E("block::name").innerText = g_name + "#" + g_id;
+    if (user != undefined) {
+        g_name = user.name;
+        g_id = user.id;
+        g_himado = user.himado;
+    }
+    var x = E("block::name");
+    x.innerText = " " + g_name + "#" + g_id;
+    x.prepend(icons[to_int(g_himado)]());
 };
 
 // Called when going to the register page.
@@ -103,23 +159,29 @@ function btnSetHimado() {
 // Store list of all known users.
 var g_names;
 
+function to_int(himado) {
+    // If self.
+    if (himado == "Free") {
+        return 0;
+    }
+    if (himado == "Easy") {
+        return 1;
+    }
+    if (himado == "Busy") {
+        return 2;
+    }
+    if (himado == "Offline") {
+        return 3;
+    }
+    return undefined;
+}
+
 // Called when a user changes status.
 function changeUserStatus(m) {
     if (m.id == g_id) {
-        E("himado").selectedIndex = function () {       // If self.
-            if (m.himado == "Free") {
-                return 0;
-            }
-            if (m.himado == "Easy") {
-                return 1;
-            }
-            if (m.himado == "Busy") {
-                return 2;
-            }
-            if (m.himado == "Offline") {
-                return 3;
-            }
-        }();
+        E("himado").selectedIndex = to_int(m.himado);
+        g_himado = m.himado;
+        displayName();
     }
 
     for (s in g_names) {
@@ -134,6 +196,7 @@ function changeUserStatus(m) {
     }
     g_names[m.himado].push({ "name": m.name, "id": m.id });
     displayUsers(g_names);
+    refreshChat("main");
 };
 
 // Called when loading an entire user list
@@ -148,14 +211,20 @@ function displayUsers(m) {
     var members = E("list::members");
     members.innerText = ""; // Clear content
 
-    function create_list(himado) {
-        var header = document.createElement("h3");
-        header.innerText = himado;
-        var list = document.createElement("ul");
+    function create_list(himado, icon, color) {
+        var header = C("h3");
+        header.innerText = ' ' + himado;
+        header.classList.add("pt-2");
+        header.classList.add("pl-2");
+        header.classList.add("mx-2");
+        header.classList.add("rounded");
+        header.classList.add(color);
+        header.prepend(icon);
+        var list = C("ul");
         header.appendChild(list);
         for (var i in m[himado]) {
             var name = m[himado][i].name + "#" + m[himado][i].id;
-            var ml = document.createElement("li");
+            var ml = C("li");
             ml.innerText = name;
             list.appendChild(ml);
         }
@@ -163,10 +232,10 @@ function displayUsers(m) {
     };
 
     // Force the HIMADO order.
-    members.appendChild(create_list("Free"));
-    members.appendChild(create_list("Easy"));
-    members.appendChild(create_list("Busy"));
-    members.appendChild(create_list("Offline"));
+    members.appendChild(create_list("Free", free_icon(), "bg-success"));
+    members.appendChild(create_list("Easy", easy_icon(), "bg-info"));
+    members.appendChild(create_list("Busy", busy_icon(), "bg-warning"));
+    members.appendChild(create_list("Offline", offline_icon(), "bg-secondary"));
 
     // Setup dropdown menu.
     var dropdown = E("watchID");
@@ -177,7 +246,7 @@ function displayUsers(m) {
                 // Skip self.
                 continue;
             }
-            var e = document.createElement("option");
+            var e = C("option");
             e.value = m[himado][i].id;
             e.innerText = m[himado][i].name + "#" + m[himado][i].id;
             dropdown.appendChild(e);
@@ -213,16 +282,45 @@ function btnSendChatBusy() {
     btnSendChat();
 }
 
+var g_chat = { "main": [] };
+
+function refreshChat(chat) {
+    var c = E("block::chat_main");
+    c.innerText = "";
+
+    for (var i in g_chat[chat]) {
+        var m = g_chat[chat][i];
+        printChatLine(m);
+    }
+}
+
+function getHimado(id) {
+    for (var h in g_names) {
+        for (var i in g_names[h]) {
+            if (g_names[h][i].id == id) {
+                return h;
+            }
+        }
+    }
+    return undefined;
+}
+
 // Called when appending a line to the chat.
 function appendChat(m) {
+    g_chat["main"].push(m);
+    printChatLine(m);
+};
+
+function printChatLine(m) {
     var chat = E("block::chat_main");
 
-    var line = document.createElement("div");
-    var time = document.createElement("i");
+    var line = C("div");
+    var time = C("i");
     time.innerText = m.time;
-    var user = document.createElement("i");
-    user.innerText = m.user.name;
-    var msg = document.createElement("i");
+    var user = tooltip(" " + m.user.name, m.user.name + "#" + m.user.id)
+    var h = to_int(getHimado(m.user.id));
+    user.prepend(icons[h]());
+    var msg = C("i");
     msg.innerText = ": " + m.msg;
 
     line.appendChild(time);
@@ -231,8 +329,9 @@ function appendChat(m) {
 
     chat.appendChild(line);
 
-    var s =E("B#chat");
+    var s = E("B#chat");
     s.scrollTop = s.scrollHeight;
+
 };
 
 function reloadChat(m) {
@@ -328,7 +427,6 @@ function resetAFKTimer() {
     window.clearTimeout(g_AFKTimer);
     g_AFKTimer = window.setTimeout(goAFK, 300000);
 };
-
 
 // Timepickers
 $(function () {

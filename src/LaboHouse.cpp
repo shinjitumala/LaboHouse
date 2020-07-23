@@ -179,19 +179,20 @@ LaboHouse::log_in(User& u, Connection c)
         j["type"] = "name";
         send(u, j);
     }
-    // Chat
-    {
-        Json j;
-        j["type"] = "chat";
-        j["chat"] = main_chat.to_json();
-        send(u, j);
-    }
 
     // Users
     {
         Json j;
         j["type"] = "names";
         j["names"] = users.to_json();
+        send(u, j);
+    }
+
+    // Chat
+    {
+        Json j;
+        j["type"] = "chat";
+        j["chat"] = main_chat.to_json();
         send(u, j);
     }
 
@@ -251,7 +252,7 @@ LaboHouse::start()
     // 1 minute loop.
     thread t2{ [&]() {
         while (true) {
-            this_thread::sleep_for(1min);
+            this_thread::sleep_for(3s);
             logs << "[LaboHouse] Checking for timeranges..." << endl;
             shared_lock sl{ mtx_online };
             auto now{ User::Time::now() };

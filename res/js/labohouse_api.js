@@ -27,6 +27,7 @@ function openSocket() {
         ws.send(JSON.stringify(j));
         dbg("WS: Opened.");
         transMain();
+        enableJoinButton();
     };
     ws.onclose = function (e) {
         dbg("WS: Closed. Code: " + e.code + ", Reason: " + e.reason);
@@ -35,6 +36,7 @@ function openSocket() {
         if (e.code == 1006) {
             window.alert("Server died.");
         }
+        enableJoinButton();
     };
     ws.onerror = function (e) {
         err(e);
