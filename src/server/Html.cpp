@@ -8,6 +8,7 @@
 
 #include "labo/LaboHouse.h"
 #include <algorithm>
+#include <future>
 #include <labo/debug/Log.h>
 #include <labo/server/Html.h>
 #include <labo/server/http/Request.h>
@@ -28,7 +29,7 @@ Html::Html(LaboHouse& lh)
   : lh{ lh }
 {}
 
-vector<thread*> threads;
+vector<future<void>> threads;
 
 void
 Html::start(const int port)
@@ -82,80 +83,95 @@ Html::start(const int port)
              << client_address.sin_addr.s_addr << ":" << client_address.sin_port
              << endl;
 
-        using namespace labo;
-        using namespace http;
-        socket::fdstreambuf stream{ fd };
-        istream in{ &stream };
-        ostream out{ &stream };
+        threads.emplace_back(async(launch::async, [fd, &lh = lh] {
+            using namespace labo;
+            using namespace http;
+            socket::fdstreambuf stream{ fd };
+            istream in{ &stream };
+            ostream out{ &stream };
 
-        Request req;
-        in >> req;
-        if (!req.valid) {
-            logs << "[Html] Invalid Request." << endl;
-            continue;
-        } else if (req.method() == Request::Method::GET && req.path() == "/") {
-            map<string, string> headers{
-                { "Content-Security-Policy",
-                  "connect-src 'self' "
-                  "ws://funnypigrun.dns-cloud.net:12273" },
-                { "Known", "no" },
-            };
-            auto ocookie{ req.header_value("Cookie") };
-            if (ocookie) {
-                auto ouser{ lh.users.by_cookie(ocookie.get()) };
-                if (ouser) {
-                    headers.at("Known") = "yes";
-                    logs << "[Html] User is known. ID: " << ouser.get().id
-                         << "." << endl;
+            Request req;
+            in >> req;
+            if (!req.valid) {
+                logs << "[Html] Invalid Request." << endl;
+                return;
+            } else if (req.method() == Request::Method::GET &&
+                       req.path() == "/") {
+                map<string, string> headers{
+                    { "Content-Security-Policy",
+                      "connect-src 'self' "
+                      "ws://funnypigrun.dns-cloud.net:12273" },
+                    { "Known", "no" },
+                };
+                auto ocookie{ req.header_value("Cookie") };
+                if (ocookie) {
+                    auto ouser{ lh.users.by_cookie(ocookie.get()) };
+                    if (ouser) {
+                        headers.at("Known") = "yes";
+                        logs << "[Html] User is known. ID: " << ouser.get().id
+                             << "." << endl;
+                    }
                 }
+
+                /// reply with home page
+                out << Response{ Response::Status::OK,
+                                 http::Html{ "res/home.html" },
+                                 headers }
+                    << endl
+                    << endl;
+                logs << "[Html] Homepage access." << endl;
+            } else if (req.method() == http::Request::Method::POST &&
+                       req.path() == "/register") {
+                auto oname{ req.header_value("name") };
+                auto oid{ req.header_value("id") };
+
+                if (!oname) {
+                    out << bad_request("Missing name.");
+                    logs << "[Html] Bad request: Missing name." << endl;
+                    return;
+                }
+                if (!oid) {
+                    out << bad_request("Missing id.");
+                    logs << "[Html] Bad request: Missing id." << endl;
+                    return;
+                }
+
+                if (lh.users.by_id(oid.get())) {
+                    out << unauthorized("ID already taken: " + oid.get());
+                    logs << "[Html] Bad request: ID already taken: "
+                         << oid.get() << "." << endl;
+                    return;
+                }
+
+                auto& u{ lh.users.add(oid.get()) };
+                lh.chats.get("All")->chat(u, "has joined! Say hello =)");
+                u.name = oname.get();
+
+                out << Response{ Response::Status::OK,
+                                 { { "Set-Cookie",
+                                     u.cookie + "; SameSite=Strict" } } }
+                    << endl
+                    << endl;
+            } else {
+                out << Response{ Response::Status::NOT_FOUND,
+                                 http::Html{ "res/not_found.html" } };
+                errs << "[Html] Unknown request." << endl;
             }
 
-            /// reply with home page
-            out << Response{ Response::Status::OK,
-                             http::Html{ "res/home.html" },
-                             headers }
-                << endl
-                << endl;
-            logs << "[Html] Homepage access." << endl;
-        } else if (req.method() == http::Request::Method::POST &&
-                   req.path() == "/register") {
-            auto oname{ req.header_value("name") };
-            auto oid{ req.header_value("id") };
+            ::close(fd);
+        }));
 
-            if (!oname) {
-                out << bad_request("Missing name.");
-                logs << "[Html] Bad request: Missing name." << endl;
-                continue;
-            }
-            if (!oid) {
-                out << bad_request("Missing id.");
-                logs << "[Html] Bad request: Missing id." << endl;
-                continue;
-            }
-
-            if (lh.users.by_id(oid.get())) {
-                out << unauthorized("ID already taken: " + oid.get());
-                logs << "[Html] Bad request: ID already taken: " << oid.get()
-                     << "." << endl;
-                continue;
-            }
-
-            auto& u{ lh.users.add(oid.get()) };
-            lh.chats.get("All")->chat(u, "has joined! Say hello =)");
-            u.name = oname.get();
-
-            out << Response{ Response::Status::OK,
-                             { { "Set-Cookie",
-                                 u.cookie + "; SameSite=Strict" } } }
-                << endl
-                << endl;
-        } else {
-            out << Response{ Response::Status::NOT_FOUND,
-                             http::Html{ "res/not_found.html" } };
-            errs << "[Html] Unknown request." << endl;
-        }
-
-        ::close(fd);
+        threads.erase(remove_if(threads.begin(),
+                                threads.end(),
+                                [](future<void>& f) {
+                                    if (f.wait_for(0ms) ==
+                                        future_status::ready) {
+                                        f.get();
+                                        return true;
+                                    }
+                                    return false;
+                                }),
+                      threads.end());
     }
 }
 

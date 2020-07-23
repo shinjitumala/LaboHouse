@@ -82,7 +82,7 @@ function btnAddWatchList() {
 
 function btnRemoveWatchList() {
     id = E("watchID").value;
-    addWatchlist(id);
+    removeWatchlist(id);
 }
 
 function btnAddTimerange() {
@@ -207,8 +207,17 @@ function reloadUsers(m) {
     displayUsers(m);
 };
 
+function clearTooltips() {
+    var x = document.getElementsByClassName("tooltip");
+    for (var i = 0; i < x.length; i++) {
+        $(x[i]).remove();
+    }
+}
+
 // Called when updating the display for users
 function displayUsers(m) {
+    clearTooltips();
+
     // Member lists.
     var members = E("list::members");
     members.innerText = ""; // Clear content
@@ -288,6 +297,7 @@ function btnSendChatBusy() {
 var g_chat = { "All": [], "Free": [], "Easy": [], "Busy": [] };
 
 function refreshChat(chat) {
+    clearTooltips();
     var c = E("block::chat_main");
     c.innerText = "";
 
@@ -359,8 +369,8 @@ function searchUser() {
 };
 
 function showNotification(m) {
-    alert(m);
     document.title = "\* LaboHouse";
+    alert(m);
 };
 
 function resetNotification() {
@@ -368,7 +378,7 @@ function resetNotification() {
 };
 
 function showQuote(author, quote) {
-    alert("\"" + quote + "\" - " + author);
+    E("GERO").innerText = "\"" + quote + "\" - " + author;
 };
 
 // Refreshes the entire main page.

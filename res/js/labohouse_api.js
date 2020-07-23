@@ -105,6 +105,7 @@ function registerUser(id, name, success = function () { }, fail = function () { 
         error: function (res) {
             ajax_error(res);
             fail();
+            enableJoinButton();
         },
     });
 }
@@ -146,6 +147,14 @@ function sendSubhimado(s) {
 function addWatchlist(id) {
     var j = {};
     j["type"] = "add_watchlist";
+    j["id"] = id;
+
+    ws.send(JSON.stringify(j));
+}
+
+function removeWatchlist(id){
+    var j = {};
+    j["type"] = "remove_watchlist";
     j["id"] = id;
 
     ws.send(JSON.stringify(j));
