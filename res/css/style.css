@@ -60,3 +60,24 @@ body, html {
     justify-content: center;
     align-items: center;
 }
+
+.people {
+    filter: blur(15px);
+    background-image: url("/human.png");
+}
+
+
+.lh-wrap{
+    position: relative;
+}
+
+.lh-fg{
+    position: relative;
+    z-index: 100;
+}
+.lh-bg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -100;
+}

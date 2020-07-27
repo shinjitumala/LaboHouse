@@ -7,6 +7,7 @@
 /// See the licenses directory for details.
 #pragma once
 #include <labo/server/http/Html.h>
+#include <labo/server/http/Image.h>
 #include <labo/util/stream.h>
 #include <map>
 #include <nlohmann/json.hpp>
@@ -38,7 +39,7 @@ class Response
     };
 
     /// Body
-    using Body = variant<None, Html, nlohmann::json>;
+    using Body = variant<None, Html, nlohmann::json, Image>;
 
     /// Alias for readability.
     using Headers = map<string, string>;
@@ -50,6 +51,7 @@ class Response
     using path = experimental::filesystem::path;
 #endif
 
+  public:
     /// Status code
     Status status;
     /// All header data
@@ -57,7 +59,6 @@ class Response
     /// The response body
     Body body;
 
-  public:
     /// Construct a response.
     /// @param status The status.
     /// @param body The body.

@@ -37,6 +37,9 @@ class WebSocket : public websocketpp::server<websocketpp::config::asio>
     /// @param h
     void send(string&& s, websocketpp::connection_hdl h);
 
+    /// Attempt to immediately terminate connections.
+    void terminate();
+
   private:
     /// Connection Open handler.
     /// @param h

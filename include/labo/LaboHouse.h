@@ -90,6 +90,9 @@ class LaboHouse
     /// @param msg
     void notify_watchers(User& u, string msg);
 
+    /// Attempt to immediately terminate connections.
+    void terminate();
+
   private:
     /// Send names to user.
     /// @param u

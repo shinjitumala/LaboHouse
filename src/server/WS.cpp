@@ -64,4 +64,8 @@ WebSocket::send(string &&s, connection_hdl h)
 {
     Base::send(h, s, frame::opcode::text);
 }
+
+void
+WebSocket::terminate(){
+}
 }

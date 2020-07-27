@@ -6,6 +6,7 @@
 /// Part of the SWORD tool. Proprietary and confidential.
 /// See the licenses directory for details.
 
+#include "labo/server/http/Html.h"
 #include "labo/LaboHouse.h"
 #include <algorithm>
 #include <future>
@@ -65,7 +66,7 @@ Html::start(const int port)
     }
 
     // Start listening. Standby for new connections.
-    ::listen(sfd, 8);
+    ::listen(sfd, 32);
 
     logs << "[Html] Started at port: " << port << endl;
 
@@ -152,7 +153,19 @@ Html::start(const int port)
                                      u.cookie + "; SameSite=Strict" } } }
                     << endl
                     << endl;
-            } else {
+            } else if (req.method() == http::Request::Method::GET &&
+                       req.path() == "/favicon.ico") {
+                out << Response{ Response::Status::OK,
+                                 http::Image{ "../res/favicon.ico" } }
+                    << endl
+                    << endl;
+            } else if (req.method() == http::Request::Method::GET &&
+                       req.path() == "/human.png") {
+                out << Response{ Response::Status::OK,
+                                 http::Image{ "../res/human.png" } }
+                    << endl
+                    << endl;
+            }else {
                 out << Response{ Response::Status::NOT_FOUND,
                                  http::Html{ "res/not_found.html" } };
                 errs << "[Html] Unknown request." << endl;

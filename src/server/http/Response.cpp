@@ -74,6 +74,26 @@ Response::print(ostream& os) const
 
             os << s;
         } break;
+        case 3: { // Image
+            ifstream ifs{ get<Image>(body).file,
+                          ios::binary | ios::in | ios::ate };
+            if (!ifs) {
+                errs << "????" << endl;
+                exit(0);
+            }
+            auto content_length{ ifs.tellg() };
+            os << "Content-Type: image/png" << endl;
+            os << "Content-Length: " << content_length << endl << endl;
+            logs << "LEN: " << content_length << endl;
+
+            // Reset ifs
+            ifs.seekg(0);
+            // copy entire stream into os
+            copy(istreambuf_iterator<char>(ifs),
+                 istreambuf_iterator<char>(),
+                 ostreambuf_iterator<char>(os));
+
+        } break;
     }
     os << endl << endl;
 }

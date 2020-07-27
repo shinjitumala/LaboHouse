@@ -31,6 +31,8 @@
 </head>
 
 <body>
+    <audio id="test_sound">
+        <source src="https://notificationsounds.com/sound-effects/rvrb-21/download/mp3" type="audio/mp3"></audio>
     <div class="d-flex w-100 h-100 flex-column lh-bg-light">
         <!-- Page Header -->
         <div id="LH::header" class="shadow lh-bg-primary d-flex">
@@ -69,12 +71,12 @@
         <!-- index page -->
         <div id="P#main" class="flex-grow-1 d-flex justify-content-between">
             <!-- ひま度変更 -->
-            <div class="border-right align-self-start h-100">
-                <h3 class="border-bottom display-4 p-4" id="block::name"></h3>
+            <div class="border-right align-self-start h-100" style="flex-basis: 25%;">
+                <h3 class="border-bottom display-4 p-4" style="flex-wrap: wrap;" id="block::name"></h3>
 
                 <!-- Change 'HIMADO' -->
                 <div class="border-bottom d-flex p-3">
-                    <div class="align-middle flex-fill text-center px-1 text-vcenter">Himado: </div>
+                    <div class="align-middle flex-fill text-center px-1 text-vcenter font-weight-bold">Himado: </div>
                     <select id="himado" onchange="btnSetHimado()" class="form-control flex-fill custom-select">
                         <option value="0">free</option>
                         <option value="1">easy</option>
@@ -118,7 +120,8 @@
                         </div>
                     </div>
                     <div class="d-flex px-3">
-                        <div class="align-middle flex-fill text-center px-1 text-vcenter">Himado: </div>
+                        <div class="align-middle flex-fill text-center px-1 text-vcenter font-weight-bold">Himado:
+                        </div>
                         <select id="timerange_himado" class="form-control flex-fill custom-select">
                             <option value="0">free</option>
                             <option value="1">easy</option>
@@ -141,7 +144,8 @@
                             <input type="number" placeholder="minutes" class="flex-fill" id="timer_min">
                         </div>
                         <div class="d-flex px-3">
-                            <div class="align-middle flex-fill text-center px-1 text-vcenter">Himado: </div>
+                            <div class="align-middle flex-fill text-center px-1 text-vcenter font-weight-bold">Himado:
+                            </div>
                             <select id="timer_himado" class="form-control flex-fill custom-select">
                                 <option value="0">free</option>
                                 <option value="1">easy</option>
@@ -185,25 +189,36 @@
                     Settings <i class="fa fa-caret-square-o-down" aria-hidden="true"></i>
                 </button>
                 <div id="settings" class="collapse">
-                    <div class="p-3">
-                        <form class="d-flex">
-                            <div class="flex-fill text-center">Theme: </div>
+                    <div class="py-3">
+                        <div class="d-flex px-3 pb-1">
+                            <div class="flex-fill text-left font-weight-bold">Theme: </div>
                             <div class="custom-control-inline custom-radio flex-fill">
-                                <input type="radio" class="custom-control-input" id="main_theme" name="theme" value="main" onclick="btnTheme(this)">
+                                <input type="radio" class="custom-control-input" id="main_theme" name="theme"
+                                    value="main" onclick="btnTheme(this)">
                                 <label class="custom-control-label" for="main_theme">LaboHouse</label>
                             </div>
                             <div class="custom-control-inline custom-radio flex-fill">
-                                <input type="radio" class="custom-control-input" id="cb_theme" name="theme" value="color_blind" onclick="btnTheme(this)">
+                                <input type="radio" class="custom-control-input" id="cb_theme" name="theme"
+                                    value="color_blind" onclick="btnTheme(this)">
                                 <label class="custom-control-label" for="cb_theme">Color Blind</label>
                             </div>
-                        </form>
+                        </div>
+                        <div class="d-flex px-3 pb-1">
+                            <div class="flex-fill text-left font-weight-bold">Notifications (Desktop): </div>
+                            <div class="custom-control custom-switch flex-fill">
+                                <input type="checkbox" class="custom-control-input" id="sw_notifications"
+                                    onclick="btnToggleNotification(this);">
+                                <label for="sw_notifications" class="custom-control-label"></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
 
             <!-- chat and log -->
-            <div class="align-self-center flex-fill d-flex flex-column justify-content-between h-100 flex-nowrap">
+            <div class="align-self-center flex-fill d-flex flex-column justify-content-between h-100"
+                style="flex-basis: 50%;">
                 <div class="border-bottom d-flex p-2">
                     <div class="invisible fixed-fill">Suck my dick. M.K.</div>
                     <h3 class="text-center fixed-fill border-right p-2">Chat</h3>
@@ -232,7 +247,7 @@
             </div>
 
             <!-- members -->
-            <div class="border-left align-self-end h-100">
+            <div class="border-left align-self-end h-100" style="flex-basis: 25%;">
                 <h3 class="border-bottom p-2 text-center">Members</h3>
                 <div class="d-flex p-2">
                     <input type="text" id="member_search" onchange="searchUser() "

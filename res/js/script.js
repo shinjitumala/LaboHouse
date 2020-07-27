@@ -30,6 +30,8 @@ function tooltip(value, tip) {
     return x;
 }
 
+var g_notifications_enabled = false;
+
 // Run on page load.
 window.onload = function () {
     // Hide main page.
@@ -40,6 +42,18 @@ window.onload = function () {
 
     // Initializations before the body loads.
     openSocket(); // Login attempt with current Cookie.
+
+    // Initialize notifications
+    Notification.requestPermission().then(
+        function (p) {
+            if (p === "granted") {
+                this.g_notifications_enabled = true;
+            } else {
+                this.g_notifications_enabled = false;
+                err("Notification permission denied");
+            }
+        }
+    );
 
     // Initializations that run after loading the body.
     window.document.body.onload = init();
@@ -431,6 +445,11 @@ function showNotification(m) {
     var n = new Date;
     E("toast").appendChild(createToast(m, "Notification [" + n.getHours() + ":" + n.getMinutes() +
         "]"));
+
+    if (g_notifications_enabled) {
+        new Notification(m);
+        E("test_sound").play();
+    }
 };
 
 function resetNotification() {
@@ -618,9 +637,13 @@ function changeTheme(i) {
     r.style.setProperty("--utils-bg", t[6]);
 }
 
-function btnTheme(e){
+function btnTheme(e) {
     changeTheme(e.value);
 }
+
+function btnToggleNotification(e) {
+    g_notifications_enabled = e.checked;
+};
 
 // Timepickers
 $(function () {

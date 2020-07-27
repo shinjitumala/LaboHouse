@@ -8,6 +8,7 @@
 #include "labo/house/Quotes.h"
 #include "labo/server/WS.h"
 #include "nlohmann/json.hpp"
+#include "websocketpp/close.hpp"
 #include <chrono>
 #include <future>
 #include <labo/LaboHouse.h>
@@ -352,7 +353,7 @@ LaboHouse::broadcast_status(User& u)
     shared_lock sl{ mtx_online };
     for (auto [c, cu] : online) {
         j["self"] = &u == cu;
-        send(u, j);
+        send(*cu, j);
     }
 }
 
@@ -412,5 +413,21 @@ LaboHouse::send_timer(User& u)
         j["timer"] = {};
     }
     send(u, j);
+}
+
+void
+LaboHouse::terminate()
+{
+    using namespace websocketpp::close::status;
+    {
+        ws.stop_listening();
+        unique_lock ul{ mtx_online };
+        for (auto [c, u] : online) {
+            ws.pause_reading(c);
+            ws.close(c, going_away, "Server Terminated.");
+            logs << "[LaboHouse] Connection terminated: " << u->id << endl;
+        }
+        ws.stop();
+    }
 }
 };

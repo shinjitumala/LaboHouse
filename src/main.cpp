@@ -13,10 +13,15 @@ using namespace std;
 using namespace labo;
 using namespace server;
 
+optional<LaboHouse*> ptr;
+
 void
 signal_handler(int sig)
 {
     errs << "Signal received: " << strsignal(sig) << endl;
+    if(ptr){
+        (*ptr)->terminate();
+    }
     ::signal(sig, SIG_DFL);
     ::kill(::getpid(), sig);
 };
@@ -28,5 +33,6 @@ main()
     signal(SIGINT, signal_handler);
 
     LaboHouse labohouse;
+    ptr = &labohouse;
     labohouse.start();
 }
