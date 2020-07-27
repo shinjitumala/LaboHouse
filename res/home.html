@@ -94,9 +94,9 @@
                         </select>
                         <div class="input-group-append">
                             <button type="button" class="btn btn-success" onclick="btnAddWatchList()">Add</button>
-                            <button type="button" class="btn btn-danger" onclick="btnRemoveWatchList()">Remove</button>
                         </div>
                     </div>
+                    <div id="watchlist_users"></div>
                 </div>
 
 
@@ -138,22 +138,29 @@
                     Timer <i class="fa fa-caret-square-o-down" aria-hidden="true"></i>
                 </button>
                 <div id="timer" class="collapse">
-                    <div class="px-3 pt-3 d-flex flex-column">
-                        <input type="number" placeholder="minutes" class="flex-fill" id="timer_min">
+                    <div id="form_add_timer">
+                        <div class="px-3 pt-3 d-flex flex-column">
+                            <input type="number" placeholder="minutes" class="flex-fill" id="timer_min">
+                        </div>
+                        <div class="d-flex px-3">
+                            <div class="align-middle flex-fill text-center px-1">Himado: </div>
+                            <select id="timer_himado" class="form-control flex-fill">
+                                <option value="0">free</option>
+                                <option value="1">easy</option>
+                                <option value="2">busy</option>
+                                <option value="3">offline</option>
+                            </select>
+                        </div>
+                        <div class="d-flex px-3 pb-3">
+                            <button type="button" class="btn btn-success flex-fill" onclick="btnAddTimer()">Add</button>
+                        </div>
                     </div>
-                    <div class="d-flex px-3">
-                        <div class="align-middle flex-fill text-center px-1">Himado: </div>
-                        <select id="timer_himado" class="form-control flex-fill">
-                            <option value="0">free</option>
-                            <option value="1">easy</option>
-                            <option value="2">busy</option>
-                            <option value="3">offline</option>
-                        </select>
-                    </div>
-                    <div class="d-flex px-3 pb-3">
-                        <button type="button" class="btn btn-success flex-fill" onclick="btnAddTimer()">Add</button>
-                        <button type="button" class="btn btn-danger flex-fill"
-                            onclick="btnRemoveTimer()">Remove</button>
+                    <div id="form_remove_timer" class="hidden">
+                        <div class="d-flex p-3">
+                            <div id="timer_text" class="text-center flex-fill"></div>
+                            <button type="button" class="btn btn-danger flex-fill"
+                                onclick="btnRemoveTimer()">Remove</button>
+                        </div>
                     </div>
                 </div>
 

@@ -99,6 +99,12 @@ function btnRemoveTimerange() {
 }
 
 function btnAddTimer() {
+    var t = E("timer_min").value;
+    if (t == "" || t == null || t == undefined) {
+        showNotification("Field 'minute' is required.");
+        return;
+    }
+
     addTimer(parseInt(E("timer_min").value), parseInt(E("timer_himado").value));
 }
 
@@ -538,6 +544,43 @@ function showTimeranges(trs) {
         e.appendChild(b);
         d.appendChild(e);
     });
+}
+
+function showWatchlist(wl) {
+    var d = E("watchlist_users");
+    d.innerText = "";
+    wl.forEach(function (u) {
+        var display = u.name + "#" + u.id;
+        var e = C("div");
+        e.classList = "d-flex p-1 border-bottom";
+        var t = C("div");
+        t.classList = "flex-fill text-center text-middle";
+        t.innerText = display;
+
+        var b = C("button");
+        b.classList = "btn btn-danger flex-fill";
+        b.type = "button";
+        b.innerText = "Remove";
+        b.onclick = function () { removeWatchlist(u.id); };
+        e.appendChild(t);
+        e.appendChild(b);
+        d.appendChild(e);
+    });
+}
+
+function updateTimer(t) {
+    console.log(t);
+    if (t == null) {
+        // Show the form.
+        E("form_add_timer").classList.remove("hidden");
+        E("form_remove_timer").classList.add("hidden");
+    } else {
+        // Hide the form.
+        E("timer_text").innerText = t.time + ": " + t.himado;
+
+        E("form_add_timer").classList.add("hidden");
+        E("form_remove_timer").classList.remove("hidden");
+    }
 }
 
 // Timepickers

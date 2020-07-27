@@ -93,9 +93,14 @@ function wsEventHandler(m) {
     }
 
     if (type == "watchlist") {
+        showWatchlist(m.watchlist);
+        return;
     }
 
     if (type == "timer") {
+        console.log(m);
+        updateTimer(m.timer);
+        return;
     }
 
     err(m);
