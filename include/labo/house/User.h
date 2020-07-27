@@ -11,6 +11,7 @@
 #include <labo/util/stream.h>
 #include <mutex>
 #include <nlohmann/json.hpp>
+#include <sstream>
 #include <unordered_set>
 
 namespace labo {
@@ -50,6 +51,14 @@ class User
             os << setfill('0') << setw(2) << h.count() << ":" << setw(2)
                << m.count();
         }
+
+        Json to_json() const
+        {
+            ostringstream oss;
+            oss << *this;
+            Json j{ oss.str() };
+            return j;
+        }
     };
     enum Status : unsigned char
     {
@@ -79,11 +88,20 @@ class User
         {
             os << start << " ~ " << end << " (" << to_string(status) << ")";
         }
+
+        Json to_json()const{
+            Json j;
+            j["start"] = start.to_json();
+            j["end"] = end.to_json();
+            j["status"] = status;
+            return j;
+        }
     };
     struct Timer : Time
     {
         Status s;
         Timer(minutes m, Status s);
+        bool valid;
         bool expired(Time t);
 
         void print(ostream& os) const
@@ -147,9 +165,11 @@ class User
     bool in_watchlist(const User& u) const;
     void watchlist_add(const User& u);
     void watchlist_remove(const User& u);
+    Json get_watchlist() const;
 
     string timerange_add(string start, string end, User::Status s);
     string timerange_remove(string start, string end);
+    Json get_timeranges() const;
     /// Returns a valid status if in timerange.
     /// @param t
     /// @return optional<Status>

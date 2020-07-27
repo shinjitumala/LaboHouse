@@ -82,10 +82,16 @@
   * `quote`: What was said.
 
 ### `timeranges`: Your timeranges.
-  * `trs`: JSON timeranges.
+  * `timeranges`: JSON timeranges.
 
 ### `rename`: Change display name.
   * `name`: The new name
 
 ### `substatus`: Change substatus.
   * `substatus`: The new substatus.
+
+### `watchlist`: Refresh list of watchlisted users.
+  * `watchlist`: List of watchlisted users.
+
+### `timer`: Uesr's timer.
+  * `timer`: The timer.

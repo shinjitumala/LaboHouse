@@ -177,4 +177,24 @@ User::Timer::expired(Time t)
 {
     return *this < t;
 }
+
+Json
+User::get_watchlist() const
+{
+    Json j{ Json::array() };
+    for (auto u : watchlist) {
+        j.push_back(u->to_json());
+    }
+    return j;
+}
+
+Json
+User::get_timeranges() const
+{
+    Json j{ Json::array() };
+    for (auto tr : timeranges) {
+        j.push_back(tr.to_json());
+    }
+    return j;
+}
 }

@@ -101,6 +101,10 @@ class LaboHouse
     void change_status(User& u, User::Status s);
     void change_status(User& u, string subhimado);
     void broadcast_status(User& u);
+
+    void send_watchlist(User &u);
+    void send_timeranges(User &u);
+    void send_timer(User &u);
 };
 
 template<
