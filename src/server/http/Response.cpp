@@ -77,10 +77,6 @@ Response::print(ostream& os) const
         case 3: { // Image
             ifstream ifs{ get<Image>(body).file,
                           ios::binary | ios::in | ios::ate };
-            if (!ifs) {
-                errs << "????" << endl;
-                exit(0);
-            }
             auto content_length{ ifs.tellg() };
             os << "Content-Type: image/png" << endl;
             os << "Content-Length: " << content_length << endl << endl;

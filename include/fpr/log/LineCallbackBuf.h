@@ -87,7 +87,6 @@ class CombinedCallback
                     ret == streambuf::traits_type::eof()) ||
                    ...)) {
                   cerr << "Output error." << endl;
-                  ::exit(1);
               };
               return ret;
           },

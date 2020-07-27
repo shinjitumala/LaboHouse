@@ -62,8 +62,8 @@ body, html {
 }
 
 .people {
-    filter: blur(15px);
-    background-image: url("/human.png");
+    filter: blur(3px);
+    opacity: 5%;
 }
 
 
@@ -71,13 +71,9 @@ body, html {
     position: relative;
 }
 
-.lh-fg{
-    position: relative;
-    z-index: 100;
-}
 .lh-bg{
     position: absolute;
     top: 0;
     left: 0;
-    z-index: -100;
+    z-index: 1;
 }

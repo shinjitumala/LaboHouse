@@ -317,6 +317,19 @@ function displayUsers(m) {
     members.appendChild(create_list("Busy", busy_icon(), "lh-bg-busy"));
     members.appendChild(create_list("Offline", offline_icon(), "lh-bg-offline"));
 
+    // Display people.
+    var c = 0;
+    if (m.Free !== undefined) {
+        c += m.Free.length;
+    }
+    if (m.Easy !== undefined) {
+        c += m.Easy.length;
+    }
+    if (m.Busy !== undefined) {
+        c += m.Busy.length;
+    }
+    displayPeople(c);
+
     // Setup dropdown menu.
     var dropdown = E("watchID");
     dropdown.innerText = "";
@@ -644,6 +657,19 @@ function btnTheme(e) {
 function btnToggleNotification(e) {
     g_notifications_enabled = e.checked;
 };
+
+function displayPeople(i) {
+    var p = E("people");
+    p.innerText = "";
+    for (var c = 0; c < i; c++) {
+        var h = C("img");
+        h.classList.add("people");
+        h.setAttribute("src", "human.png");
+        h.setAttribute("width", "100");
+        h.setAttribute("height", "100");
+        p.appendChild(h);
+    }
+}
 
 // Timepickers
 $(function () {

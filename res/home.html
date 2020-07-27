@@ -231,9 +231,10 @@
                         </select>
                     </div>
                 </div>
-                <div class="flex-fill d-flex flex-column justify-content-end w-100"
+                <div class="flex-fill d-flex flex-column justify-content-end w-100 lh-wrap"
                     style="overflow-y: auto; position: relative;" id="B#chat">
-                    <div id="block::chat_main" style="position: absolute;" class="h-100 w-100"></div>
+                    <div id="block::chat_main" style="position: absolute; z-index: 2;" class="h-100 w-100"></div>
+                    <div class="lh-bg w-100 h-100 d-flex justify-content-between" id="people"></div>
                 </div>
                 <div>
                     <textarea id="chatbox" class="form-control" rows="0" placeholder="Say something nice..."></textarea>
