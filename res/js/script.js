@@ -367,6 +367,9 @@ function getHimado(id) {
 // Called when appending a line to the chat.
 function appendChat(c, m) {
     g_chat[c].push(m);
+    if(g_chat[c].length > 64){
+        g_chat[c].splice(0, 1);
+    }
 };
 
 function printChatLine(m) {
