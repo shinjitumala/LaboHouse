@@ -165,7 +165,7 @@ User::Timer::Timer(minutes m, Status s)
   : Time{ [&] {
       auto now{ Time::now() };
       now.h += hours{ m.count() / 60 };
-      now.m = m % 60;
+      now.m += m % 60;
       return now;
   }() }
   , s{ s }

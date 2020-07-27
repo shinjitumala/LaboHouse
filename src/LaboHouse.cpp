@@ -235,6 +235,11 @@ LaboHouse::log_in(User& u, Connection c)
         send(u, j);
     }
 
+    // Stuff
+    send_watchlist(u);
+    send_timer(u);
+    send_timer(u);
+
     change_status(u, User::Status::sFree);
     chats.get("All")->chat(u, "has logged in.");
 
@@ -302,7 +307,9 @@ LaboHouse::start()
                 logs << lh_tag << u->tag() << "Timer expired: " << *u->timer
                      << endl;
                 change_status(*u, u->timer->s);
+                notify(*u, "Timer expired: " + to_string(*u->timer));
                 u->timer = {};
+                send_timer(*u);
             }
             logs << "[LaboHouse] Done!" << endl;
         };

@@ -98,7 +98,6 @@ function wsEventHandler(m) {
     }
 
     if (type == "timer") {
-        console.log(m);
         updateTimer(m.timer);
         return;
     }

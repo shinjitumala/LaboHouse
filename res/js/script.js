@@ -35,6 +35,9 @@ window.onload = function () {
     // Hide main page.
     hide("P#main");
 
+    changeTheme("main");
+    E("main_theme").checked = true;
+
     // Initializations before the body loads.
     openSocket(); // Login attempt with current Cookie.
 
@@ -139,7 +142,7 @@ function createToast(body, header) {
     var h = C("div");
     h.classList = "border-bottom p-2 bg-warning"
     var ht = C("strong");
-    ht.classList = "mr-auto m-1 text-white font-weight-bolder";
+    ht.classList = "mr-auto m-1 text-black font-weight-bolder";
     ht.innerText = header;
     var btn = C("button");
     btn.setAttribute("type", "button");
@@ -295,10 +298,10 @@ function displayUsers(m) {
     };
 
     // Force the HIMADO order.
-    members.appendChild(create_list("Free", free_icon(), "bg-success"));
-    members.appendChild(create_list("Easy", easy_icon(), "bg-info"));
-    members.appendChild(create_list("Busy", busy_icon(), "bg-warning"));
-    members.appendChild(create_list("Offline", offline_icon(), "bg-secondary"));
+    members.appendChild(create_list("Free", free_icon(), "lh-bg-free"));
+    members.appendChild(create_list("Easy", easy_icon(), "lh-bg-easy"));
+    members.appendChild(create_list("Busy", busy_icon(), "lh-bg-busy"));
+    members.appendChild(create_list("Offline", offline_icon(), "lh-bg-offline"));
 
     // Setup dropdown menu.
     var dropdown = E("watchID");
@@ -569,7 +572,6 @@ function showWatchlist(wl) {
 }
 
 function updateTimer(t) {
-    console.log(t);
     if (t == null) {
         // Show the form.
         E("form_add_timer").classList.remove("hidden");
@@ -581,6 +583,43 @@ function updateTimer(t) {
         E("form_add_timer").classList.add("hidden");
         E("form_remove_timer").classList.remove("hidden");
     }
+}
+
+var g_themes = {
+    "main": [
+        "rgb(11, 100, 11)",
+        "rgb(230, 255, 230)",
+        "rgb(118, 255, 148)",
+        "rgb(140, 255, 255)",
+        "rgb(237, 255, 136)",
+        "rgb(168, 166, 166)",
+        "rgb(51, 115, 225)",
+    ],
+    "color_blind": [
+        "rgb(0, 0, 0)",
+        "rgb(255, 255, 255)",
+        "rgb(255, 241, 0)",
+        "rgb(135, 201, 165)",
+        "rgb(185, 227, 249)",
+        "rgb(125, 129, 141)",
+        "rgb(0, 84, 217)",
+    ]
+};
+
+function changeTheme(i) {
+    var t = g_themes[i];
+    var r = document.documentElement;
+    r.style.setProperty("--primary", t[0]);
+    r.style.setProperty("--light", t[1]);
+    r.style.setProperty("--free-bg", t[2]);
+    r.style.setProperty("--easy-bg", t[3]);
+    r.style.setProperty("--busy-bg", t[4]);
+    r.style.setProperty("--offline-bg", t[5]);
+    r.style.setProperty("--utils-bg", t[6]);
+}
+
+function btnTheme(e){
+    changeTheme(e.value);
 }
 
 // Timepickers
