@@ -390,7 +390,7 @@ LaboHouse::send_timeranges(User& u)
 {
     Json j;
     j["type"] = "timeranges";
-    j["timeranges"] = u.get_watchlist();
+    j["timeranges"] = u.get_timeranges();
     send(u, j);
 }
 
