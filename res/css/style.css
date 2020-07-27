@@ -7,6 +7,8 @@
 body, html {
     height: 100%;
     overflow: hidden;
+    font-family: Verdana, Geneva, sans-serif;
+    font-style: normal;
 }
 
 .fixed-fill {
@@ -51,4 +53,10 @@ body, html {
     background-color: var(--utils-bg);
     color: white;
     border-color: black;
+}
+
+.text-vcenter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

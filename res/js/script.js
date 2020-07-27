@@ -385,12 +385,12 @@ function printChatLine(m) {
     var chat = E("block::chat_main");
 
     var line = C("div");
-    var time = C("i");
+    var time = C("span");
     time.innerText = m.time;
     var user = tooltip(" " + m.user.name, m.user.name + "#" + m.user.id + ": " + m.user.substatus)
     var h = to_int(getHimado(m.user.id));
     user.prepend(icons[h]());
-    var msg = C("i");
+    var msg = C("span");
     msg.innerText = ": " + m.msg;
 
     line.appendChild(time);
