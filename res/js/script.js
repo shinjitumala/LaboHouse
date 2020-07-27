@@ -153,11 +153,11 @@ function createToast(body, header) {
     return p;
 };
 
-function clearToast(){
+function clearToast() {
     g_toast_count--;
-    if(g_toast_count == 0){
+    if (g_toast_count == 0) {
         var ts = document.getElementsByClassName("toast");
-        for(var i = 0; i < ts.length; i++){
+        for (var i = 0; i < ts.length; i++) {
             $(ts[i]).remove();
         }
         resetNotification();
@@ -426,7 +426,14 @@ function resetNotification() {
 };
 
 function showQuote(author, quote) {
-    E("GERO").innerText = "\"" + quote + "\" - " + author;
+    function spaces(i) {
+        var res = "";
+        for (var x = 0; x < i; x++) {
+            res += ' ';
+        }
+        return res;
+    };
+    E("GERO").innerText = "\"" + quote + "\"\n" + spaces(quote.length - author.length - 5) + " - " + author;
 };
 
 // Refreshes the entire main page.
