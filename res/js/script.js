@@ -367,7 +367,7 @@ function getHimado(id) {
 // Called when appending a line to the chat.
 function appendChat(c, m) {
     g_chat[c].push(m);
-    if(g_chat[c].length > 64){
+    if (g_chat[c].length > 64) {
         g_chat[c].splice(0, 1);
     }
 };
@@ -513,6 +513,31 @@ function btnSubstatus() {
 function chatChange() {
     var ct = E("chat_type").value;
     refreshChat(ct);
+}
+
+function showTimeranges(trs) {
+    var d = E("timeranges");
+    d.innerText = "";
+    trs.forEach(function (tr) {
+        var start = tr.start;
+        var end = tr.end;
+        var himado = tr.himado;
+
+        var e = C("div");
+        e.classList = "d-flex p-1 border-bottom";
+        var t = C("div");
+        t.classList = "flex-fill text-center text-middle";
+        t.innerText = start + " ~ " + end + ": " + himado;
+
+        var b = C("button");
+        b.classList = "btn btn-danger flex-fill";
+        b.type = "button";
+        b.innerText = "Remove";
+        b.onclick = function () { removeTimerange(start, end); };
+        e.appendChild(t);
+        e.appendChild(b);
+        d.appendChild(e);
+    });
 }
 
 // Timepickers

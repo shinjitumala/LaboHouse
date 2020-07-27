@@ -51,14 +51,6 @@ class User
             os << setfill('0') << setw(2) << h.count() << ":" << setw(2)
                << m.count();
         }
-
-        Json to_json() const
-        {
-            ostringstream oss;
-            oss << *this;
-            Json j{ oss.str() };
-            return j;
-        }
     };
     enum Status : unsigned char
     {
@@ -89,11 +81,12 @@ class User
             os << start << " ~ " << end << " (" << to_string(status) << ")";
         }
 
-        Json to_json()const{
+        Json to_json() const
+        {
             Json j;
-            j["start"] = start.to_json();
-            j["end"] = end.to_json();
-            j["status"] = status;
+            j["start"] = labo::to_string(start);
+            j["end"] = labo::to_string(end);
+            j["himado"] = User::to_string(status);
             return j;
         }
     };
@@ -108,6 +101,14 @@ class User
         {
             os << "{" << static_cast<const Time&>(*this) << ", " << to_string(s)
                << "}";
+        };
+
+        Json to_json()
+        {
+            Json j;
+            j["time"] = labo::to_string(static_cast<Time>(*this));
+            j["himado"] = User::to_string(s);
+            return j;
         };
     };
 
