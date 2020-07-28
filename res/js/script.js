@@ -46,10 +46,15 @@ window.onload = function () {
     // Initialize notifications
     Notification.requestPermission().then(
         function (p) {
+                var x  = E("sw_notifications");
             if (p === "granted") {
                 this.g_notifications_enabled = true;
+                x.checked = true;
+                btnToggleNotification(x);
             } else {
                 this.g_notifications_enabled = false;
+                x.checked = false;
+                btnToggleNotification(x);
                 err("Notification permission denied");
             }
         }
