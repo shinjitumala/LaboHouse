@@ -572,7 +572,7 @@ function showTimeranges(trs) {
         var e = C("div");
         e.classList = "d-flex p-1 border-bottom";
         var t = C("div");
-        t.classList = "flex-fill text-center text-middle";
+        t.classList = "flex-fill text-center text-center text-vcenter";
         t.innerText = start + " ~ " + end + ": " + himado;
 
         var b = C("button");
@@ -594,7 +594,7 @@ function showWatchlist(wl) {
         var e = C("div");
         e.classList = "d-flex p-1 border-bottom";
         var t = C("div");
-        t.classList = "flex-fill text-center text-middle";
+        t.classList = "flex-fill text-center text-vcenter";
         t.innerText = display;
 
         var b = C("button");
